@@ -1,4 +1,4 @@
-package free.wordsextractor.bisness_logic.txt_proc;
+package free.wordsextractor.bl.txt_proc;
 
 import java.nio.file.Path;
 import java.util.List;

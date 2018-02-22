@@ -1,4 +1,4 @@
-package free.wordsextractor.bisness_logic;
+package free.wordsextractor.bl;
 
 /**
  * Created by saratoga on 10/02/18.

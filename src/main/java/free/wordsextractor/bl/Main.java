@@ -1,6 +1,7 @@
-import free.wordsextractor.bisness_logic.WordExtractorException;
-import free.wordsextractor.bisness_logic.file_proc.FileManager;
-import free.wordsextractor.bisness_logic.txt_proc.WordsExtractor;
+package free.wordsextractor.bl;
+
+import free.wordsextractor.bl.file_proc.FileManager;
+import free.wordsextractor.bl.txt_proc.WordsExtractor;
 
 import java.nio.file.Path;
 import java.util.List;
