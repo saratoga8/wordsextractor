@@ -18,7 +18,7 @@ public class Main
                 extractedWordsTxtFilePath = args[2];
         try {
             final FileManager fileMngr = new FileManager(txtFilePath);
-            final List<Path> pathsList = fileMngr.extractTxtFiles();
+            final List<Path> pathsList = fileMngr.extractTxtFiles(123);
             final WordsExtractor extractor = new WordsExtractor(pathsList);
             extractor.createDictionary().save(extractedWordsTxtFilePath);
         }
