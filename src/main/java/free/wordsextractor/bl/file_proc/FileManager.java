@@ -40,7 +40,7 @@ public class FileManager {
      */
     public List<Path> extractTxtFiles(long eachFileSizeBytes) throws WordExtractorException {
         final LinkedList<Path> files = new LinkedList<>();
-        String txt = ExtractionManager.extractTxtFrom(path);
+        String txt = ExtractionManager.extractTxtFrom(path).trim();
         if (!txt.isEmpty()) {
             files.add(saveTxt(txt));
         }
@@ -59,7 +59,7 @@ public class FileManager {
             final File txtFile = File.createTempFile(path.getFileName().toString().split("\\.")[0], ".txt");
             txtFile.deleteOnExit();
             try (FileOutputStream outputStream = new FileOutputStream(txtFile)) {
-                try (OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream, "UTF-16")) {
+                try (OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream, TextExtractor.CHAR_SET)) {
                     try (BufferedWriter bufferedWriter = new BufferedWriter(outputStreamWriter)) {
                         bufferedWriter.write(txt);
                         bufferedWriter.close();

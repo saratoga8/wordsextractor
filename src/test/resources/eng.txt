@@ -1,5 +1,4 @@
-Welcome to the Apache Log4j2 Example Tutorial. If you ask an expert developer about the most annoying thing about an application, the answer might be related to logging. If there is no suitable logging in an application, maintenance will be a nightmare.
-
-Most of the application go through Development testing, unit testing, integration testing. But when it comes to production, you will always face unique scenarios and exception. So the only way to figure out what happened in a specific case is to debug through the logs.
-
-Many framework provide some way of default logging, but it’s always to go with industry standard logging mechanism. Apache Log4j is one of the most widely used logging framework. Apache Log4j 2 is the next version, that is far better than Log4j.
+If we have to pass multiple method parameters to our parameterized test and the provided test data is used by only one
+ test method (or a few test methods), we can configure our test data by using the @CsvSource annotation. When we add
+ this annotation to a test method, we have to configure the test data by using an array of String objects. When we
+ specify our test data, we have to follow these rules:
