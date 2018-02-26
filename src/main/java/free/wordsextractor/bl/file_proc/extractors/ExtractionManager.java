@@ -5,10 +5,15 @@ import free.wordsextractor.bl.WordExtractorException;
 import java.nio.file.Path;
 
 /**
- * Created by saratoga on 10/02/18.
+ * Manage text extractions from files
  */
 public class ExtractionManager {
-
+    /**
+     * Extract text from the file with the given path
+     * @param path The path of the file
+     * @return Extracted text from the given file
+     * @throws WordExtractorException
+     */
     public static String extractTxtFrom(final Path path) throws WordExtractorException {
         String txt = "";
         for (final TextExtractorInterface txtExtractor: TextExtractorInterface.EXTRACTORS) {

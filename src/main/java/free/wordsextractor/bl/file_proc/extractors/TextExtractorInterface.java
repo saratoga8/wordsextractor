@@ -9,6 +9,7 @@ import java.util.List;
  */
 public interface TextExtractorInterface {
     List<TextExtractorInterface> EXTRACTORS = Arrays.asList(new TicaTextExtractor());
+    String CHAR_SET = "UTF-8";
 
 
     String extractTxtFrom(Path path);
