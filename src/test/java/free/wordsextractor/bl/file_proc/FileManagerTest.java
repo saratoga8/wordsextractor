@@ -1,6 +1,7 @@
 package free.wordsextractor.bl.file_proc;
 
 import free.wordsextractor.bl.WordExtractorException;
+import free.wordsextractor.bl.file_proc.extractors.TextExtractorInterface;
 import org.junit.Assert;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,8 +24,8 @@ class FileManagerTest {
 
             Path extractedTxtFile = new FileManager(TXT_FILE_PATH).extractTxtFiles(123).get(0);
 
-            String actualTxt = new String (Files.readAllBytes(extractedTxtFile), Charset.forName(TextExtractor.CHAR_SET));
-            String expectedTxt = new String (Files.readAllBytes(Paths.get(TXT_FILE_PATH)), Charset.forName(TextExtractor.CHAR_SET));
+            String actualTxt = new String (Files.readAllBytes(extractedTxtFile), Charset.forName(TextExtractorInterface.CHAR_SET));
+            String expectedTxt = new String (Files.readAllBytes(Paths.get(TXT_FILE_PATH)), Charset.forName(TextExtractorInterface.CHAR_SET));
 
              Assert.assertEquals("Texts aren't equals", expectedTxt.trim(), actualTxt.trim());
         } catch (Exception e) {

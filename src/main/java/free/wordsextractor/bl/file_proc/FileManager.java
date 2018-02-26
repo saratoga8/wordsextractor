@@ -2,6 +2,7 @@ package free.wordsextractor.bl.file_proc;
 
 import free.wordsextractor.bl.WordExtractorException;
 import free.wordsextractor.bl.file_proc.extractors.ExtractionManager;
+import free.wordsextractor.bl.file_proc.extractors.TextExtractorInterface;
 
 import java.io.*;
 import java.nio.file.Path;
@@ -59,7 +60,7 @@ public class FileManager {
             final File txtFile = File.createTempFile(path.getFileName().toString().split("\\.")[0], ".txt");
             txtFile.deleteOnExit();
             try (FileOutputStream outputStream = new FileOutputStream(txtFile)) {
-                try (OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream, TextExtractor.CHAR_SET)) {
+                try (OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream, TextExtractorInterface.CHAR_SET)) {
                     try (BufferedWriter bufferedWriter = new BufferedWriter(outputStreamWriter)) {
                         bufferedWriter.write(txt);
                         bufferedWriter.close();
