@@ -3,6 +3,8 @@ package free.wordsextractor.bl.file_proc;
 import free.wordsextractor.bl.WordExtractorException;
 import free.wordsextractor.bl.file_proc.extractors.ExtractionManager;
 import free.wordsextractor.bl.file_proc.extractors.TextExtractorInterface;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.*;
 import java.nio.file.Path;
@@ -15,6 +17,8 @@ import java.util.List;
  */
 public class FileManager {
     private final Path path;
+    private final Logger log = LogManager.getLogger(getClass());
+    private final ExtractionManager extractionMgr;
 
     /**
      * Constructor
@@ -22,6 +26,7 @@ public class FileManager {
      * @throws WordExtractorException
      */
     public FileManager(String path) throws WordExtractorException {
+        log.debug("Initialization by file " + path);
         File file = new File(path);
         if (file.exists()) {
             if (file.isFile())
@@ -31,6 +36,8 @@ public class FileManager {
         }
         else
             throw new WordExtractorException("The file " + path + " doesn't exist!");
+
+        extractionMgr = new ExtractionManager();
     }
 
     /**
@@ -40,8 +47,9 @@ public class FileManager {
      * @throws WordExtractorException
      */
     public List<Path> extractTxtFiles(long eachFileSizeBytes) throws WordExtractorException {
+        log.debug("Extracting text files with size " + eachFileSizeBytes + " of each one");
         final LinkedList<Path> files = new LinkedList<>();
-        String txt = ExtractionManager.extractTxtFrom(path).trim();
+        String txt = extractionMgr.extractTxtFrom(path).trim();
         if (!txt.isEmpty()) {
             files.add(saveTxt(txt));
         }
@@ -56,6 +64,7 @@ public class FileManager {
      * @return The path of created text file
      */
     private Path saveTxt(String txt) throws WordExtractorException {
+        log.debug("Save text '" + txt + "' in a file");
         try {
             final File txtFile = File.createTempFile(path.getFileName().toString().split("\\.")[0], ".txt");
             txtFile.deleteOnExit();
@@ -65,6 +74,7 @@ public class FileManager {
                         bufferedWriter.write(txt);
                         bufferedWriter.close();
                     }
+                    log.debug("Text saved in the file " + txtFile.getCanonicalPath());
                     return Paths.get(txtFile.getCanonicalPath());
                 }
             }

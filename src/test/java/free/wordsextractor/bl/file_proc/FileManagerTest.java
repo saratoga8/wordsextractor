@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -17,17 +18,21 @@ class FileManagerTest {
 
     @DisplayName("Extract text files from different formats files")
     @ParameterizedTest
-    @ValueSource(strings = {"eng.txt", "heb.txt", "cyr.txt"})
+    @ValueSource(strings = {"eng.txt", "cyr.txt", "heb.txt"})
     void extractTxtFiles(String fileName) {
+
         try {
-            String TXT_FILE_PATH = Paths.get(this.getClass().getClassLoader().getResource(fileName).toURI()).toString();
+            URL path = this.getClass().getClassLoader().getResource(fileName);
+            Assert.assertNotNull("Can't found the resource file " + fileName, path);
+
+            String TXT_FILE_PATH = Paths.get(path.toURI()).toString();
 
             Path extractedTxtFile = new FileManager(TXT_FILE_PATH).extractTxtFiles(123).get(0);
 
-            String actualTxt = new String (Files.readAllBytes(extractedTxtFile), Charset.forName(TextExtractorInterface.CHAR_SET));
-            String expectedTxt = new String (Files.readAllBytes(Paths.get(TXT_FILE_PATH)), Charset.forName(TextExtractorInterface.CHAR_SET));
+            String actualTxt = new String(Files.readAllBytes(extractedTxtFile), Charset.forName(TextExtractorInterface.CHAR_SET));
+            String expectedTxt = new String(Files.readAllBytes(Paths.get(TXT_FILE_PATH)), Charset.forName(TextExtractorInterface.CHAR_SET));
 
-             Assert.assertEquals("Texts aren't equals", expectedTxt.trim(), actualTxt.trim());
+            Assert.assertEquals("Texts aren't equals", expectedTxt.trim(), actualTxt.trim());
         } catch (Exception e) {
             Assert.assertTrue("There is exception: " + e.toString(), false);
         }
