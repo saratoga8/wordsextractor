@@ -4,6 +4,7 @@ import free.wordsextractor.bl.WordExtractorException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.File;
 import java.nio.file.Path;
 import java.util.LinkedList;
 import java.util.List;
@@ -12,10 +13,13 @@ import java.util.List;
  * Manage text extractions from files
  */
 public class ExtractionManager {
-    private final Logger log = LogManager.getLogger(getClass());
+    static private final Logger log = LogManager.getLogger(ExtractionManager.class);
+
     final private List<TextExtractorInterface> extractors;
 
-
+    /** Constructor
+     * @throws WordExtractorException
+     */
     public ExtractionManager() throws WordExtractorException {
         extractors = new LinkedList<>();
 
@@ -35,6 +39,9 @@ public class ExtractionManager {
      * @throws WordExtractorException
      */
     public String extractTxtFrom(final Path path) throws WordExtractorException {
+        if (!new File(path.toUri()).exists())
+            throw new WordExtractorException("");
+
         for (final TextExtractorInterface txtExtractor: extractors) {
             String txt = txtExtractor.extractTxtFrom(path);
             if (!txt.isEmpty())

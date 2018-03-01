@@ -3,6 +3,7 @@ package free.wordsextractor.bl.file_proc;
 import free.wordsextractor.bl.WordExtractorException;
 import free.wordsextractor.bl.file_proc.extractors.ExtractionManager;
 import free.wordsextractor.bl.file_proc.extractors.TextExtractorInterface;
+import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -16,8 +17,10 @@ import java.util.List;
  * Manage operations with a file
  */
 public class FileManager {
+    static private final Logger log = LogManager.getLogger(FileManager.class);
+
+
     private final Path path;
-    private final Logger log = LogManager.getLogger(getClass());
     private final ExtractionManager extractionMgr;
 
     /**
@@ -48,6 +51,7 @@ public class FileManager {
      */
     public List<Path> extractTxtFiles(long eachFileSizeBytes) throws WordExtractorException {
         log.debug("Extracting text files with size " + eachFileSizeBytes + " of each one");
+
         final LinkedList<Path> files = new LinkedList<>();
         String txt = extractionMgr.extractTxtFrom(path).trim();
         if (!txt.isEmpty()) {
@@ -64,6 +68,9 @@ public class FileManager {
      * @return The path of created text file
      */
     private Path saveTxt(String txt) throws WordExtractorException {
+        if (StringUtils.isBlank(txt))
+            throw new WordExtractorException("The given text for saving is NULL or EMPTY");
+
         log.debug("Save text '" + txt + "' in a file");
         try {
             final File txtFile = File.createTempFile(path.getFileName().toString().split("\\.")[0], ".txt");
