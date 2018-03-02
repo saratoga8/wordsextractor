@@ -4,30 +4,20 @@ import free.wordsextractor.bl.WordExtractorException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.File;
 import java.nio.file.Path;
-import java.util.LinkedList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
  * Manage text extractions from files
  */
 public class ExtractionManager {
-    static private final Logger log = LogManager.getLogger(ExtractionManager.class);
-
+    private final Logger log = LogManager.getLogger(getClass());
     final private List<TextExtractorInterface> extractors;
 
-    /** Constructor
-     * @throws WordExtractorException
-     */
-    public ExtractionManager() throws WordExtractorException {
-        extractors = new LinkedList<>();
 
-        try {
-            extractors.add(new TikaTextExtractor());
-        } catch (WordExtractorException e) {
-            log.error("Can't add Tika Text Extractor to the list of extractors");
-        }
+    public ExtractionManager() throws WordExtractorException {
+        extractors = Arrays.asList(new TikaTextExtractor());
         if(extractors.isEmpty())
             throw new WordExtractorException("There are no text extractors in use");
     }
@@ -39,9 +29,6 @@ public class ExtractionManager {
      * @throws WordExtractorException
      */
     public String extractTxtFrom(final Path path) throws WordExtractorException {
-        if (!new File(path.toUri()).exists())
-            throw new WordExtractorException("");
-
         for (final TextExtractorInterface txtExtractor: extractors) {
             String txt = txtExtractor.extractTxtFrom(path);
             if (!txt.isEmpty())

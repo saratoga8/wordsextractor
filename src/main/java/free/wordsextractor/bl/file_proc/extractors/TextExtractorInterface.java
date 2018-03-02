@@ -1,5 +1,8 @@
 package free.wordsextractor.bl.file_proc.extractors;
 
+import com.drew.lang.annotations.NotNull;
+import free.wordsextractor.bl.WordExtractorException;
+
 import java.nio.file.Path;
 
 /**
@@ -9,6 +12,6 @@ public interface TextExtractorInterface {
 
     String CHAR_SET = "UTF-8";
 
-
-    String extractTxtFrom(Path path);
+    @NotNull
+    String extractTxtFrom(Path path) throws WordExtractorException;
 }
