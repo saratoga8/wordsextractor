@@ -6,6 +6,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Hashtable;
 import java.util.List;
 
@@ -21,20 +22,39 @@ public class Dictionary {
         this.wordsStat = new Hashtable<String, Integer>();
     }
 
-    public List<String> getWords() {
-        return new ArrayList<>(wordsStat.keySet());
+    public String toString() {
+        final List<String> wordsSet = new ArrayList<>(wordsStat.keySet());
+        Collections.sort(wordsSet, (String str1, String str2) -> str1.compareToIgnoreCase(str2));
+
+        final StringBuilder strBuilder = new StringBuilder();
+        wordsSet.stream().forEach(word -> strBuilder.append(word + " " + wordsStat.get(word)));
+
+        return strBuilder.toString();
     }
 
     @NotNull
     public void addWord(String word) {
+        log.debug("Add word '" + word + "' to dictionary");
         if (StringUtils.isBlank(word)) {
             log.error("Can't add NULL or EMPTY word to dictionary");
             return;
         }
-        final Integer num = wordsStat.containsKey(word) ? wordsStat.get(word) + 1: 1;
-        wordsStat.put(word, num);
+        String strippedWrd = stripAllExceptChars(word);
+        if (strippedWrd.isEmpty())
+            return;
+
+        final Integer num = wordsStat.containsKey(strippedWrd) ? wordsStat.get(strippedWrd) + 1: 1;
+        wordsStat.put(strippedWrd, num);
+    }
+
+    private String stripAllExceptChars(String word) {
+        return word.replaceAll("^\\W+|\\W+$", "").replaceAll("^\\d+|\\d+$", "");
     }
 
     public void save(String path) {
+    }
+
+    public boolean contains(String word) {
+        return wordsStat.containsKey(word);
     }
 }

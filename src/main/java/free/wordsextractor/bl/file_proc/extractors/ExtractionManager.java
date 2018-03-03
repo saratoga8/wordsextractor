@@ -12,10 +12,13 @@ import java.util.List;
  * Manage text extractions from files
  */
 public class ExtractionManager {
-    private final Logger log = LogManager.getLogger(getClass());
-    final private List<TextExtractorInterface> extractors;
+    private final Logger log = LogManager.getLogger(ExtractionManager.class);     /** log item */
+    final private List<TextExtractorInterface> extractors;                        /** text extractors */
 
-
+    /**
+     * Constructor
+     * @throws WordExtractorException
+     */
     public ExtractionManager() throws WordExtractorException {
         extractors = Arrays.asList(new TikaTextExtractor());
         if(extractors.isEmpty())

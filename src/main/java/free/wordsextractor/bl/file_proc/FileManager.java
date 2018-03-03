@@ -19,7 +19,6 @@ import java.util.List;
 public class FileManager {
     static private final Logger log = LogManager.getLogger(FileManager.class);
 
-
     private final Path path;
     private final ExtractionManager extractionMgr;
 
@@ -54,11 +53,11 @@ public class FileManager {
 
         final LinkedList<Path> files = new LinkedList<>();
         String txt = extractionMgr.extractTxtFrom(path).trim();
-        if (!txt.isEmpty()) {
+        if (!txt.isEmpty())
             files.add(saveTxt(txt));
-        }
         else
             throw new WordExtractorException("No text has extracted from " + path);
+
         return files;
     }
 

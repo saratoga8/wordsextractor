@@ -39,12 +39,13 @@ public class WordsExtractor {
 
         LinkedList<String> words = new LinkedList();
         if (!path.toString().isEmpty()) {
-            Scanner scanner = new Scanner(path, TextExtractorInterface.CHAR_SET);
-            while (scanner.hasNext("\\w+"))
-                words.add(scanner.next("\\w+"));
+            try (Scanner scanner = new Scanner(path, TextExtractorInterface.CHAR_SET)) {
+                while (scanner.hasNext())
+                    words.add(scanner.next());
 
-            if (words.isEmpty())
-                throw new WordExtractorException("In the file " + path.toString() + " no words has found");
+                if (words.isEmpty())
+                    throw new WordExtractorException("In the file " + path.toString() + " no words has found");
+            }
         }
         else
             throw new WordExtractorException("The given path is EMPTY");

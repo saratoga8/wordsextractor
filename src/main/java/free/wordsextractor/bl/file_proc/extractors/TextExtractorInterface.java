@@ -12,6 +12,12 @@ public interface TextExtractorInterface {
 
     String CHAR_SET = "UTF-8";
 
+    /**
+     * Extract text from file with a given path
+     * @param path The file's path
+     * @return Extracted text
+     * @throws WordExtractorException
+     */
     @NotNull
     String extractTxtFrom(Path path) throws WordExtractorException;
 }

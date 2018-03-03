@@ -10,17 +10,25 @@ import java.io.InputStreamReader;
 public abstract class Utils {
     private static Logger log = LogManager.getLogger(Utils.class);
 
-    enum Shells { POWERSHELL, BASH }
-    public static void runSystemCommand(final Shells shell, String cmd) {
+    public enum Shells { POWERSHELL, BASH }
+    public static String runSystemCommand(final Shells shell, String cmd) {
         switch (shell) {
-            case POWERSHELL: runCommandInPS(cmd);
+            case POWERSHELL: return runCommandInPS(cmd);
+            case BASH:       return runCommandInBash(cmd);
+            default:
+                log.error("Unknown command line environment: " + shell.toString());
         }
+        return "";
     }
 
     private static String runCommandInPS(String command) {
         log.debug("Run PowerShell command '" + command + "'");
 
         String[] commandList = {"powershell.exe", "-Command", command};
+        return runCommand(commandList);
+    }
+
+    private static String runCommand(String[] commandList) {
         final ProcessBuilder pb = new ProcessBuilder(commandList);
         try {
             Process p = pb.start();
@@ -35,5 +43,12 @@ public abstract class Utils {
             log.error("Can't run the command: " + e);
         }
         return "";
+    }
+
+    private static String runCommandInBash(String command) {
+        log.debug("Run Bash command '" + command + "'");
+
+        String[] commandList = {"bash", "-c", command};
+        return runCommand(commandList);
     }
 }

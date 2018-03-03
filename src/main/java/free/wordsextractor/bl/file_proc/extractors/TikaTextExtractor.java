@@ -14,7 +14,7 @@ import java.io.InputStream;
 import java.nio.file.Path;
 
 /**
- * Created by saratoga on 10/02/18.
+ *
  */
 public class TikaTextExtractor implements TextExtractorInterface {
 
