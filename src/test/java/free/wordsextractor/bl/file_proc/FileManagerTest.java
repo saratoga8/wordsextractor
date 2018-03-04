@@ -1,6 +1,6 @@
 package free.wordsextractor.bl.file_proc;
 
-import free.wordsextractor.bl.WordExtractorException;
+import free.wordsextractor.bl.WordsExtractorException;
 import free.wordsextractor.bl.file_proc.extractors.TextExtractorInterface;
 import org.junit.Assert;
 import org.junit.jupiter.api.DisplayName;
@@ -38,16 +38,32 @@ class FileManagerTest {
         }
     }
 
+    @DisplayName("Empty text file")
+    @ParameterizedTest
+    @ValueSource(strings = {"empty.txt"})
+    void emptyFile(String fileName) {
+        try {
+            URL path = this.getClass().getClassLoader().getResource(fileName);
+            Assert.assertNotNull("Can't found the resource file " + fileName, path);
+
+            String TXT_FILE_PATH = Paths.get(path.toURI()).toString();
+            new FileManager(TXT_FILE_PATH).extractTxtFiles(123).get(0);
+            Assert.assertTrue("There should be exception of an empty text file", false);
+        } catch (Exception e) {
+
+        }
+    }
+
     @Test
     @DisplayName("Constructor with non-existing file")
-    void creating() {
+    void nonExistingFile() {
         String nonExisting = "adsfasd\\adsfadf\\dasfasd";
 
         try {
             new FileManager(nonExisting);
         }
         catch (Exception e) {
-            if(e.getClass().equals(WordExtractorException.class))
+            if(e.getClass().equals(WordsExtractorException.class))
                 return;
         }
         Assert.assertTrue("An exception hasn't thrown", false);

@@ -1,6 +1,6 @@
 package free.wordsextractor.bl.file_proc;
 
-import free.wordsextractor.bl.WordExtractorException;
+import free.wordsextractor.bl.WordsExtractorException;
 import free.wordsextractor.bl.file_proc.extractors.ExtractionManager;
 import free.wordsextractor.bl.file_proc.extractors.TextExtractorInterface;
 import org.apache.commons.lang.StringUtils;
@@ -17,27 +17,27 @@ import java.util.List;
  * Manage operations with a file
  */
 public class FileManager {
-    static private final Logger log = LogManager.getLogger(FileManager.class);
+    static private final Logger log = LogManager.getLogger(FileManager.class);           /** logger */
 
-    private final Path path;
-    private final ExtractionManager extractionMgr;
+    private final Path path;                                                             /** path of the file text should be extracted from */
+    private final ExtractionManager extractionMgr;                                       /** manager of extractions */
 
     /**
      * Constructor
      * @param path The path of a file. From the file will be extracted text
-     * @throws WordExtractorException
+     * @throws WordsExtractorException
      */
-    public FileManager(String path) throws WordExtractorException {
+    public FileManager(String path) throws WordsExtractorException {
         log.debug("Initialization by file " + path);
         File file = new File(path);
         if (file.exists()) {
             if (file.isFile())
                 this.path = Paths.get(path);
             else
-                throw new WordExtractorException("The given path " + path + " isn't file!");
+                throw new WordsExtractorException("The given path " + path + " isn't file!");
         }
         else
-            throw new WordExtractorException("The file " + path + " doesn't exist!");
+            throw new WordsExtractorException("The file " + path + " doesn't exist!");
 
         extractionMgr = new ExtractionManager();
     }
@@ -46,9 +46,9 @@ public class FileManager {
      * Extract text files each one with the given size
      * @param eachFileSizeBytes The size of a distinguish text file in bytes
      * @return The list of paths of the text files containing the extracted text
-     * @throws WordExtractorException
+     * @throws WordsExtractorException
      */
-    public List<Path> extractTxtFiles(long eachFileSizeBytes) throws WordExtractorException {
+    public List<Path> extractTxtFiles(long eachFileSizeBytes) throws WordsExtractorException {
         log.debug("Extracting text files with size " + eachFileSizeBytes + " of each one");
 
         final LinkedList<Path> files = new LinkedList<>();
@@ -56,7 +56,7 @@ public class FileManager {
         if (!txt.isEmpty())
             files.add(saveTxt(txt));
         else
-            throw new WordExtractorException("No text has extracted from " + path);
+            throw new WordsExtractorException("No text has extracted from " + path);
 
         return files;
     }
@@ -66,9 +66,9 @@ public class FileManager {
      * @param txt The text for saving
      * @return The path of created text file
      */
-    private Path saveTxt(String txt) throws WordExtractorException {
+    private Path saveTxt(String txt) throws WordsExtractorException {
         if (StringUtils.isBlank(txt))
-            throw new WordExtractorException("The given text for saving is NULL or EMPTY");
+            throw new WordsExtractorException("The given text for saving is NULL or EMPTY");
 
         log.debug("Save text '" + txt + "' in a file");
         try {
@@ -86,7 +86,7 @@ public class FileManager {
             }
         }
         catch (IOException e) {
-            throw new WordExtractorException("Can't save text in file: " + e.toString());
+            throw new WordsExtractorException("Can't save text in file: " + e.toString());
         }
     }
 }

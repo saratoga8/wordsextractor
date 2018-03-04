@@ -22,7 +22,7 @@ public class Main
             final WordsExtractor extractor = new WordsExtractor(pathsList);
             extractor.createDictionary().save(extractedWordsTxtFilePath);
         }
-        catch (WordExtractorException e) {
+        catch (WordsExtractorException e) {
             System.err.println(e.toString());
         }
     }

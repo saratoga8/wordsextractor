@@ -14,14 +14,21 @@ import java.util.List;
  * Dictionary of word statistics
  */
 public class Dictionary {
-    private static final Logger log = LogManager.getLogger(Dictionary.class);
+    private static final Logger log = LogManager.getLogger(Dictionary.class);                       /** logger */
 
-    private final Hashtable<String, Integer> wordsStat;
+    private final Hashtable<String, Integer> wordsStat;                                             /** words statistics */
 
+    /**
+     * Constructor
+     */
     public Dictionary() {
         this.wordsStat = new Hashtable<String, Integer>();
     }
 
+    /**
+     * Convert the dictionary to a string
+     * @return The string representation of the dictionary
+     */
     public String toString() {
         final List<String> wordsSet = new ArrayList<>(wordsStat.keySet());
         Collections.sort(wordsSet, (String str1, String str2) -> str1.compareToIgnoreCase(str2));
@@ -32,6 +39,10 @@ public class Dictionary {
         return strBuilder.toString();
     }
 
+    /**
+     * Add word to the dictionary
+     * @param word The new word
+     */
     @NotNull
     public void addWord(String word) {
         log.debug("Add word '" + word + "' to dictionary");
@@ -47,6 +58,11 @@ public class Dictionary {
         wordsStat.put(strippedWrd, num);
     }
 
+    /**
+     * Remove from beginning and end of the word numbers and punctuation chars
+     * @param word The word for stripping
+     * @return Stripped word
+     */
     private String stripAllExceptChars(String word) {
         return word.replaceAll("^\\W+|\\W+$", "").replaceAll("^\\d+|\\d+$", "");
     }

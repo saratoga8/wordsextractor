@@ -1,7 +1,7 @@
 package free.wordsextractor.bl.file_proc.extractors;
 
 import com.drew.lang.annotations.NotNull;
-import free.wordsextractor.bl.WordExtractorException;
+import free.wordsextractor.bl.WordsExtractorException;
 
 import java.nio.file.Path;
 
@@ -16,8 +16,8 @@ public interface TextExtractorInterface {
      * Extract text from file with a given path
      * @param path The file's path
      * @return Extracted text
-     * @throws WordExtractorException
+     * @throws WordsExtractorException
      */
     @NotNull
-    String extractTxtFrom(Path path) throws WordExtractorException;
+    String extractTxtFrom(Path path) throws WordsExtractorException;
 }
