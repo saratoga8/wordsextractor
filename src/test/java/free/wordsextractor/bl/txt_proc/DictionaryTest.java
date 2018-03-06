@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 class DictionaryTest {
     private static Utils.Shells shell;
@@ -21,6 +22,20 @@ class DictionaryTest {
     @BeforeEach
     public void init() {
         dict = new Dictionary();
+
+        String osName = System.getProperty("os.name");
+        if (osName == null) {
+            Assert.assertNotNull(osName, "Can't detect the OS' name");
+        }
+        osName = osName.toLowerCase(Locale.ENGLISH);
+        if (osName.contains("windows")) {
+            shell = Utils.Shells.POWERSHELL;
+        }
+        else if (osName.contains("linux")) {
+            shell = Utils.Shells.BASH;
+        }
+        else
+            Assert.assertTrue("Unknown OS' name " + osName, false);
     }
 
     @DisplayName("Add words to Dictionary")
@@ -81,14 +96,14 @@ class DictionaryTest {
             String path = File.createTempFile("dict", ".txt").getAbsolutePath();
             dict.save(path);
 
-            String commandStr = ""; /*
+            String commandStr = "";
             switch (shell) {
-                case BASH: commandStr = "cat " + path;
-                case POWERSHELL: Assert.assertTrue("For PowerShlell hasn't implemented yet", false); return "";
+                case BASH: commandStr = "cat " + path; break;
+                case POWERSHELL: commandStr = "Get-Content " + path; break;
                 default:
-                    log.error("Unknown shell " + shell.name());
+                    Assert.assertTrue("Unknown shell " + shell.name(), false);
             }
-            String out = Utils.runSystemCommand(, ) */
+            Assert.assertEquals(Utils.runSystemCommand(shell, commandStr), "four 1one 1three 1two 1");
         } catch (IOException | WordsExtractorException e) {
             Assert.assertTrue("Test aborted because of exception: " + e, false);
         }
