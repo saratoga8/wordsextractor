@@ -14,7 +14,6 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Hashtable;
 import java.util.List;
 
@@ -40,7 +39,7 @@ public class Dictionary {
     @NotNull
     public String toString() {
         final List<String> wordsSet = new ArrayList<>(wordsStat.keySet());
-        Collections.sort(wordsSet, (String str1, String str2) -> str1.compareToIgnoreCase(str2));
+        wordsSet.sort(String::compareToIgnoreCase);
 
         final StringBuilder strBuilder = new StringBuilder();
         wordsSet.stream().forEach(word -> strBuilder.append(word + " " + wordsStat.get(word)));

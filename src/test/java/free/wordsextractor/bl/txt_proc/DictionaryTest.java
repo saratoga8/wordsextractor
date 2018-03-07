@@ -93,7 +93,9 @@ class DictionaryTest {
     public void saveDict() {
         Arrays.asList("one", "two", "three", "four").parallelStream().forEach(word -> dict.addWord(word));
         try {
-            String path = File.createTempFile("dict", ".txt").getAbsolutePath();
+            File file = File.createTempFile("dict", ".txt");
+            file.deleteOnExit();
+            String path = file.getAbsolutePath();
             dict.save(path);
 
             String commandStr = "";

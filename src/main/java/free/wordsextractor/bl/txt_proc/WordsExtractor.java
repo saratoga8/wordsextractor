@@ -16,10 +16,17 @@ import java.util.Scanner;
  * Words extractor
  */
 public class WordsExtractor {
-    private static final Logger log = LogManager.getLogger(WordsExtractor.class);
+    private static final Logger log = LogManager.getLogger(WordsExtractor.class);               /** logger */
 
-    final private List<Path> paths;
+    @NotNull
+    final private List<Path> paths;                                                             /** paths of files containing text */
 
+    /**
+     * Constructor
+     * Initialize paths of text files containing text. From the files should be extracted words
+     * @param paths Paths of text files
+     * @throws WordsExtractorException
+     */
     @NotNull
     public WordsExtractor(final List<Path> paths) throws WordsExtractorException {
         if ((paths != null) && !paths.isEmpty())
@@ -28,18 +35,29 @@ public class WordsExtractor {
             throw new WordsExtractorException("The list of files paths is NULL or EMPTY");
     }
 
+    /**
+     * Create dictionary from the extracted words
+     * @return Created dictionary
+     */
     @NotNull
     public Dictionary createDictionary() {
         return addWordsToDict(new Dictionary());
     }
 
+    /**
+     * Extract words from a file with the given path
+     * @param path The file's path
+     * @return The list of extracted words
+     * @throws WordsExtractorException
+     * @throws IOException
+     */
     @NotNull
     private List<String> extractWordsFromFile(final Path path) throws WordsExtractorException, IOException {
         log.debug("Extract words from the file " + path.toString());
 
-        LinkedList<String> words = new LinkedList();
+        final LinkedList words = new LinkedList();
         if (!path.toString().isEmpty()) {
-            try (Scanner scanner = new Scanner(path, TextExtractorInterface.CHAR_SET)) {
+            try (final Scanner scanner = new Scanner(path, TextExtractorInterface.CHAR_SET)) {
                 while (scanner.hasNext())
                     words.add(scanner.next());
 
@@ -52,11 +70,16 @@ public class WordsExtractor {
         return words;
     }
 
+    /**
+     * Add words from text files to the given dictionary
+     * @param dict The dictionary
+     * @return Updated dictionary
+     */
     @NotNull
     private Dictionary addWordsToDict(final Dictionary dict) {
         paths.parallelStream().forEach(path -> {
             try {
-                extractWordsFromFile(path).stream().forEach(word -> dict.addWord(word));
+                extractWordsFromFile(path).stream().forEach(dict::addWord);
             } catch (WordsExtractorException | IOException e) {
                 log.error("Can't add words from file " + path.toString() + " to a dictionary: " + e);
             }

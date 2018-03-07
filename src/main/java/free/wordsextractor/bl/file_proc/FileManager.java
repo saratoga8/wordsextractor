@@ -1,5 +1,6 @@
 package free.wordsextractor.bl.file_proc;
 
+import com.drew.lang.annotations.NotNull;
 import free.wordsextractor.bl.WordsExtractorException;
 import free.wordsextractor.bl.file_proc.extractors.ExtractionManager;
 import free.wordsextractor.bl.file_proc.extractors.TextExtractorInterface;
@@ -27,6 +28,7 @@ public class FileManager {
      * @param path The path of a file. From the file will be extracted text
      * @throws WordsExtractorException
      */
+    @NotNull
     public FileManager(String path) throws WordsExtractorException {
         log.debug("Initialization by file " + path);
         File file = new File(path);
@@ -48,6 +50,7 @@ public class FileManager {
      * @return The list of paths of the text files containing the extracted text
      * @throws WordsExtractorException
      */
+    @NotNull
     public List<Path> extractTxtFiles(long eachFileSizeBytes) throws WordsExtractorException {
         log.debug("Extracting text files with size " + eachFileSizeBytes + " of each one");
 
@@ -66,6 +69,7 @@ public class FileManager {
      * @param txt The text for saving
      * @return The path of created text file
      */
+    @NotNull
     private Path saveTxt(String txt) throws WordsExtractorException {
         if (StringUtils.isBlank(txt))
             throw new WordsExtractorException("The given text for saving is NULL or EMPTY");
