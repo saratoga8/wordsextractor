@@ -40,8 +40,8 @@ public class WordsExtractor {
      * @return Created dictionary
      */
     @NotNull
-    public Dictionary createDictionary() {
-        return addWordsToDict(new Dictionary());
+    public WordsStatisticsDictionary createDictionary() {
+        return addWordsToDict(new WordsStatisticsDictionary());
     }
 
     /**
@@ -76,7 +76,7 @@ public class WordsExtractor {
      * @return Updated dictionary
      */
     @NotNull
-    private Dictionary addWordsToDict(final Dictionary dict) {
+    private WordsStatisticsDictionary addWordsToDict(final WordsStatisticsDictionary dict) {
         paths.parallelStream().forEach(path -> {
             try {
                 extractWordsFromFile(path).stream().forEach(dict::addWord);

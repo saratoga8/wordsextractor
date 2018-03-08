@@ -15,13 +15,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
-class DictionaryTest {
+class WordsStatisticsDictionaryTest {
     private static Utils.Shells shell;
-    private Dictionary dict;
+    private WordsStatisticsDictionary dict;
 
     @BeforeEach
     public void init() {
-        dict = new Dictionary();
+        dict = new WordsStatisticsDictionary();
 
         String osName = System.getProperty("os.name");
         if (osName == null) {
@@ -38,7 +38,7 @@ class DictionaryTest {
             Assert.assertTrue("Unknown OS' name " + osName, false);
     }
 
-    @DisplayName("Add words to Dictionary")
+    @DisplayName("Add words to WordsStatisticsDictionary")
     @Test
     public void addWords() {
         dict.addWord("one");
@@ -67,7 +67,7 @@ class DictionaryTest {
     @DisplayName("Empty dictionary")
     @Test
     public void emptyDict() {
-        Assert.assertEquals(new Dictionary().toString(), "");
+        Assert.assertEquals(new WordsStatisticsDictionary().toString(), "");
     }
 
     @DisplayName("Add an empty word, only punctuations or only nums")
