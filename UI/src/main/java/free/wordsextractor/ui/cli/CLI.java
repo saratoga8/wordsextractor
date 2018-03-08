@@ -1,19 +1,14 @@
-package free.wordsextractor.bl;
+package free.wordsextractor.ui.cli;
 
+import free.wordsextractor.bl.WordsExtractorException;
 import free.wordsextractor.bl.file_proc.FileManager;
 import free.wordsextractor.bl.txt_proc.WordsExtractor;
 
 import java.nio.file.Path;
 import java.util.List;
 
-/**
- * The main class
- *
- */
-public class Main
-{
-    public static void main( String[] args )
-    {
+public class CLI {
+    public static void main(String [] args) {
         String txtFilePath = args[1],
                 extractedWordsTxtFilePath = args[2];
         try {

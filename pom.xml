@@ -5,10 +5,9 @@
   <groupId>LangStudy</groupId>
   <artifactId>WordsExtractor</artifactId>
   <version>1.0-SNAPSHOT</version>
-  <packaging>jar</packaging>
+  <packaging>pom</packaging>
 
   <name>WordsExtractor</name>
-  <url>http://maven.apache.org</url>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -16,6 +15,11 @@
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
   </properties>
+
+  <modules>
+    <module>BL</module>
+    <module>UI</module>
+  </modules>
 
   <dependencies>
     <dependency>
@@ -64,19 +68,6 @@
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-core</artifactId>
       <version>2.10.0</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.tika</groupId>
-      <artifactId>tika-parsers</artifactId>
-      <version>1.17</version>
-    </dependency>
-
-    <dependency>                        <!-- suppress tika's warnings -->
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-jdk14</artifactId>
-      <version>1.7.25</version>
-      <scope>test</scope>
     </dependency>
   </dependencies>
 
