@@ -19,6 +19,7 @@
   <modules>
     <module>BL</module>
     <module>UI</module>
+    <module>Distribution</module>
   </modules>
 
   <dependencies>

@@ -1,0 +1,28 @@
+package free.wordsextractor.ui;
+
+import free.wordsextractor.bl.WordsExtractorException;
+import free.wordsextractor.bl.file_proc.FileManager;
+import free.wordsextractor.bl.txt_proc.WordsExtractor;
+
+import java.nio.file.Path;
+import java.util.List;
+
+public class Main {
+    public static void main(String [] args) {
+        if (args.length > 2) {
+            String txtFilePath = args[1],
+                    extractedWordsTxtFilePath = args[2];
+            try {
+                final FileManager fileMngr = new FileManager(txtFilePath);
+                final List<Path> pathsList = fileMngr.extractTxtFiles(123);
+                final WordsExtractor extractor = new WordsExtractor(pathsList);
+                extractor.createDictionary().save(extractedWordsTxtFilePath);
+            }
+            catch (WordsExtractorException e) {
+                System.err.println("Running interrupted by exception " + e);
+            }
+        }
+        else
+            System.err.println("Invalid number of parameters.\nShould be: " + args[0] + " file1 file2\nWhere: \n\tfile1 - where text should be extracted from\n\tfile2 - where the extracted text should be saved");
+    }
+}
