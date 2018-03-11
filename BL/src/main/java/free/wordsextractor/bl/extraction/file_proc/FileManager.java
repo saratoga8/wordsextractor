@@ -1,9 +1,9 @@
-package free.wordsextractor.bl.file_proc;
+package free.wordsextractor.bl.extraction.file_proc;
 
 import com.drew.lang.annotations.NotNull;
 import free.wordsextractor.bl.WordsExtractorException;
-import free.wordsextractor.bl.file_proc.extractors.ExtractionManager;
-import free.wordsextractor.bl.file_proc.extractors.TextExtractorInterface;
+import free.wordsextractor.bl.extraction.file_proc.extractors.TextExtractorInterface;
+import free.wordsextractor.bl.extraction.txt_proc.ExtractionManager;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -90,7 +90,7 @@ public class FileManager {
             }
         }
         catch (IOException e) {
-            throw new WordsExtractorException("Can't save text in file: " + e.toString());
+            throw new WordsExtractorException("Can't saveIn text in file: " + e.toString());
         }
     }
 }

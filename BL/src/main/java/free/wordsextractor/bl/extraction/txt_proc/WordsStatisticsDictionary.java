@@ -1,4 +1,4 @@
-package free.wordsextractor.bl.txt_proc;
+package free.wordsextractor.bl.extraction.txt_proc;
 
 import com.drew.lang.annotations.NotNull;
 import free.wordsextractor.bl.WordsExtractorException;
@@ -17,6 +17,8 @@ public class WordsStatisticsDictionary implements Dictionary {
     private static final Logger log = LogManager.getLogger(WordsStatisticsDictionary.class);        /** logger */
 
     private final Hashtable<String, Integer> wordsStat;                                             /** words statistics */
+
+    final static public String FILE_NAME = "stats.dict";
 
     /**
      * Constructor
@@ -76,11 +78,11 @@ public class WordsStatisticsDictionary implements Dictionary {
      * @throws WordsExtractorException
      */
     @NotNull
-    public void save(String path) throws WordsExtractorException {
+    public void saveIn(String path) throws WordsExtractorException {
         log.debug ("Saving dictionary to the file " + path);
 
         if (!wordsStat.isEmpty())
-            Dictionary.super.save(path);
+            Dictionary.super.saveIn(path);
         else
             throw new WordsExtractorException("There are no words in the dictionary");
     }

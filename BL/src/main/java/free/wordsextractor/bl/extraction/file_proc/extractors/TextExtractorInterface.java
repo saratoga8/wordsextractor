@@ -1,4 +1,4 @@
-package free.wordsextractor.bl.file_proc.extractors;
+package free.wordsextractor.bl.extraction.file_proc.extractors;
 
 import com.drew.lang.annotations.NotNull;
 import free.wordsextractor.bl.WordsExtractorException;

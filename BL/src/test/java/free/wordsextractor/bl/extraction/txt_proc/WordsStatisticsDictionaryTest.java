@@ -1,4 +1,4 @@
-package free.wordsextractor.bl.txt_proc;
+package free.wordsextractor.bl.extraction.txt_proc;
 
 import free.wordsextractor.bl.WordsExtractorException;
 import free.wordsextractor.bl.file_proc.Utils;
@@ -96,7 +96,7 @@ class WordsStatisticsDictionaryTest {
             File file = File.createTempFile("dict", ".txt");
             file.deleteOnExit();
             String path = file.getAbsolutePath();
-            dict.save(path);
+            dict.saveIn(path);
 
             String commandStr = "";
             switch (shell) {

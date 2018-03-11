@@ -1,8 +1,8 @@
-package free.wordsextractor.bl.txt_proc;
+package free.wordsextractor.bl.extraction.txt_proc;
 
 import com.drew.lang.annotations.NotNull;
 import free.wordsextractor.bl.WordsExtractorException;
-import free.wordsextractor.bl.file_proc.extractors.TextExtractorInterface;
+import free.wordsextractor.bl.extraction.file_proc.extractors.TextExtractorInterface;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -40,7 +40,7 @@ public interface Dictionary {
      * @throws WordsExtractorException
      */
     @NotNull
-    default void save(String path) throws WordsExtractorException {
+    default void saveIn(String path) throws WordsExtractorException {
         File file = new File(path);
         if (file.exists()) {
             try (BufferedWriter writer = Files.newBufferedWriter(file.toPath(), Charset.forName(TextExtractorInterface.CHAR_SET), StandardOpenOption.CREATE)) {

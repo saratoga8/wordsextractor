@@ -1,8 +1,9 @@
 package free.wordsextractor.ui;
 
 import free.wordsextractor.bl.WordsExtractorException;
-import free.wordsextractor.bl.file_proc.FileManager;
-import free.wordsextractor.bl.txt_proc.WordsExtractor;
+import free.wordsextractor.bl.extraction.file_proc.FileManager;
+import free.wordsextractor.bl.extraction.file_proc.extractors.WordsExtractor;
+import free.wordsextractor.bl.extraction.txt_proc.Dictionary;
 
 import java.nio.file.Path;
 import java.util.List;
@@ -12,11 +13,17 @@ public class Main {
         if (args.length > 2) {
             String txtFilePath = args[1],
                     extractedWordsTxtFilePath = args[2];
+
+
             try {
                 final FileManager fileMngr = new FileManager(txtFilePath);
                 final List<Path> pathsList = fileMngr.extractTxtFiles(123);
                 final WordsExtractor extractor = new WordsExtractor(pathsList);
-                extractor.createDictionary().save(extractedWordsTxtFilePath);
+                Dictionary wordsStatsDict = extractor.createWordsStatsDictionary();
+
+/*              final TranslationManager translationMngr = new TranslationManager(wordsStatsDict);
+                translationMngr.updateByKnowWords();
+                translationMngr.createExtractedWordsDict().saveIn(extractedWordsTxtFilePath); */
             }
             catch (WordsExtractorException e) {
                 System.err.println("Running interrupted by exception " + e);

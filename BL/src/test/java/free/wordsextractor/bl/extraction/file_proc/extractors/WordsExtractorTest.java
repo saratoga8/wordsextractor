@@ -1,4 +1,4 @@
-package free.wordsextractor.bl.txt_proc;
+package free.wordsextractor.bl.extraction.file_proc.extractors;
 
 import free.wordsextractor.bl.file_proc.Utils;
 import org.apache.logging.log4j.LogManager;
@@ -45,7 +45,7 @@ class WordsExtractorTest {
         String command = getCommandStr(path.getPath());
         if (!StringUtils.isBlank(command)) {
             try {
-                String expectedWords = new WordsExtractor(Arrays.asList(Paths.get(path.toURI()))).createDictionary().toString();
+                String expectedWords = new WordsExtractor(Arrays.asList(Paths.get(path.toURI()))).createWordsStatsDictionary().toString();
                 String actualWords = Utils.runSystemCommand(shell, command);
 
                 Assert.assertEquals(expectedWords, actualWords);

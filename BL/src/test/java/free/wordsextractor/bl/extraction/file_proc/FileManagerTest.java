@@ -1,7 +1,7 @@
-package free.wordsextractor.bl.file_proc;
+package free.wordsextractor.bl.extraction.file_proc;
 
 import free.wordsextractor.bl.WordsExtractorException;
-import free.wordsextractor.bl.file_proc.extractors.TextExtractorInterface;
+import free.wordsextractor.bl.extraction.file_proc.extractors.TextExtractorInterface;
 import org.junit.Assert;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
