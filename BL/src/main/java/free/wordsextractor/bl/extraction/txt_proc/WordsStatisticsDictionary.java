@@ -33,11 +33,11 @@ public class WordsStatisticsDictionary implements Dictionary {
      */
     @NotNull
     public String toString() {
-        final List<String> wordsSet = new ArrayList<>(wordsStat.keySet());
-        wordsSet.sort(String::compareToIgnoreCase);
+        final List<String> words = new ArrayList<>(wordsStat.keySet());
+        words.sort(String::compareToIgnoreCase);
 
         final StringBuilder strBuilder = new StringBuilder();
-        wordsSet.stream().forEach(word -> strBuilder.append(word + " " + wordsStat.get(word)));
+        words.stream().forEach(word -> strBuilder.append(word + " " + wordsStat.get(word)));
 
         return strBuilder.toString();
     }
