@@ -4,6 +4,7 @@ import free.wordsextractor.bl.WordsExtractorException;
 import free.wordsextractor.bl.extraction.file_proc.FileManager;
 import free.wordsextractor.bl.extraction.file_proc.extractors.WordsExtractor;
 import free.wordsextractor.bl.extraction.txt_proc.Dictionary;
+import free.wordsextractor.bl.translation.TranslationManager;
 
 import java.nio.file.Path;
 import java.util.List;
@@ -21,8 +22,8 @@ public class Main {
                 final WordsExtractor extractor = new WordsExtractor(pathsList);
                 Dictionary wordsStatsDict = extractor.createWordsStatsDictionary();
 
-/*              final TranslationManager translationMngr = new TranslationManager(wordsStatsDict);
-                translationMngr.updateByKnowWords();
+                final TranslationManager translationMngr = new TranslationManager(wordsStatsDict);
+                translationMngr.removeKnownWords(); /*
                 translationMngr.createExtractedWordsDict().saveIn(extractedWordsTxtFilePath); */
             }
             catch (WordsExtractorException e) {

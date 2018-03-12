@@ -22,6 +22,7 @@ public class TranslationManager {
         final File knownWordsFile = new File(KNOWN_WORDS_FILE_NAME);
         if (knownWordsFile.exists()) {
             Dictionary knownWordsDict = new OnlyWordsDictionary(knownWordsFile.toPath());
+            dict.removeWordsOfDict(knownWordsDict);
         }
     }
 }

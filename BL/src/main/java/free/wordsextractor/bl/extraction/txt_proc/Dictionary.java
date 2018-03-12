@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
+import java.util.List;
 
 /**
  * Dictionary interface
@@ -35,6 +36,14 @@ public interface Dictionary {
     boolean contains(String word);
 
     /**
+     * Remove the given word from dictionary
+     * @param word The word for removing
+     * @return true - The word has been removed successfully. false - The word can't be removed
+     */
+    @NotNull
+    boolean removeWord(String word);
+
+    /**
      * Save the dictionary
      * @param path The path of the file for saving the dictionary
      * @throws WordsExtractorException
@@ -54,4 +63,20 @@ public interface Dictionary {
         else
             throw new WordsExtractorException("The path " + path + " doesn't exist");
     }
+
+    /**
+     * Remove all the words of the given dictionary from the current one
+     * @param dict The dictionary containing words for removing from the current one
+     */
+    @NotNull
+    default void removeWordsOfDict(final Dictionary dict) {
+        dict.getWords().forEach(word -> { if(!removeWord(word)) log.error("Can't remove word '" + word + "' from dictionary"); });
+    }
+
+    /**
+     * Get list of words in the dictionary
+     * @return The words list
+     */
+    @NotNull
+    List<String> getWords();
 }

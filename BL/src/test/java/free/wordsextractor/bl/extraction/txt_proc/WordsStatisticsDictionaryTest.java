@@ -110,4 +110,34 @@ class WordsStatisticsDictionaryTest {
             Assert.assertTrue("Test aborted because of exception: " + e, false);
         }
     }
+
+    @DisplayName("Get words of the dictionary")
+    @Test
+    public void getDictWords() {
+        List<String> words1 = Arrays.asList("one", "two", "three", "four");
+        words1.parallelStream().forEach(word -> dict.addWord(word));
+        List<?> fromDict = dict.getWords();
+        words1.forEach(word -> Assert.assertTrue("There is no word " + word + " in dictionary", fromDict.contains(word)));
+    }
+
+    @DisplayName("The dictionary contains words")
+    @Test
+    public void dictContainsWords() {
+        List<String> words1 = Arrays.asList("one", "two", "three", "four");
+        words1.parallelStream().forEach(word -> dict.addWord(word));
+        words1.forEach(word -> Assert.assertTrue("There is no word " + word + " in dictionary", dict.contains(word)));
+    }
+
+    @DisplayName("Remove words from dictionary")
+    @Test
+    public void removeDicWords() {
+        List<String> words1 = Arrays.asList("one", "two", "three", "four");
+        words1.parallelStream().forEach(word -> dict.addWord(word));
+        for (String word: words1) {
+            Assert.assertTrue("There is no word '" + word + "' before remove in the dictionary", dict.contains(word));
+            Assert.assertTrue("Can't remove the word '" + word + "' from dictionary", dict.removeWord(word));
+            Assert.assertFalse("There is still word '" + word + "' after remove in the dictionary", dict.contains(word));
+        }
+        Assert.assertTrue("After removing all words added before, the dictionary isn't empty", dict.getWords().isEmpty());
+    }
 }
