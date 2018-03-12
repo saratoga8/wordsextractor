@@ -1,4 +1,4 @@
-package free.wordsextractor.bl.file_proc;
+package free.wordsextractor.bl.extraction.file_proc;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

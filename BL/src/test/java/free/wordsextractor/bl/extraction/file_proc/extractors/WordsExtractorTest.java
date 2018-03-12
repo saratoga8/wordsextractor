@@ -1,6 +1,6 @@
 package free.wordsextractor.bl.extraction.file_proc.extractors;
 
-import free.wordsextractor.bl.file_proc.Utils;
+import free.wordsextractor.bl.extraction.file_proc.Utils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
