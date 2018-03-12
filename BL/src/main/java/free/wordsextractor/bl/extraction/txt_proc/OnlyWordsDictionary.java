@@ -30,4 +30,19 @@ public class OnlyWordsDictionary implements Dictionary {
     public boolean contains(String word) {
         return words.contains(word);
     }
+
+    @Override
+    public boolean removeWord(String word) {
+        if (StringUtils.isBlank(word)) {
+            log.error("The given word for removing is NULL or EMPTY");
+            return false;
+        }
+        else
+            return words.remove(word);
+    }
+
+    @Override
+    public List<String> getWords() {
+        return words;
+    }
 }
