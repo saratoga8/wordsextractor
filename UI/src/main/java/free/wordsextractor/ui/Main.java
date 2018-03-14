@@ -23,8 +23,8 @@ public class Main {
                 Dictionary wordsStatsDict = extractor.createWordsStatsDictionary();
 
                 final TranslationManager translationMngr = new TranslationManager(wordsStatsDict);
-                translationMngr.removeKnownWords(); /*
-                translationMngr.createExtractedWordsDict().saveIn(extractedWordsTxtFilePath); */
+                translationMngr.removeKnownWords();
+                translationMngr.getExtractedWordsDict().saveIn(extractedWordsTxtFilePath);
             }
             catch (WordsExtractorException e) {
                 System.err.println("Running interrupted by exception " + e);

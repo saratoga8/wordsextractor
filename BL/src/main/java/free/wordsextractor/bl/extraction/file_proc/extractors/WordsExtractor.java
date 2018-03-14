@@ -53,7 +53,7 @@ public class WordsExtractor {
      * @throws IOException
      */
     @NotNull
-    private List<String> extractWordsFromFile(final Path path) throws WordsExtractorException, IOException {
+    public static List<String> extractWordsFromFile(final Path path) throws WordsExtractorException, IOException {
         log.debug("Extract words from the file " + path.toString());
 
         final LinkedList words = new LinkedList();
