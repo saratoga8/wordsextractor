@@ -11,17 +11,14 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Paths;
 
-class OnlyWordsDictionaryTest {
+public class OnlyWordsDictionaryTest {
 
     @DisplayName("Create only words dictionary from a file")
     @ParameterizedTest
     @ValueSource(strings = {"list.txt"})
     public void createDictFromFile(String fileName) {
         try {
-            URL path = this.getClass().getClassLoader().getResource(fileName);
-            Assert.assertNotNull("Can't found the resource file " + fileName, path);
-
-            Dictionary dict = new OnlyWordsDictionary(Paths.get(path.toURI()));
+            Dictionary dict = getDictionaryFromFile(this, fileName);
             Assert.assertEquals("The words in dictionary aren't equals to the words from file","[one, two, three, four, five, six, seven, eight]", dict.getWords().toString());
         } catch (IOException | WordsExtractorException | URISyntaxException e) {
             Assert.assertTrue("The test has aborted because of exception: " + e, false);
@@ -33,13 +30,18 @@ class OnlyWordsDictionaryTest {
     @ValueSource(strings = {"empty.txt"})
     public void createDictFromEmptyFile(String fileName) {
         try {
-            URL path = this.getClass().getClassLoader().getResource(fileName);
-            Assert.assertNotNull("Can't found the resource file " + fileName, path);
-
-            Dictionary dict = new OnlyWordsDictionary(Paths.get(path.toURI()));
-            Assert.assertEquals("The words in dictionary aren't equals to the words from file","[one, two, three, four, five, six, seven, eight]", dict.getWords().toString());
+            getDictionaryFromFile(this, fileName);
+            Assert.assertTrue("Should be thrown an exception at the previous line", false);
         } catch (IOException | WordsExtractorException | URISyntaxException e) {
-            Assert.assertTrue("The test has aborted because of exception: " + e, false);
+            Assert.assertEquals("The thrown exception is of another type", WordsExtractorException.class, e.getClass());
         }
+    }
+
+
+    public static Dictionary getDictionaryFromFile(Object obj, String fileName) throws IOException, WordsExtractorException, URISyntaxException {
+        URL path = obj.getClass().getClassLoader().getResource(fileName);
+        Assert.assertNotNull("Can't found the resource file " + fileName, path);
+
+        return new OnlyWordsDictionary(Paths.get(path.toURI()));
     }
 }

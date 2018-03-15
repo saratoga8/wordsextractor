@@ -9,6 +9,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 
 /**
  * Translations manager of the extracted text
@@ -16,13 +17,14 @@ import java.io.IOException;
 public class TranslationManager {
     private static final Logger log = LogManager.getLogger(TranslationManager.class);        /** logger */
 
-    private static final String KNOWN_WORDS_FILE_NAME = "known.dict";                        /** the file name of the file containing known words */
-    final private Dictionary dict;                                                           /** the dictionary containing words extracted and without known words */
+    public static final String KNOWN_WORDS_FILE_NAME = "knowns.dict";                        /** the file name of the file containing known words */
+    final private Dictionary dict;                                                          /** the dictionary containing words extracted and without known words */
 
     /**
      * Constructor of manager from the given dictionary of extracted words
      * @param dictionary  The dictionary of extracted words
      */
+    @NotNull
     public TranslationManager(final Dictionary dictionary) {
         dict = dictionary;
     }
@@ -30,15 +32,19 @@ public class TranslationManager {
     /**
      * Remove known words from the dictionary of extracted words
      */
-    public void removeKnownWords() {
-        final File knownWordsFile = new File(KNOWN_WORDS_FILE_NAME);
-        if (knownWordsFile.exists()) {
-            try {
-                final Dictionary knownWordsDict = new OnlyWordsDictionary(knownWordsFile.toPath());
-                dict.removeWordsOfDict(knownWordsDict);
-            } catch (IOException | WordsExtractorException e) {
-                log.error("Can't build a dictionary from the file containing known words " + knownWordsFile.getAbsolutePath());
+    public void removeKnownWords(final Path knownWordsFilePath) {
+        File file = knownWordsFilePath.toFile();
+        if (file.exists()) {
+            if (file.isFile() && file.canRead()) {
+                try {
+                    final Dictionary knownWordsDict = new OnlyWordsDictionary(knownWordsFilePath);
+                    dict.removeWordsOfDict(knownWordsDict);
+                } catch (IOException | WordsExtractorException e) {
+                    log.error("Can't build a dictionary from the file containing known words " + knownWordsFilePath);
+                }
             }
+            else
+                log.error("The given path isn't file or it is but isn't readable");
         }
         else
             log.warn("A file with known words doesn't exist");
