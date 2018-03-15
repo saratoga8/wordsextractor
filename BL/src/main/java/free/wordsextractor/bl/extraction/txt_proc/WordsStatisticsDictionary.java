@@ -37,7 +37,7 @@ public class WordsStatisticsDictionary implements Dictionary {
         words.sort(String::compareToIgnoreCase);
 
         final StringBuilder strBuilder = new StringBuilder();
-        words.stream().forEach(word -> strBuilder.append(word + " " + wordsStat.get(word)));
+        words.forEach(word -> strBuilder.append(word).append(" ").append(wordsStat.get(word)));
 
         return strBuilder.toString();
     }

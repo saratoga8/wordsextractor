@@ -7,22 +7,22 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.nio.file.Path;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
  * Manage text extractions from files
  */
 public class ExtractionManager {
-    private final Logger log = LogManager.getLogger(ExtractionManager.class);     /** log item */
-    final private List<TextExtractorInterface> extractors;                        /** text extractors */
+    private final Logger log = LogManager.getLogger(ExtractionManager.class);     /* log item */
+    final private List<TextExtractorInterface> extractors;                        /* text extractors */
 
     /**
      * Constructor
      * @throws WordsExtractorException
      */
     public ExtractionManager() throws WordsExtractorException {
-        extractors = Arrays.asList(new TikaTextExtractor());
+        extractors = Collections.singletonList(new TikaTextExtractor());
         if(extractors.isEmpty())
             throw new WordsExtractorException("There are no text extractors in use");
     }

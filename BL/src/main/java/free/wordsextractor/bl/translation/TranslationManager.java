@@ -15,10 +15,10 @@ import java.nio.file.Path;
  * Translations manager of the extracted text
  */
 public class TranslationManager {
-    private static final Logger log = LogManager.getLogger(TranslationManager.class);        /** logger */
+    private static final Logger log = LogManager.getLogger(TranslationManager.class);        /* logger */
 
-    public static final String KNOWN_WORDS_FILE_NAME = "knowns.dict";                        /** the file name of the file containing known words */
-    final private Dictionary dict;                                                          /** the dictionary containing words extracted and without known words */
+    public static final String KNOWN_WORDS_FILE_NAME = "knowns.dict";                        /* the file name of the file containing known words */
+    final private Dictionary dict;                                                           /* the dictionary containing words extracted and without known words */
 
     /**
      * Constructor of manager from the given dictionary of extracted words

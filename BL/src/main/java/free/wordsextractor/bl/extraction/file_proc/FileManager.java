@@ -18,10 +18,10 @@ import java.util.List;
  * Manage operations with a file
  */
 public class FileManager {
-    static private final Logger log = LogManager.getLogger(FileManager.class);           /** logger */
+    static private final Logger log = LogManager.getLogger(FileManager.class);           /* logger */
 
-    private final Path path;                                                             /** path of the file text should be extracted from */
-    private final ExtractionManager extractionMgr;                                       /** manager of extractions */
+    private final Path path;                                                             /* path of the file text should be extracted from */
+    private final ExtractionManager extractionMgr;                                       /* manager of extractions */
 
     /**
      * Constructor

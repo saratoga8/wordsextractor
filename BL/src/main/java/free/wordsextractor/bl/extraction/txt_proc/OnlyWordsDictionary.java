@@ -14,8 +14,8 @@ import java.util.List;
  * Dictionary containing only words
  */
 public class OnlyWordsDictionary implements Dictionary {
-    final private static Logger log = LogManager.getLogger(OnlyWordsDictionary.class);        /** logger */
-    final private List<String> words;                                                         /** words of the dictionary */
+    final private static Logger log = LogManager.getLogger(OnlyWordsDictionary.class);        /* logger */
+    final private List<String> words;                                                         /* words of the dictionary */
 
     /**
      * Constructor of the dictionary from the given file

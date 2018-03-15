@@ -17,10 +17,10 @@ import java.util.Scanner;
  * Words extractor
  */
 public class WordsExtractor {
-    private static final Logger log = LogManager.getLogger(WordsExtractor.class);               /** logger */
+    private static final Logger log = LogManager.getLogger(WordsExtractor.class);               /* logger */
 
     @NotNull
-    final private List<Path> paths;                                                             /** paths of files containing text */
+    final private List<Path> paths;                                                             /* paths of files containing text */
 
     /**
      * Constructor
@@ -56,12 +56,15 @@ public class WordsExtractor {
     public static List<String> extractWordsFromFile(final Path path) throws WordsExtractorException, IOException {
         log.debug("Extract words from the file " + path.toString());
 
-        final LinkedList words = new LinkedList();
+        final LinkedList words = new LinkedList<String>();
         if (!path.toString().isEmpty()) {
+            String word;
             try (final Scanner scanner = new Scanner(path, TextExtractorInterface.CHAR_SET)) {
-                while (scanner.hasNext())
-                    words.add(scanner.next());
-
+                while (scanner.hasNext()) {
+                    word = scanner.next();
+                    if(!words.add(word))
+                        log.error("Can't add the word '" + word + "'");
+                }
                 if (words.isEmpty())
                     throw new WordsExtractorException("In the file " + path.toString() + " no words has found");
             }
@@ -80,7 +83,7 @@ public class WordsExtractor {
     private WordsStatisticsDictionary addWordsToDict(final WordsStatisticsDictionary dict) {
         paths.parallelStream().forEach(path -> {
             try {
-                extractWordsFromFile(path).stream().forEach(dict::addWord);
+                extractWordsFromFile(path).forEach(dict::addWord);
             } catch (WordsExtractorException | IOException e) {
                 log.error("Can't add words from file " + path.toString() + " to a dictionary: " + e);
             }

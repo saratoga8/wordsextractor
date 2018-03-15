@@ -10,7 +10,7 @@ import java.nio.file.Path;
  */
 public interface TextExtractorInterface {
 
-    String CHAR_SET = "UTF-8";                                        /** used charset */
+    String CHAR_SET = "UTF-8";                                        /* used charset */
 
     /**
      * Extract text from file with a given path

@@ -24,10 +24,10 @@ import java.nio.file.Paths;
  * Text extractor using Tika
  */
 public class TikaTextExtractor implements TextExtractorInterface {
-    private final Logger log = LogManager.getLogger(TikaTextExtractor.class);     /** log item */
+    private final Logger log = LogManager.getLogger(TikaTextExtractor.class);     /* log item */
 
-    private final BodyContentHandler handler;                                     /** Tika's body content handler */
-    private final TikaConfig tikaConf;                                            /** Tika's configuration */
+    private final BodyContentHandler handler;                                     /* Tika's body content handler */
+    private final TikaConfig tikaConf;                                            /* Tika's configuration */
 
     /**
      * Constructor

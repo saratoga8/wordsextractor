@@ -18,7 +18,7 @@ import java.util.List;
  * Dictionary interface
  */
 public interface Dictionary {
-    Logger log = LogManager.getLogger(Dictionary.class);        /** logger */
+    Logger log = LogManager.getLogger(Dictionary.class);        /* logger */
 
     /**
      * Add a word to the dictionary
