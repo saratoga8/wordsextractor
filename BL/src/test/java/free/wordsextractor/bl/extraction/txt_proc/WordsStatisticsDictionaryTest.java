@@ -126,6 +126,8 @@ class WordsStatisticsDictionaryTest {
         List<String> words1 = Arrays.asList("one", "two", "three", "four");
         words1.parallelStream().forEach(word -> dict.addWord(word));
         words1.forEach(word -> Assert.assertTrue("There is no word " + word + " in dictionary", dict.contains(word)));
+
+        Assert.assertFalse("A dictionary cant contain an EMPTY string", dict.contains(""));
     }
 
     @DisplayName("Remove words from dictionary")
@@ -133,6 +135,9 @@ class WordsStatisticsDictionaryTest {
     public void removeDicWords() {
         List<String> words1 = Arrays.asList("one", "two", "three", "four");
         words1.parallelStream().forEach(word -> dict.addWord(word));
+
+        Assert.assertFalse("It's invalid to remove an empty word from dictionary", dict.removeWord(""));
+
         for (String word: words1) {
             Assert.assertTrue("There is no word '" + word + "' before remove in the dictionary", dict.contains(word));
             Assert.assertTrue("Can't remove the word '" + word + "' from dictionary", dict.removeWord(word));

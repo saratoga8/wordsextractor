@@ -7,6 +7,7 @@ import free.wordsextractor.bl.extraction.txt_proc.Dictionary;
 import free.wordsextractor.bl.translation.TranslationManager;
 
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 public class Main {
@@ -23,8 +24,8 @@ public class Main {
                 Dictionary wordsStatsDict = extractor.createWordsStatsDictionary();
 
                 final TranslationManager translationMngr = new TranslationManager(wordsStatsDict);
-                translationMngr.removeKnownWords(); /*
-                translationMngr.createExtractedWordsDict().saveIn(extractedWordsTxtFilePath); */
+                translationMngr.removeKnownWords(Paths.get(TranslationManager.KNOWN_WORDS_FILE_NAME));
+                translationMngr.getExtractedWordsDict().saveIn(extractedWordsTxtFilePath);
             }
             catch (WordsExtractorException e) {
                 System.err.println("Running interrupted by exception " + e);
