@@ -1,8 +1,6 @@
 package free.wordsextractor.bl.translation;
 
 public abstract class Translation {
-    enum Langs {ENG, RUS}
-
     protected Langs fromLang;
     protected Langs toLang;
 
@@ -15,4 +13,17 @@ public abstract class Translation {
     }
 
     public abstract String translate(String word);
+
+    enum Langs {
+        ENG("en"), RUS("ru");
+        final private String val;
+
+        Langs(String val) {
+            this.val = val;
+        }
+
+        public String getVal() {
+            return val;
+        }
+    }
 }
