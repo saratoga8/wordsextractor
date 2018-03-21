@@ -1,17 +1,21 @@
 package free.wordsextractor.bl.extraction.file_proc;
 
+import free.wordsextractor.bl.WordsExtractorException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Locale;
 
 public abstract class Utils {
     private static Logger log = LogManager.getLogger(Utils.class);
 
     public enum Shells { POWERSHELL, BASH }
-    public static String runSystemCommand(final Shells shell, String cmd) {
+
+    public static String runSystemCommand(String cmd) throws WordsExtractorException {
+        final Shells shell = getShell();
         switch (shell) {
             case POWERSHELL: return runCommandInPS(cmd);
             case BASH:       return runCommandInBash(cmd);
@@ -50,5 +54,21 @@ public abstract class Utils {
 
         String[] commandList = {"bash", "-c", command};
         return runCommand(commandList);
+    }
+
+    public static Shells getShell() throws WordsExtractorException {
+        String osName = System.getProperty("os.name");
+        if (osName == null) {
+            throw new WordsExtractorException("Can't detect the OS' name");
+        }
+        osName = osName.toLowerCase(Locale.ENGLISH);
+        if (osName.contains("windows")) {
+            return Utils.Shells.POWERSHELL;
+        }
+        else if (osName.contains("linux")) {
+            return Utils.Shells.BASH;
+        }
+        else
+            throw new WordsExtractorException("Unknown OS' name " + osName);
     }
 }
