@@ -38,7 +38,9 @@ public class YandexTranslation extends WebTranslation {
         if (!StringUtils.isBlank(word)) {
             try {
                 final URI uri = this.getClass().getClassLoader().getResource(API_KEY_FILE_NAME).toURI();
-                return super.serviceURL + "?key=" + getApiKey(uri) + "&lang=" + fromLang.getVal() + "-" + toLang.getVal() + "&text=" + word;
+                return super.serviceURL + "?key=" + getApiKey(uri)
+                                        + "&lang=" + fromLang.getVal() + "-" + toLang.getVal()
+                                        + "&text=" + word;
             } catch (URISyntaxException e) {
                 log.error("Can't build request string: " + e);
             }

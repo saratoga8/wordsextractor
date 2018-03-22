@@ -87,6 +87,11 @@ public class WordsStatisticsDictionary implements Dictionary {
             throw new WordsExtractorException("There are no words in the dictionary");
     }
 
+    @NotNull
+    /**
+     * Get words of the dictionary
+     * @return The list of words
+     */
     @Override
     public List<String> getWords() {
         return new ArrayList<>(wordsStat.keySet());
@@ -102,6 +107,12 @@ public class WordsStatisticsDictionary implements Dictionary {
         return wordsStat.containsKey(word);
     }
 
+    @NotNull
+    /**
+     * Remove the given word from the dictionary
+     * @param word The word for removing
+     * @return
+     */
     @Override
     public boolean removeWord(String word) {
         return wordsStat.remove(word) != null;
