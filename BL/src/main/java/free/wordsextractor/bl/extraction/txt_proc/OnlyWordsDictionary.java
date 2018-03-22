@@ -15,7 +15,7 @@ import java.util.List;
  */
 public class OnlyWordsDictionary implements Dictionary {
     final private static Logger log = LogManager.getLogger(OnlyWordsDictionary.class);        /* logger */
-    final private List<String> words;                                                         /* words of the dictionary */
+    final private List<String> words;                                                         /* words of the dictionary */  //TODO should be HashSet
 
     /**
      * Constructor of the dictionary from the given file

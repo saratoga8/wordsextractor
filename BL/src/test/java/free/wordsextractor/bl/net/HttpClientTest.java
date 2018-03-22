@@ -6,15 +6,16 @@ import org.junit.Assert;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.HashMap;
+
 class HttpClientTest {
-    @DisplayName("HTTP client")
+    @DisplayName("HTTP client with existing URL")
     @Test
-    public void httpClient() {
-        String command = null;
+    public void httpClientValidURL() {
         try {
-            command = (Utils.getShell() == Utils.Shells.POWERSHELL) ? "Invoke-RestMethod http://ipinfo.io/json | Select -exp ip": "";
-            Utils.runSystemCommand(command);
-            Assert.assertEquals("194.90.225.123",HttpClient.getResponseFrom("https://api.ipify.org"));
+            String command = (Utils.getShell() == Utils.Shells.POWERSHELL) ? "Invoke-RestMethod http://ipinfo.io/json | Select -exp ip": "";
+            String ip = Utils.runSystemCommand(command);
+            Assert.assertEquals(ip, HttpClient.getResponseFrom("https://api.ipify.org", new HashMap<>()));
         } catch (WordsExtractorException e) {
             Assert.assertTrue("Test aborted because of exception: " + e, false);
         }

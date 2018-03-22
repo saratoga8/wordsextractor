@@ -12,15 +12,15 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 public abstract class HttpClient {
     private static final Logger log = LogManager.getLogger(HttpClient.class);        /* logger */
     private final static int RESPONSE_OK = 200, RESPONSE_MULTIPLE_CHOICE = 300;
 
-
-    public static String getResponseFrom(String url) {
+    public static String getResponseFrom(String url, final HashMap<Integer, String> respCodes) {
         try (final CloseableHttpClient client = HttpClients.createDefault()) {
-            final ResponseHandler<String> responseHandler = response -> handleResponse(response);
+            final ResponseHandler<String> responseHandler = response -> handleResponse(response, respCodes);
             return client.execute(new HttpGet(url), responseHandler);
         } catch (IOException e) {
             log.error("Can't get response from the URL: " + url + ": " + e);
@@ -28,13 +28,14 @@ public abstract class HttpClient {
         return "";
     }
 
-    private static String handleResponse(final HttpResponse response) throws IOException {
+    protected static String handleResponse(final HttpResponse response, final HashMap<Integer, String> respCodes) throws IOException {
         final int status = response.getStatusLine().getStatusCode();
         if ((status >= RESPONSE_OK) && (status < RESPONSE_MULTIPLE_CHOICE)) {
             final HttpEntity entity = response.getEntity();
             return entity != null ? EntityUtils.toString(entity) : "";
         } else {
-            throw new ClientProtocolException("Unexpected response status: " + status);
+            String errorStr = (respCodes.containsKey(Integer.valueOf(status))) ? respCodes.get(Integer.valueOf(status)): "Unexpected response status: " + status;
+            throw new ClientProtocolException("Can't handle response: " + errorStr);
         }
     }
 }
