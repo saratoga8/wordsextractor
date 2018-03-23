@@ -13,29 +13,14 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
 
 class WordsStatisticsDictionaryTest {
-    private static Utils.Shells shell;
+
     private WordsStatisticsDictionary dict;
 
     @BeforeEach
     public void init() {
         dict = new WordsStatisticsDictionary();
-
-        String osName = System.getProperty("os.name");
-        if (osName == null) {
-            Assert.assertNotNull(osName, "Can't detect the OS' name");
-        }
-        osName = osName.toLowerCase(Locale.ENGLISH);
-        if (osName.contains("windows")) {
-            shell = Utils.Shells.POWERSHELL;
-        }
-        else if (osName.contains("linux")) {
-            shell = Utils.Shells.BASH;
-        }
-        else
-            Assert.assertTrue("Unknown OS' name " + osName, false);
     }
 
     @DisplayName("Add words to WordsStatisticsDictionary")
@@ -99,13 +84,14 @@ class WordsStatisticsDictionaryTest {
             dict.saveIn(path);
 
             String commandStr = "";
+            Utils.Shells shell = Utils.getShell();
             switch (shell) {
                 case BASH: commandStr = "cat " + path; break;
                 case POWERSHELL: commandStr = "Get-Content " + path; break;
                 default:
                     Assert.assertTrue("Unknown shell " + shell.name(), false);
             }
-            Assert.assertEquals(Utils.runSystemCommand(shell, commandStr), "four 1one 1three 1two 1");
+            Assert.assertEquals(Utils.runSystemCommand(commandStr), "four 1one 1three 1two 1");
         } catch (IOException | WordsExtractorException e) {
             Assert.assertTrue("Test aborted because of exception: " + e, false);
         }
