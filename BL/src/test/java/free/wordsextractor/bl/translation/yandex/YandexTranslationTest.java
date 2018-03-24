@@ -1,5 +1,6 @@
-package free.wordsextractor.bl.translation;
+package free.wordsextractor.bl.translation.yandex;
 
+import free.wordsextractor.bl.translation.Translation;
 import org.junit.Assert;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

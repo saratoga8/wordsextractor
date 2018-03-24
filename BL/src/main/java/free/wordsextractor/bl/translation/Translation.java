@@ -45,7 +45,7 @@ public abstract class Translation {
     /**
      * Languages and their codes
      */
-    enum Langs {
+    public enum Langs {
         ENG("en"), RUS("ru");
         final private String val;
 

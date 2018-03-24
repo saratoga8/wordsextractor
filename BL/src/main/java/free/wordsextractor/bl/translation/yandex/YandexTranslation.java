@@ -1,6 +1,6 @@
-package free.wordsextractor.bl.translation;
+package free.wordsextractor.bl.translation.yandex;
 
-import free.wordsextractor.bl.net.HttpClient;
+import free.wordsextractor.bl.translation.WebTranslation;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -28,12 +28,6 @@ public class YandexTranslation extends WebTranslation {
     }
 
     @Override
-    public String translate(String word) {
-        String responseTxt = HttpClient.getResponseFrom(buildRequest(word), respCodes);
-        return responseTxt;
-    }
-
-    @Override
     protected String buildRequest(String word) {
         if (!StringUtils.isBlank(word)) {
             try {
@@ -49,4 +43,16 @@ public class YandexTranslation extends WebTranslation {
             log.error("The given word is EMPTY or NULL");
         return "";
     }
+
+    @Override
+    protected HashMap<Integer, String> getResponseCodes() {
+        return respCodes;
+    }
+
+    @Override
+    public Class getTranslationBean() {
+        return YandexTranslationBean.class;
+    }
+
+
 }

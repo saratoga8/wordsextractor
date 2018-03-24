@@ -1,7 +1,9 @@
 package free.wordsextractor.bl.translation;
 
 import com.drew.lang.annotations.NotNull;
+import com.google.gson.Gson;
 import free.wordsextractor.bl.extraction.file_proc.extractors.TextExtractorInterface;
+import free.wordsextractor.bl.net.HttpClient;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -9,6 +11,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashMap;
 import java.util.Scanner;
 
 public abstract class WebTranslation extends Translation {
@@ -40,4 +43,19 @@ public abstract class WebTranslation extends Translation {
             log.error("Can't read an API key from the file " + path.toAbsolutePath() + ", because it doesn't exist");
         return "";
     }
+
+    @NotNull
+    protected abstract HashMap<Integer, String> getResponseCodes();
+
+    @NotNull
+    public String translate(String word) {
+        log.debug("Translating the word '" + word + "' by " + getTranslationBean().getName() + "'s dictionary");
+
+
+        String responseTxt = HttpClient.getResponseFrom(buildRequest(word), getResponseCodes());
+        return new Gson().fromJson(responseTxt, getTranslationBean()).toString();
+    }
+
+    @NotNull
+    public abstract Class getTranslationBean();
 }
