@@ -1,6 +1,10 @@
 package free.wordsextractor.bl.translation;
 
 import com.drew.lang.annotations.NotNull;
+import free.wordsextractor.bl.WordsExtractorException;
+
+import java.util.Hashtable;
+import java.util.List;
 
 /**
  * Translation from one language to another one
@@ -29,7 +33,7 @@ public abstract class Translation {
      * @param fromLang Language translation from
      * @param toLang Language translation to
      */
-    public Translation(Langs fromLang, Langs toLang) {
+    public Translation(final Langs fromLang, final Langs toLang) {
         this.fromLang = fromLang;
         this.toLang = toLang;
     }
@@ -41,6 +45,22 @@ public abstract class Translation {
      * @return Translation string
      */
     public abstract String translate(String word);
+
+    @NotNull
+    /**
+     * Translate the given words
+     * @param words The given list of words
+     * @return Hash table of the translations
+     */
+    public Hashtable<String, String> translate(final List<String> words) throws WordsExtractorException {
+        if(!words.isEmpty()) {
+            final Hashtable<String, String> translations = new Hashtable<>();
+            words.parallelStream().forEach(word -> translations.put(word,translate(word)) );
+            return translations;
+        }
+        else
+            throw new WordsExtractorException("The given list of words for translation is empty");
+    }
 
     /**
      * Languages and their codes

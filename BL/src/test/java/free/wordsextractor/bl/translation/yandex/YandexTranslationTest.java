@@ -1,13 +1,21 @@
 package free.wordsextractor.bl.translation.yandex;
 
+import free.wordsextractor.bl.WordsExtractorException;
 import free.wordsextractor.bl.translation.Translation;
 import org.junit.Assert;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
+import java.util.Hashtable;
+import java.util.LinkedList;
+import java.util.List;
+
 class YandexTranslationTest {
     private static YandexTranslation yandex = new YandexTranslation(Translation.Langs.ENG, Translation.Langs.RUS);
     private static String WORD = "hot-button";
+    private static String EXPECTED_TRANSLATION = "hot-button  adjective\n\tзлободневный\n\nhot button [hɔt bʌtn] noun\n\tгорячая кнопка, горячая клавиша \n\t(hot key, hotkey) \n\n";
+
 
     @DisplayName("Build request")
     @Test
@@ -16,9 +24,21 @@ class YandexTranslationTest {
         Assert.assertEquals(expectedRequext,yandex.buildRequest(WORD));
     }
 
-    @DisplayName("Translate")
+    @DisplayName("Translate a word")
     @Test
     void translate() {
-        Assert.assertEquals("" ,yandex.translate(WORD));
+        Assert.assertEquals(EXPECTED_TRANSLATION ,yandex.translate(WORD));
+    }
+
+    @DisplayName("Translate words")
+    @Test
+    void translateWords() {
+        List<String> words = new LinkedList<> (Arrays.asList("test", WORD));
+        try {
+            Hashtable<String, String> translations = yandex.translate(words);
+            Assert.assertEquals(EXPECTED_TRANSLATION, translations.get(WORD));
+        } catch (WordsExtractorException e) {
+            System.err.println("The test aborted because of exception: " + e);
+        }
     }
 }

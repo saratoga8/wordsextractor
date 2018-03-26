@@ -15,7 +15,6 @@ public class YandexTranslationBean implements TranslationBean {
     @SerializedName("def")
     private ArrayList<DictionaryEntry> dictEntries;
 
-
     public ArrayList<DictionaryEntry> getDictEntries() {
         return dictEntries;
     }
@@ -29,26 +28,20 @@ public class YandexTranslationBean implements TranslationBean {
         return "Yandex";
     }
 
-    public class DictionaryEntry {
+
+    private class OnlyText {
         @SerializedName("text")
-        private String word;
+        protected String word;
 
         @SerializedName("pos")
-        private String speechPart;
-
-        @SerializedName("ts")
-        private String transcription;
+        protected String speechPart;
 
         public String getWord() {
             return word;
         }
 
         public String getSpeechPart() {
-            return speechPart;
-        }
-
-        public String getTranscription() {
-            return transcription;
+            return (StringUtils.isBlank(speechPart)) ? "": speechPart;
         }
 
         public void setWord(String word) {
@@ -59,17 +52,73 @@ public class YandexTranslationBean implements TranslationBean {
             this.speechPart = speechPart;
         }
 
+        public String toString() {
+            return word + " " + getSpeechPart();
+        }
+    }
+
+
+    private class DictionaryEntry extends OnlyText {
+        @SerializedName("ts")
+        private String transcription;
+
+        @SerializedName("tr")
+        private ArrayList<Translation> translations;
+
+        public String getTranscription() {
+            return (StringUtils.isBlank(transcription)) ? "": "[" + transcription + "]";
+        }
+
         public void setTranscription(String transcription) {
             this.transcription = transcription;
         }
 
         public String toString() {
-            StringBuilder txt = new StringBuilder(word);
-            txt = txt.append((" ") + getSpeechPart());
-            if (!StringUtils.isBlank(transcription))
-                txt = txt.append((" ") + getTranscription());
-            log.debug("Translation is " + txt.toString());
+            final StringBuilder txt = new StringBuilder(word).append(" " + getTranscription() +  (" ") + getSpeechPart() + "\n");
+            translations.stream().forEach(translation -> txt.append("\t" + translation.toString() + "\n"));
+
             return txt.toString();
+        }
+    }
+
+    private class Translation extends OnlyText {
+        @SerializedName("syn")
+        private ArrayList<Synonymous> synonymouses;
+
+        @SerializedName("mean")
+        private ArrayList<Example> examples;
+
+        public ArrayList<Synonymous> getSynonymouses() {
+            return synonymouses;
+        }
+
+        public void setSynonymouses(ArrayList<Synonymous> synonymouses) {
+            this.synonymouses = synonymouses;
+        }
+
+        public String toString() {
+            StringBuilder txt = new StringBuilder(word);
+            if(synonymouses != null)
+                synonymouses.stream().forEach(synonymous -> txt.append(synonymous + " "));
+            if(examples != null) {
+                txt.append("\n\t(");
+                examples.stream().forEach(example -> txt.append(example + ", "));
+                txt.setCharAt(txt.length() - 2, ')');
+            }
+
+            return txt.toString();
+        }
+
+        private class Synonymous extends OnlyText {
+            public String toString() {
+                return ", " + getWord();
+            }
+        }
+
+        private class Example extends Synonymous {
+            public String toString() {
+                return getWord();
+            }
         }
     }
 
