@@ -14,7 +14,7 @@ import java.nio.file.Paths;
 import java.util.Locale;
 
 public abstract class Utils {
-    private static Logger log = LogManager.getLogger(Utils.class);
+    private static final Logger log = LogManager.getLogger(Utils.class);
 
     public enum Shells { POWERSHELL, BASH }
 

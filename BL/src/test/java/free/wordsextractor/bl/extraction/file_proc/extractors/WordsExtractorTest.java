@@ -11,10 +11,10 @@ import org.junit.platform.commons.util.StringUtils;
 
 import java.net.URL;
 import java.nio.file.Paths;
-import java.util.Arrays;
+import java.util.Collections;
 
 class WordsExtractorTest {
-    private static Logger log = LogManager.getLogger(WordsExtractorTest.class);
+    private static final Logger log = LogManager.getLogger(WordsExtractorTest.class);
 
 
     @ParameterizedTest
@@ -26,7 +26,7 @@ class WordsExtractorTest {
         String command = getCommandStr(path.getPath());
         if (!StringUtils.isBlank(command)) {
             try {
-                String expectedWords = new WordsExtractor(Arrays.asList(Paths.get(path.toURI()))).createWordsStatsDictionary().toString();
+                String expectedWords = new WordsExtractor(Collections.singletonList(Paths.get(path.toURI()))).createWordsStatsDictionary().toString();
                 String actualWords = Utils.runSystemCommand(command);
 
                 Assert.assertEquals(expectedWords, actualWords);

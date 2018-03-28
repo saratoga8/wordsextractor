@@ -28,10 +28,6 @@ public class OnlyWordsDictionary implements Dictionary {
         words = WordsExtractor.extractWordsFromFile(path);
     }
 
-    public OnlyWordsDictionary() {
-        this.words = new LinkedList<>();
-    }
-
     /**
      * Add a new word to the dictionary
      * @param word The new word

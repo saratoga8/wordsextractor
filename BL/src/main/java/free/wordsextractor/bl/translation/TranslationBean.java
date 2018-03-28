@@ -1,8 +1,9 @@
 package free.wordsextractor.bl.translation;
 
 /**
- * Created by saratoga on 24/03/18.
+ * A bean of translation
  */
 public interface TranslationBean {
     String getName();
+    String toString();
 }

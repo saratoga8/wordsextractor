@@ -15,8 +15,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -38,9 +38,9 @@ public class TikaTextExtractor implements TextExtractorInterface {
         Path tikaConfPath;
         String TIKA_CONF_FILE = "tika-conf.xml";
         try {
-            final URI uri = this.getClass().getClassLoader().getResource(TIKA_CONF_FILE).toURI();
-            if (uri != null) {
-                tikaConfPath = Paths.get(uri);
+            final URL url = this.getClass().getClassLoader().getResource(TIKA_CONF_FILE);
+            if (url != null) {
+                tikaConfPath = Paths.get(url.toURI());
                 if (tikaConfPath == null)
                     throw new WordsExtractorException("Can't get path of Tika configuration file " + TIKA_CONF_FILE);
             }

@@ -10,9 +10,9 @@ import java.util.LinkedList;
 import java.util.List;
 
 class YandexTranslationTest {
-    private static YandexTranslation yandex = new YandexTranslation(Translation.Langs.ENG, Translation.Langs.RUS);
-    private static String WORD = "hot-button";
-    private static String EXPECTED_TRANSLATION = "hot-button  adjective\n\tзлободневный\n\nhot button [hɔt bʌtn] noun\n\tгорячая кнопка, горячая клавиша \n\t(hot key, hotkey) \n\n";
+    private static final YandexTranslation yandex = new YandexTranslation(Translation.Langs.ENG, Translation.Langs.RUS);
+    private static final String WORD = "hot-button";
+    private static final String EXPECTED_TRANSLATION = "hot-button  adjective\n\tзлободневный\n\nhot button [hɔt bʌtn] noun\n\tгорячая кнопка, горячая клавиша \n\t(hot key, hotkey) \n\n";
 
 
     @DisplayName("Build request")

@@ -1,12 +1,14 @@
 package free.wordsextractor.bl.translation.yandex;
 
+import free.wordsextractor.bl.WordsExtractorException;
+import free.wordsextractor.bl.extraction.file_proc.FileManager;
 import free.wordsextractor.bl.translation.WebTranslation;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.file.Path;
 import java.util.HashMap;
 
 public class YandexTranslation extends WebTranslation {
@@ -31,12 +33,12 @@ public class YandexTranslation extends WebTranslation {
     protected String buildRequest(String word) {
         if (!StringUtils.isBlank(word)) {
             try {
-                final URI uri = this.getClass().getClassLoader().getResource(API_KEY_FILE_NAME).toURI();
-                return super.serviceURL + "?key=" + getApiKey(uri)
-                                        + "&lang=" + fromLang.getVal() + "-" + toLang.getVal()
-                                        + "&text=" + word;
-            } catch (URISyntaxException e) {
-                log.error("Can't build request string: " + e);
+                final Path apiFilePath = FileManager.getResourcesFilePath(API_KEY_FILE_NAME, this);
+                return super.serviceURL + "?key=" + getApiKey(apiFilePath)
+                        + "&lang=" + fromLang.getVal() + "-" + toLang.getVal()
+                        + "&text=" + word;
+            } catch (WordsExtractorException | URISyntaxException e) {
+                log.error("Can't read API key from file " + API_KEY_FILE_NAME + ": " + e);
             }
         }
         else

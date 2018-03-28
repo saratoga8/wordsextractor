@@ -47,13 +47,13 @@ public abstract class HttpClient {
      * @return String of response. . Empty string if the request has failed
      * @throws IOException
      */
-    protected static String handleResponse(final HttpResponse response, final HashMap<Integer, String> respCodes) throws IOException {
+    private static String handleResponse(final HttpResponse response, final HashMap<Integer, String> respCodes) throws IOException {
         final int status = response.getStatusLine().getStatusCode();
         if ((status >= RESPONSE_OK) && (status < RESPONSE_MULTIPLE_CHOICE)) {
             final HttpEntity entity = response.getEntity();
             return entity != null ? EntityUtils.toString(entity) : "";
         } else {
-            String errorStr = (respCodes.containsKey(Integer.valueOf(status))) ? respCodes.get(Integer.valueOf(status)): "Unexpected response status: " + status;
+            String errorStr = (respCodes.containsKey(status)) ? respCodes.get(status): "Unexpected response status: " + status;
             throw new ClientProtocolException("Can't handle response: " + errorStr);
         }
     }

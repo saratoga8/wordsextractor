@@ -62,6 +62,14 @@ public class YandexTranslationBean implements TranslationBean {
         @SerializedName("ts")
         private String transcription;
 
+        public ArrayList<Translation> getTranslations() {
+            return translations;
+        }
+
+        public void setTranslations(ArrayList<Translation> translations) {
+            this.translations = translations;
+        }
+
         @SerializedName("tr")
         private ArrayList<Translation> translations;
 
@@ -75,7 +83,7 @@ public class YandexTranslationBean implements TranslationBean {
 
         public String toString() {
             final StringBuilder txt = new StringBuilder(word).append(" " + getTranscription() +  (" ") + getSpeechPart() + "\n");
-            translations.stream().forEach(translation -> txt.append("\t" + translation.toString() + "\n"));
+            translations.forEach(translation -> txt.append("\t" + translation.toString() + "\n"));
 
             return txt.toString();
         }
@@ -84,6 +92,14 @@ public class YandexTranslationBean implements TranslationBean {
     private class Translation extends OnlyText {
         @SerializedName("syn")
         private ArrayList<Synonymous> synonymouses;
+
+        public ArrayList<Example> getExamples() {
+            return examples;
+        }
+
+        public void setExamples(ArrayList<Example> examples) {
+            this.examples = examples;
+        }
 
         @SerializedName("mean")
         private ArrayList<Example> examples;
@@ -99,10 +115,10 @@ public class YandexTranslationBean implements TranslationBean {
         public String toString() {
             StringBuilder txt = new StringBuilder(word);
             if(synonymouses != null)
-                synonymouses.stream().forEach(synonymous -> txt.append(synonymous + " "));
+                synonymouses.forEach(synonymous -> txt.append(synonymous + " "));
             if(examples != null) {
                 txt.append("\n\t(");
-                examples.stream().forEach(example -> txt.append(example + ", "));
+                examples.forEach(example -> txt.append(example + ", "));
                 txt.setCharAt(txt.length() - 2, ')');
             }
 
@@ -125,7 +141,7 @@ public class YandexTranslationBean implements TranslationBean {
     @NotNull
     public String toString() {
         StringBuilder txt = new StringBuilder();
-        dictEntries.stream().forEach(entry -> txt.append(entry.toString() + "\n"));
+        dictEntries.forEach(entry -> txt.append(entry.toString() + "\n"));
         return txt.toString();
     }
 }

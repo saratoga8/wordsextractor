@@ -8,9 +8,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
-import java.net.URI;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Scanner;
 
@@ -28,10 +26,9 @@ public abstract class WebTranslation extends Translation {
     protected abstract String buildRequest(String word);
 
     @NotNull
-    protected String getApiKey(final URI uri) {
-        log.debug("Read API key from " + uri.getPath());
+    protected String getApiKey(final Path path) {
+        log.debug("Read API key from " + path);
 
-        Path path = Paths.get(uri);
         if (path.toFile().exists()) {
             try (final Scanner scanner = new Scanner(path, TextExtractorInterface.CHAR_SET)) {
                 return scanner.next();

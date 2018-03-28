@@ -9,6 +9,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.*;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.LinkedList;
@@ -92,5 +94,14 @@ public class FileManager {
         catch (IOException e) {
             throw new WordsExtractorException("Can't saveIn text in file: " + e.toString());
         }
+    }
+
+    @NotNull
+    public static Path getResourcesFilePath(String fileName, final Object obj) throws WordsExtractorException, URISyntaxException {
+        final URL url = obj.getClass().getClassLoader().getResource(fileName);
+        if (url != null) {
+            return Paths.get(url.toURI());
+        }
+        throw new WordsExtractorException("Can't get URL of the resource file " + fileName);
     }
 }

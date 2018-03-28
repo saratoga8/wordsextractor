@@ -11,8 +11,8 @@ import java.util.List;
  * Translation from one language to another one
  */
 public abstract class Translation {
-    protected Langs fromLang;                       /** translate from language */
-    protected Langs toLang;                         /** translate to language */
+    protected final Langs fromLang;                       /** translate from language */
+    protected final Langs toLang;                         /** translate to language */
 
     @NotNull
     /**
