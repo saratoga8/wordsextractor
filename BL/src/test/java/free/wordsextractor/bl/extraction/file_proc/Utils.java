@@ -3,10 +3,14 @@ package free.wordsextractor.bl.extraction.file_proc;
 import free.wordsextractor.bl.WordsExtractorException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.junit.Assert;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.Paths;
 import java.util.Locale;
 
 public abstract class Utils {
@@ -70,5 +74,11 @@ public abstract class Utils {
         }
         else
             throw new WordsExtractorException("Unknown OS' name " + osName);
+    }
+
+    public static String getResourcePath(Object obj, String fileName) throws URISyntaxException {
+        URL path = obj.getClass().getClassLoader().getResource(fileName);
+        Assert.assertNotNull("Can't found the resource file " + fileName, path);
+        return Paths.get(path.toURI()).toString();
     }
 }

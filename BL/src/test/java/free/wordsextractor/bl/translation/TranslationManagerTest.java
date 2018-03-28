@@ -1,7 +1,9 @@
 package free.wordsextractor.bl.translation;
 
 import free.wordsextractor.bl.WordsExtractorException;
-import free.wordsextractor.bl.extraction.txt_proc.OnlyWordsDictionaryTest;
+import free.wordsextractor.bl.extraction.file_proc.Utils;
+import free.wordsextractor.bl.extraction.txt_proc.dictionaries.Dictionary;
+import free.wordsextractor.bl.extraction.txt_proc.dictionaries.OnlyWordsDictionary;
 import org.junit.Assert;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,7 +18,8 @@ class TranslationManagerTest {
     @Test
     void removeKnownWords() {
         try {
-            TranslationManager mngr = new TranslationManager(OnlyWordsDictionaryTest.getDictionaryFromFile(this, "list.txt"));
+            Dictionary dict = new OnlyWordsDictionary(Paths.get(Utils.getResourcePath(this, "list.txt")));
+            TranslationManager mngr = new TranslationManager(dict);
             Assert.assertEquals("[one, two, three, four, five, six, seven, eight]", mngr.getExtractedWordsDict().getWords().toString());
 
             mngr.removeKnownWords(Paths.get(this.getClass().getClassLoader().getResource(TranslationManager.KNOWN_WORDS_FILE_NAME).toURI()));

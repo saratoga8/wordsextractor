@@ -76,5 +76,15 @@ public abstract class Translation {
         public String getVal() {
             return val;
         }
+
+        public static Langs getLang(String langName) throws WordsExtractorException {
+            switch (langName.toLowerCase()) {
+                case "en":  return ENG;
+                case "eng": return ENG;
+                case "ru":  return RUS;
+                case "rus": return RUS;
+            }
+            throw new WordsExtractorException("Unknown language: " + langName);
+        }
     }
 }

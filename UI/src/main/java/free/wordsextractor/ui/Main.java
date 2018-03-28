@@ -3,7 +3,7 @@ package free.wordsextractor.ui;
 import free.wordsextractor.bl.WordsExtractorException;
 import free.wordsextractor.bl.extraction.file_proc.FileManager;
 import free.wordsextractor.bl.extraction.file_proc.extractors.WordsExtractor;
-import free.wordsextractor.bl.extraction.txt_proc.Dictionary;
+import free.wordsextractor.bl.extraction.txt_proc.dictionaries.Dictionary;
 import free.wordsextractor.bl.translation.TranslationManager;
 
 import java.nio.file.Path;
@@ -15,7 +15,6 @@ public class Main {
         if (args.length > 2) {
             String txtFilePath = args[1],
                     extractedWordsTxtFilePath = args[2];
-
 
             try {
                 final FileManager fileMngr = new FileManager(txtFilePath);

@@ -8,7 +8,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -22,10 +21,7 @@ class FileManagerTest {
     void extractTxtFiles(String fileName) {
 
         try {
-            URL path = this.getClass().getClassLoader().getResource(fileName);
-            Assert.assertNotNull("Can't found the resource file " + fileName, path);
-
-            String TXT_FILE_PATH = Paths.get(path.toURI()).toString();
+            String TXT_FILE_PATH = Utils.getResourcePath(this, fileName);
 
             Path extractedTxtFile = new FileManager(TXT_FILE_PATH).extractTxtFiles(123).get(0);
 
@@ -38,15 +34,14 @@ class FileManagerTest {
         }
     }
 
+
+
     @DisplayName("Empty text file")
     @ParameterizedTest
     @ValueSource(strings = {"empty.txt"})
     void emptyFile(String fileName) {
         try {
-            URL path = this.getClass().getClassLoader().getResource(fileName);
-            Assert.assertNotNull("Can't found the resource file " + fileName, path);
-
-            String TXT_FILE_PATH = Paths.get(path.toURI()).toString();
+            String TXT_FILE_PATH = Utils.getResourcePath(this, fileName);
             new FileManager(TXT_FILE_PATH).extractTxtFiles(123).get(0);
             Assert.assertTrue("There should be exception of an empty text file", false);
         } catch (Exception e) {

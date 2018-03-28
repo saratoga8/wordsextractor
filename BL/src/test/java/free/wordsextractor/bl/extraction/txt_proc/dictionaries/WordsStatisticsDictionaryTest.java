@@ -1,4 +1,4 @@
-package free.wordsextractor.bl.extraction.txt_proc;
+package free.wordsextractor.bl.extraction.txt_proc.dictionaries;
 
 import free.wordsextractor.bl.WordsExtractorException;
 import free.wordsextractor.bl.extraction.file_proc.Utils;

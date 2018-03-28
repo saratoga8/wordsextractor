@@ -1,4 +1,4 @@
-package free.wordsextractor.bl.extraction.txt_proc;
+package free.wordsextractor.bl.extraction.txt_proc.dictionaries;
 
 import java.util.ArrayList;
 import java.util.Hashtable;

@@ -2,8 +2,8 @@ package free.wordsextractor.bl.extraction.file_proc.extractors;
 
 import com.drew.lang.annotations.NotNull;
 import free.wordsextractor.bl.WordsExtractorException;
-import free.wordsextractor.bl.extraction.txt_proc.Dictionary;
-import free.wordsextractor.bl.extraction.txt_proc.WordsStatisticsDictionary;
+import free.wordsextractor.bl.extraction.txt_proc.dictionaries.Dictionary;
+import free.wordsextractor.bl.extraction.txt_proc.dictionaries.WordsStatisticsDictionary;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
