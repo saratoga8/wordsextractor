@@ -8,6 +8,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -27,6 +28,10 @@ public class OnlyWordsDictionary implements Dictionary {
         words = WordsExtractor.extractWordsFromFile(path);
     }
 
+    public OnlyWordsDictionary() {
+        this.words = new LinkedList<>();
+    }
+
     /**
      * Add a new word to the dictionary
      * @param word The new word
@@ -39,6 +44,11 @@ public class OnlyWordsDictionary implements Dictionary {
         }
         else
             log.error("The given word is NULL or EMPTY and can't be added to the dictionary");
+    }
+
+    @Override
+    public void addTranslation(String word, String translation) {
+        log.error("Should be used addWord() function!");
     }
 
     /**
@@ -66,6 +76,12 @@ public class OnlyWordsDictionary implements Dictionary {
             return words.remove(word);
     }
 
+    @Override
+    public String getTranslation(String word) {
+        log.error("There are no translations in a only words dictionary");
+        return "";
+    }
+
     /**
      * Get all the words of the dictionary
      * @return The list of dictionary's words
@@ -73,5 +89,11 @@ public class OnlyWordsDictionary implements Dictionary {
     @Override
     public List<String> getWords() {
         return words;
+    }
+
+    @Override
+    public List<String> getTranslations() {
+        log.error("There are no translations in a dictionary with only words!");
+        return new LinkedList<>();
     }
 }

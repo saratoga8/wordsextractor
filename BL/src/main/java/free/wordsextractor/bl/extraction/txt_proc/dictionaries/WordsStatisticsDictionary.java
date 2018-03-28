@@ -61,6 +61,11 @@ public class WordsStatisticsDictionary implements Dictionary {
         wordsStat.put(strippedWrd, num);
     }
 
+    @Override
+    public void addTranslation(String word, String translation) {
+        log.error("Should be used addWord() function!");
+    }
+
     /**
      * Remove from beginning and end of the word numbers and punctuation chars
      * @param word The word for stripping
@@ -97,6 +102,11 @@ public class WordsStatisticsDictionary implements Dictionary {
         return new ArrayList<>(wordsStat.keySet());
     }
 
+    @Override
+    public List<Integer> getTranslations() {
+        return new ArrayList<>(wordsStat.values());
+    }
+
     /**
      * Check a given word is in the dictionary
      * @param word The checked word
@@ -116,5 +126,11 @@ public class WordsStatisticsDictionary implements Dictionary {
     @Override
     public boolean removeWord(String word) {
         return wordsStat.remove(word) != null;
+    }
+
+    @Override
+    public String getTranslation(String word) {
+        log.error("There are no translations in a statistics dictionary");
+        return "";
     }
 }

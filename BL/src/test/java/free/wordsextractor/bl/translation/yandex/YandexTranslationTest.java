@@ -1,13 +1,11 @@
 package free.wordsextractor.bl.translation.yandex;
 
-import free.wordsextractor.bl.WordsExtractorException;
 import free.wordsextractor.bl.translation.Translation;
 import org.junit.Assert;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
-import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -34,11 +32,6 @@ class YandexTranslationTest {
     @Test
     void translateWords() {
         List<String> words = new LinkedList<> (Arrays.asList("test", WORD));
-        try {
-            Hashtable<String, String> translations = yandex.translate(words);
-            Assert.assertEquals(EXPECTED_TRANSLATION, translations.get(WORD));
-        } catch (WordsExtractorException e) {
-            System.err.println("The test aborted because of exception: " + e);
-        }
+        Assert.assertEquals(EXPECTED_TRANSLATION, yandex.translate(words).getTranslation(WORD));
     }
 }

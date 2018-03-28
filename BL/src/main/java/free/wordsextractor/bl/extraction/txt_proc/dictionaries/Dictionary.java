@@ -21,11 +21,19 @@ public interface Dictionary {
     Logger log = LogManager.getLogger(Dictionary.class);        /* logger */
 
     /**
-     * Add a word to the dictionary
+     * Add only a word to the dictionary without translation
      * @param word The new word
      */
     @NotNull
-    void addWord(String word);
+    void addWord(String word) throws WordsExtractorException;
+
+    /**
+     * Add translation to the dictionary
+     * @param word The word
+     * @param translation The word's translation
+     */
+    @NotNull
+    void addTranslation(String word, String translation);
 
     /**
      * Check a given word is in the dictionary
@@ -42,6 +50,9 @@ public interface Dictionary {
      */
     @NotNull
     boolean removeWord(String word);
+
+    @NotNull
+    String getTranslation(String word);
 
     /**
      * Save the dictionary
@@ -79,4 +90,7 @@ public interface Dictionary {
      */
     @NotNull
     List<String> getWords();
+
+    @NotNull
+    List<?> getTranslations();
 }

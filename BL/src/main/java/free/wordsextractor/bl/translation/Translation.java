@@ -2,8 +2,9 @@ package free.wordsextractor.bl.translation;
 
 import com.drew.lang.annotations.NotNull;
 import free.wordsextractor.bl.WordsExtractorException;
+import free.wordsextractor.bl.extraction.txt_proc.dictionaries.Dictionary;
+import free.wordsextractor.bl.extraction.txt_proc.dictionaries.TranslationsDictionary;
 
-import java.util.Hashtable;
 import java.util.List;
 
 /**
@@ -52,14 +53,10 @@ public abstract class Translation {
      * @param words The given list of words
      * @return Hash table of the translations
      */
-    public Hashtable<String, String> translate(final List<String> words) throws WordsExtractorException {
-        if(!words.isEmpty()) {
-            final Hashtable<String, String> translations = new Hashtable<>();
-            words.parallelStream().forEach(word -> translations.put(word,translate(word)) );
-            return translations;
-        }
-        else
-            throw new WordsExtractorException("The given list of words for translation is empty");
+    public Dictionary translate(final List<String> words) {
+        final TranslationsDictionary dictionary = new TranslationsDictionary();
+        words.parallelStream().forEach(word -> dictionary.addTranslation(word,translate(word)) );
+        return dictionary;
     }
 
     /**
