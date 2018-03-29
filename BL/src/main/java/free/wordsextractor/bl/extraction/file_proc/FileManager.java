@@ -96,6 +96,14 @@ public class FileManager {
         }
     }
 
+    /**
+     * Get path of a file from resources
+     * @param fileName The name of the file
+     * @param obj Object instance
+     * @return The found path
+     * @throws WordsExtractorException
+     * @throws URISyntaxException
+     */
     @NotNull
     public static Path getResourcesFilePath(String fileName, final Object obj) throws WordsExtractorException, URISyntaxException {
         final URL url = obj.getClass().getClassLoader().getResource(fileName);

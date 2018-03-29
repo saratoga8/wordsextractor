@@ -112,6 +112,7 @@ public class YandexTranslationBean implements TranslationBean {
             this.synonymouses = synonymouses;
         }
 
+        @Override
         public String toString() {
             StringBuilder txt = new StringBuilder(word);
             if(synonymouses != null)
@@ -126,6 +127,7 @@ public class YandexTranslationBean implements TranslationBean {
         }
 
         private class Synonymous extends OnlyText {
+            @Override
             public String toString() {
                 return ", " + getWord();
             }
@@ -138,6 +140,7 @@ public class YandexTranslationBean implements TranslationBean {
         }
     }
 
+    @Override
     @NotNull
     public String toString() {
         StringBuilder txt = new StringBuilder();

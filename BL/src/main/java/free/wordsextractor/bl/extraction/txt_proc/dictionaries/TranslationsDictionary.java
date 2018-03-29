@@ -5,6 +5,7 @@ import free.wordsextractor.bl.WordsExtractorException;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.LinkedList;
 import java.util.List;
 
 public class TranslationsDictionary implements Dictionary {
@@ -45,5 +46,13 @@ public class TranslationsDictionary implements Dictionary {
         return new ArrayList<>(dict.values());
     }
 
+    @Override
+    public List<?> getSortedTranslation() {
+        final List<String> words = getWords();
+        words.sort(String.CASE_INSENSITIVE_ORDER);
 
+        final List<String> sortedTranslations = new LinkedList<>();
+        words.forEach(word -> sortedTranslations.add(getTranslation(word)));
+        return sortedTranslations;
+    }
 }

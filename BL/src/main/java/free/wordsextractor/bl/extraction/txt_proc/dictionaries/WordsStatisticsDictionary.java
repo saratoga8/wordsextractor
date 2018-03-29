@@ -7,6 +7,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Hashtable;
 import java.util.List;
 
@@ -105,6 +106,13 @@ public class WordsStatisticsDictionary implements Dictionary {
     @Override
     public List<Integer> getTranslations() {
         return new ArrayList<>(wordsStat.values());
+    }
+
+    @Override
+    public List<?> getSortedTranslation() {
+        List<Integer> translations = new ArrayList<>(wordsStat.values());
+        Collections.sort(translations, Integer::compareTo);
+        return translations;
     }
 
     /**

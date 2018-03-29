@@ -2,6 +2,7 @@ package free.wordsextractor.bl.extraction.file_proc.extractors;
 
 import com.drew.lang.annotations.NotNull;
 import free.wordsextractor.bl.WordsExtractorException;
+import free.wordsextractor.bl.extraction.file_proc.FileManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.tika.config.TikaConfig;
@@ -16,9 +17,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 /**
  * Text extractor using Tika
@@ -29,6 +28,8 @@ public class TikaTextExtractor implements TextExtractorInterface {
     private final BodyContentHandler handler;                                     /* Tika's body content handler */
     private final TikaConfig tikaConf;                                            /* Tika's configuration */
 
+    private final String TIKA_CONF_FILE = "tika-conf.xml";                        /* Tika's configuration file name */
+
     /**
      * Constructor
      */
@@ -36,16 +37,9 @@ public class TikaTextExtractor implements TextExtractorInterface {
         handler = new BodyContentHandler();
 
         Path tikaConfPath;
-        String TIKA_CONF_FILE = "tika-conf.xml";
+
         try {
-            final URL url = this.getClass().getClassLoader().getResource(TIKA_CONF_FILE);
-            if (url != null) {
-                tikaConfPath = Paths.get(url.toURI());
-                if (tikaConfPath == null)
-                    throw new WordsExtractorException("Can't get path of Tika configuration file " + TIKA_CONF_FILE);
-            }
-            else
-                throw new WordsExtractorException("Can't find Tika's configuration file " + TIKA_CONF_FILE);
+            tikaConfPath = FileManager.getResourcesFilePath(TIKA_CONF_FILE, this);
         } catch (URISyntaxException e) {
             throw new WordsExtractorException("Can't find Tika configuration file " + TIKA_CONF_FILE + ": " + e);
         }

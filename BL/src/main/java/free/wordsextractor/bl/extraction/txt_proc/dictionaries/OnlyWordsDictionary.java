@@ -92,4 +92,10 @@ public class OnlyWordsDictionary implements Dictionary {
         log.error("There are no translations in a dictionary with only words!");
         return new LinkedList<>();
     }
+
+    @Override
+    public List<?> getSortedTranslation() {
+        log.error("There are no translations in a dictionary with only words!");
+        return new LinkedList<>();
+    }
 }
