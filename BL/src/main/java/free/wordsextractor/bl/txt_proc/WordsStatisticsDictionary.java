@@ -1,4 +1,4 @@
-package free.wordsextractor.bl.txt_proc;
+package free.wordsextractor.bl.extraction.txt_proc.dictionaries;
 
 import com.drew.lang.annotations.NotNull;
 import free.wordsextractor.bl.WordsExtractorException;
@@ -7,6 +7,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Hashtable;
 import java.util.List;
 
@@ -17,6 +18,8 @@ public class WordsStatisticsDictionary implements Dictionary {
     private static final Logger log = LogManager.getLogger(WordsStatisticsDictionary.class);        /** logger */
 
     private final Hashtable<String, Integer> wordsStat;                                             /** words statistics */
+
+    final static public String FILE_NAME = "stats.dict";
 
     /**
      * Constructor
@@ -31,11 +34,11 @@ public class WordsStatisticsDictionary implements Dictionary {
      */
     @NotNull
     public String toString() {
-        final List<String> wordsSet = new ArrayList<>(wordsStat.keySet());
-        wordsSet.sort(String::compareToIgnoreCase);
+        final List<String> words = new ArrayList<>(wordsStat.keySet());
+        words.sort(String::compareToIgnoreCase);
 
         final StringBuilder strBuilder = new StringBuilder();
-        wordsSet.stream().forEach(word -> strBuilder.append(word + " " + wordsStat.get(word)));
+        words.forEach(word -> strBuilder.append(word).append(" ").append(wordsStat.get(word)));
 
         return strBuilder.toString();
     }
@@ -59,6 +62,11 @@ public class WordsStatisticsDictionary implements Dictionary {
         wordsStat.put(strippedWrd, num);
     }
 
+    @Override
+    public void addTranslation(String word, String translation) {
+        log.error("Should be used addWord() function!");
+    }
+
     /**
      * Remove from beginning and end of the word numbers and punctuation chars
      * @param word The word for stripping
@@ -76,13 +84,35 @@ public class WordsStatisticsDictionary implements Dictionary {
      * @throws WordsExtractorException
      */
     @NotNull
-    public void save(String path) throws WordsExtractorException {
+    public void saveIn(String path) throws WordsExtractorException {
         log.debug ("Saving dictionary to the file " + path);
 
         if (!wordsStat.isEmpty())
-            Dictionary.super.save(path);
+            Dictionary.super.saveIn(path);
         else
             throw new WordsExtractorException("There are no words in the dictionary");
+    }
+
+    @NotNull
+    /**
+     * Get words of the dictionary
+     * @return The list of words
+     */
+    @Override
+    public List<String> getWords() {
+        return new ArrayList<>(wordsStat.keySet());
+    }
+
+    @Override
+    public List<Integer> getTranslations() {
+        return new ArrayList<>(wordsStat.values());
+    }
+
+    @Override
+    public List<?> getSortedTranslations() {
+        List<Integer> translations = new ArrayList<>(wordsStat.values());
+        Collections.sort(translations, Integer::compareTo);
+        return translations;
     }
 
     /**
@@ -93,5 +123,22 @@ public class WordsStatisticsDictionary implements Dictionary {
     @NotNull
     public boolean contains(String word) {
         return wordsStat.containsKey(word);
+    }
+
+    @NotNull
+    /**
+     * Remove the given word from the dictionary
+     * @param word The word for removing
+     * @return
+     */
+    @Override
+    public boolean removeWord(String word) {
+        return wordsStat.remove(word) != null;
+    }
+
+    @Override
+    public String getTranslation(String word) {
+        log.error("There are no translations in a statistics dictionary");
+        return "";
     }
 }

@@ -16,7 +16,7 @@ import java.nio.file.Paths;
 
 class FileManagerTest {
 
-    @DisplayName("Extract text files from different formats files")
+    @DisplayName("Extract text files from different formats languages")
     @ParameterizedTest
     @ValueSource(strings = {"eng.txt", "cyr.txt", "heb.txt"})
     void extractTxtFiles(String fileName) {
