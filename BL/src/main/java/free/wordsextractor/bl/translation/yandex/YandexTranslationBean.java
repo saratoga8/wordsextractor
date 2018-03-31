@@ -116,7 +116,7 @@ public class YandexTranslationBean implements TranslationBean {
         public String toString() {
             StringBuilder txt = new StringBuilder(word);
             if(synonymouses != null)
-                synonymouses.forEach(synonymous -> txt.append(synonymous + " "));
+                synonymouses.forEach(synonymous -> txt.append(synonymous));
             if(examples != null) {
                 txt.append("\n\t(");
                 examples.forEach(example -> txt.append(example + ", "));
