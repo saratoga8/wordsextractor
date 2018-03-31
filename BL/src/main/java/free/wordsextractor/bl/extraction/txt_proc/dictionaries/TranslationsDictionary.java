@@ -47,7 +47,7 @@ public class TranslationsDictionary implements Dictionary {
     }
 
     @Override
-    public List<?> getSortedTranslation() {
+    public List<?> getSortedTranslations() {
         final List<String> words = getWords();
         words.sort(String.CASE_INSENSITIVE_ORDER);
 

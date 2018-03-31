@@ -36,7 +36,7 @@ public class E2ETest {
             final TranslationManager translationMngr = new TranslationManager(wordsStatsDict);
             translationMngr.removeKnownWords(Paths.get(TranslationManager.KNOWN_WORDS_FILE_NAME));
             List<String> words = translationMngr.getExtractedWordsDict().getWords();
-            String actual = new YandexTranslation(Translation.Langs.getLang(langFrom), Translation.Langs.getLang(langTo)).translate(words).getSortedTranslation().toString();
+            String actual = new YandexTranslation(Translation.Langs.getLang(langFrom), Translation.Langs.getLang(langTo)).translate(words).getSortedTranslations().toString();
 
             String expected = "[a [ə] pronoun\n" +
                     "\tодин, некий, каждый, какой-то\n" +

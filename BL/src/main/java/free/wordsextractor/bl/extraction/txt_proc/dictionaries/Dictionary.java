@@ -95,5 +95,5 @@ public interface Dictionary {
     List<?> getTranslations();
 
     @NotNull
-    List<?> getSortedTranslation();
+    List<?> getSortedTranslations();
 }

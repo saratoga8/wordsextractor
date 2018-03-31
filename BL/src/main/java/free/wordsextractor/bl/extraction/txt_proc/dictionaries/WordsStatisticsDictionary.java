@@ -109,7 +109,7 @@ public class WordsStatisticsDictionary implements Dictionary {
     }
 
     @Override
-    public List<?> getSortedTranslation() {
+    public List<?> getSortedTranslations() {
         List<Integer> translations = new ArrayList<>(wordsStat.values());
         Collections.sort(translations, Integer::compareTo);
         return translations;
