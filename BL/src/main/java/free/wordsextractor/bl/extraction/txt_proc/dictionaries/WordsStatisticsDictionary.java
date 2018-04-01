@@ -6,10 +6,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Hashtable;
-import java.util.List;
+import java.util.*;
 
 /**
  * WordsStatisticsDictionary of word statistics
@@ -113,6 +110,12 @@ public class WordsStatisticsDictionary implements Dictionary {
         List<Integer> translations = new ArrayList<>(wordsStat.values());
         Collections.sort(translations, Integer::compareTo);
         return translations;
+    }
+
+    @Override
+    public List<String> getNotTranslatedWords() {
+        log.error("There are no translations in a statistics dictionary");
+        return new LinkedList<>();
     }
 
     /**

@@ -182,7 +182,7 @@ public class E2ETest {
                     "\tзадать\n" +
                     "\t(set) \n" +
                     "\n" +
-                    ", , data [ˈdeɪtə] noun\n" +
+                    ", data [ˈdeɪtə] noun\n" +
                     "\tданные, сведения, информация\n" +
                     "\t(information) \n" +
                     "\tобработка данных\n" +
@@ -288,7 +288,7 @@ public class E2ETest {
                     "\tкогда\n" +
                     "\t(once) \n" +
                     "\n" +
-                    ", , method [ˈmeθəd] noun\n" +
+                    ", method [ˈmeθəd] noun\n" +
                     "\tметод, способ, методика, прием, подход, технология, путь, методология, техника\n" +
                     "\t(technique, way, approach, methodology) \n" +
                     "\tсредство\n" +
@@ -298,7 +298,7 @@ public class E2ETest {
                     "\tметодический\n" +
                     "\t(methodical) \n" +
                     "\n" +
-                    ", , multiple [ˈmʌltɪpl] adjective\n" +
+                    ", multiple [ˈmʌltɪpl] adjective\n" +
                     "\tмногократный, многоразовый\n" +
                     "\t(repeated, reusable) \n" +
                     "\tразличный, многочисленный, разнообразный, неоднократный, разный, многообразный\n" +
@@ -335,7 +335,7 @@ public class E2ETest {
                     "\tмногократно\n" +
                     "\t(many times) \n" +
                     "\n" +
-                    ", , of [ɔv] preposition\n" +
+                    ", of [ɔv] preposition\n" +
                     "\tиз, от, с, при, среди\n" +
                     "\t(from, with, among) \n" +
                     "\tо, в, об, относительно, по, на, за, к, для\n" +
@@ -397,7 +397,7 @@ public class E2ETest {
                     "\tпараметризованный, параметрический\n" +
                     "\t(parametrized, parametric) \n" +
                     "\n" +
-                    ", , pass [pɑːs] verb\n" +
+                    ", pass [pɑːs] verb\n" +
                     "\tпройти, проходить, миновать\n" +
                     "\t(undergo, bypass) \n" +
                     "\tпередавать, передать\n" +
@@ -449,7 +449,7 @@ public class E2ETest {
                     "\tесли\n" +
                     "\t(if) \n" +
                     "\n" +
-                    ", , specify [ˈspesɪfaɪ] verb\n" +
+                    ", specify [ˈspesɪfaɪ] verb\n" +
                     "\tуказывать, обозначать, указать\n" +
                     "\t(indicate) \n" +
                     "\tзадавать, устанавливать, установить, задать\n" +

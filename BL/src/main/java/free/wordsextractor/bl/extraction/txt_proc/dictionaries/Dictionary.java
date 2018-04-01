@@ -96,4 +96,6 @@ public interface Dictionary {
 
     @NotNull
     List<?> getSortedTranslations();
+
+    List<String> getNotTranslatedWords();
 }
