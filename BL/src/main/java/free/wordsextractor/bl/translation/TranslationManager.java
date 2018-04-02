@@ -31,7 +31,9 @@ public class TranslationManager {
 
     /**
      * Remove known words from the dictionary of extracted words
+     * @param knownWordsFilePath Path of a file with known words
      */
+    @NotNull
     public void removeKnownWords(final Path knownWordsFilePath) {
         File file = knownWordsFilePath.toFile();
         if (file.exists()) {
@@ -50,6 +52,10 @@ public class TranslationManager {
             log.warn("A file with known words doesn't exist");
     }
 
+    /**
+     * Get a dictionary of extracted words
+     * @return The dictionary
+     */
     @NotNull
     public Dictionary getExtractedWordsDict() {
         return dict;

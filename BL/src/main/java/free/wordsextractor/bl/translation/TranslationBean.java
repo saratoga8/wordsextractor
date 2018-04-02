@@ -6,7 +6,6 @@ import com.drew.lang.annotations.NotNull;
  * A bean of translation
  */
 public interface TranslationBean {
-
     /**
      * Get name of a translation service
      * @return Translation service name

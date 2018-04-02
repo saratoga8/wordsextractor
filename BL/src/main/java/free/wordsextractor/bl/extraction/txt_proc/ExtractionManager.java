@@ -15,16 +15,13 @@ import java.util.List;
  */
 public class ExtractionManager {
     private final Logger log = LogManager.getLogger(ExtractionManager.class);     /* log item */
-    final private List<TextExtractorInterface> extractors;                        /* text extractors */
+    final private List<TextExtractorInterface> extractors ;                       /* text extractors */
 
     /**
      * Constructor
-     * @throws WordsExtractorException
      */
     public ExtractionManager() throws WordsExtractorException {
         extractors = Collections.singletonList(new TikaTextExtractor());
-        if(extractors.isEmpty())
-            throw new WordsExtractorException("There are no text extractors in use");
     }
 
     /**

@@ -48,7 +48,6 @@ public abstract class WebTranslation extends Translation {
     public String translate(String word) {
         log.debug("Translating the word '" + word + "' by " + getTranslationBean().getName() + "'s dictionary");
 
-
         String responseTxt = HttpClient.getResponseFrom(buildRequest(word), getResponseCodes());
         return new Gson().fromJson(responseTxt, getTranslationBean()).toString();
     }

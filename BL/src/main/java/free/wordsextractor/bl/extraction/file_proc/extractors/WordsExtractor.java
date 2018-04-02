@@ -56,7 +56,7 @@ public class WordsExtractor {
     public static List<String> extractWordsFromFile(final Path path) throws WordsExtractorException, IOException {
         log.debug("Extract words from the file " + path.toString());
 
-        final LinkedList words = new LinkedList<String>();
+        final LinkedList<String> words = new LinkedList<>();
         if (!path.toString().isEmpty()) {
             String word;
             try (final Scanner scanner = new Scanner(path, TextExtractorInterface.CHAR_SET)) {

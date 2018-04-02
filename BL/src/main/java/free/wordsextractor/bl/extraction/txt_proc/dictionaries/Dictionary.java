@@ -51,6 +51,11 @@ public interface Dictionary {
     @NotNull
     boolean removeWord(String word);
 
+    /**
+     * Get translation of the given word
+     * @param word The word
+     * @return The word's translation
+     */
     @NotNull
     String getTranslation(String word);
 
@@ -91,11 +96,23 @@ public interface Dictionary {
     @NotNull
     List<String> getWords();
 
+    /**
+     * Get list of translations
+     * @return The translations
+     */
     @NotNull
     List<?> getTranslations();
 
+    /**
+     * Get sorted list of translations(sorted by translated words)
+     * @return The sorted list
+     */
     @NotNull
     List<?> getSortedTranslations();
 
+    /**
+     * Get list of words they aren't translated
+     * @return The list of words
+     */
     List<String> getNotTranslatedWords();
 }
