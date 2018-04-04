@@ -3,6 +3,7 @@ package free.wordsextractor.bl.extraction.txt_proc.dictionaries;
 import com.drew.lang.annotations.NotNull;
 import free.wordsextractor.bl.WordsExtractorException;
 import free.wordsextractor.bl.extraction.file_proc.extractors.TextExtractorInterface;
+import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -66,7 +67,7 @@ public interface Dictionary {
      */
     @NotNull
     default void saveIn(String path) throws WordsExtractorException {
-        File file = new File(path);
+        final File file = new File(path);
         if (file.exists()) {
             try (BufferedWriter writer = Files.newBufferedWriter(file.toPath(), Charset.forName(TextExtractorInterface.CHAR_SET), StandardOpenOption.CREATE)) {
                 writer.write(toString());
@@ -86,7 +87,10 @@ public interface Dictionary {
      */
     @NotNull
     default void removeWordsOfDict(final Dictionary dict) {
-        dict.getWords().forEach(word -> { if(!removeWord(word)) log.error("Can't remove word '" + word + "' from dictionary"); });
+        if(dict != null)
+            dict.getWords().forEach(word -> { if(!removeWord(word)) log.warn("Can't remove word '" + word + "' from dictionary"); });
+        else
+            log.error("The given dictionary is NULL");
     }
 
     /**
@@ -115,4 +119,24 @@ public interface Dictionary {
      * @return The list of words
      */
     List<String> getNotTranslatedWords();
+
+    @FunctionalInterface
+    interface OperationOnWord<T> {
+        T apply(String word);
+    }
+
+    static <T> T secureOperationOnWord(String word, OperationOnWord<T> operationOnWord, T defaultVal) {
+        if(!StringUtils.isBlank(word))
+            return operationOnWord.apply(word);
+        else
+            log.error("The given word is NULL or EMPTY");
+        return defaultVal;
+    }
+
+    static <T> void secureOperationOnWord(String word, OperationOnWord<T> operationOnWord) {
+        if(!StringUtils.isBlank(word))
+            operationOnWord.apply(word);
+        else
+            log.error("The given word is NULL or EMPTY");
+    }
 }

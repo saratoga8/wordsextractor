@@ -31,11 +31,14 @@ public class ExtractionManager {
      * @throws WordsExtractorException
      */
     public String extractTxtFrom(final Path path) throws WordsExtractorException {
-        for (final TextExtractorInterface txtExtractor: extractors) {
-            String txt = txtExtractor.extractTxtFrom(path);
-            if (!txt.isEmpty())
-                return txt;
+        if(path != null) {
+            for (final TextExtractorInterface txtExtractor : extractors) {
+                String txt = txtExtractor.extractTxtFrom(path);
+                if (!txt.isEmpty())
+                    return txt;
+            }
+            throw new WordsExtractorException("There is no text extractor for the given file " + path);
         }
-        throw new WordsExtractorException("There is no text extractor for the given file " + path);
+        throw new WordsExtractorException("The given path is NULL");
     }
 }

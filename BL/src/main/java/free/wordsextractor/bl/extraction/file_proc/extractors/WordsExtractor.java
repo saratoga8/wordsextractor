@@ -41,7 +41,7 @@ public class WordsExtractor {
      * @return Created dictionary
      */
     @NotNull
-    public Dictionary createWordsStatsDictionary() {
+    public Dictionary createWordsStatsDictionary() throws WordsExtractorException {
         return addWordsToDict(new WordsStatisticsDictionary());
     }
 
@@ -53,24 +53,26 @@ public class WordsExtractor {
      * @throws IOException
      */
     @NotNull
-    public static List<String> extractWordsFromFile(final Path path) throws WordsExtractorException, IOException {
-        log.debug("Extract words from the file " + path.toString());
-
+    public static List<String> extractWordsFromFile(final Path path) throws IOException {
         final LinkedList<String> words = new LinkedList<>();
-        if (!path.toString().isEmpty()) {
-            String word;
-            try (final Scanner scanner = new Scanner(path, TextExtractorInterface.CHAR_SET)) {
-                while (scanner.hasNext()) {
-                    word = scanner.next();
-                    if(!words.add(word))
-                        log.error("Can't add the word '" + word + "'");
+        if(path != null) {
+            if (!path.toString().isEmpty()) {
+                String word;
+                try (final Scanner scanner = new Scanner(path, TextExtractorInterface.CHAR_SET)) {
+                    while (scanner.hasNext()) {
+                        word = scanner.next();
+                        if(!words.add(word))
+                            log.error("Can't add the word '" + word + "'");
+                    }
+                    if (words.isEmpty())
+                        log.error("In the file " + path.toString() + " no words has found");
                 }
-                if (words.isEmpty())
-                    throw new WordsExtractorException("In the file " + path.toString() + " no words has found");
             }
+            else
+                log.error("The given path is EMPTY");
         }
         else
-            throw new WordsExtractorException("The given path is EMPTY");
+            log.error("The given path is NULL");
         return words;
     }
 
@@ -80,14 +82,17 @@ public class WordsExtractor {
      * @return Updated dictionary
      */
     @NotNull
-    private WordsStatisticsDictionary addWordsToDict(final WordsStatisticsDictionary dict) {
-        paths.parallelStream().forEach(path -> {
-            try {
-                extractWordsFromFile(path).forEach(dict::addWord);
-            } catch (WordsExtractorException | IOException e) {
-                log.error("Can't add words from file " + path.toString() + " to a dictionary: " + e);
-            }
-        });
-        return dict;
+    private WordsStatisticsDictionary addWordsToDict(final WordsStatisticsDictionary dict) throws WordsExtractorException {
+        if(dict != null) {
+            paths.parallelStream().forEach(path -> {
+                try {
+                    extractWordsFromFile(path).forEach(dict::addWord);
+                } catch (IOException e) {
+                    log.error("Can't add words from file " + path.toString() + " to a dictionary: " + e);
+                }
+            });
+            return dict;
+        }
+        throw new WordsExtractorException("The given dictionary is NULL");
     }
 }

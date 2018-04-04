@@ -4,6 +4,7 @@ import com.drew.lang.annotations.NotNull;
 import com.google.gson.Gson;
 import free.wordsextractor.bl.extraction.file_proc.extractors.TextExtractorInterface;
 import free.wordsextractor.bl.net.HttpClient;
+import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -49,7 +50,12 @@ public abstract class WebTranslation extends Translation {
         log.debug("Translating the word '" + word + "' by " + getTranslationBean().getName() + "'s dictionary");
 
         String responseTxt = HttpClient.getResponseFrom(buildRequest(word), getResponseCodes());
-        return new Gson().fromJson(responseTxt, getTranslationBean()).toString();
+        if(StringUtils.isBlank(responseTxt)) {
+            log.error("Can't get translation from " + serviceURL);
+            return "";
+        }
+        else
+            return new Gson().fromJson(responseTxt, getTranslationBean()).toString();
     }
 
     @NotNull
