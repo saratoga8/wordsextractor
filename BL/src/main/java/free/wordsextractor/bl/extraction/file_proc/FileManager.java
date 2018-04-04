@@ -52,7 +52,6 @@ public class FileManager {
      * @return The list of paths of the text files containing the extracted text
      * @throws WordsExtractorException
      */
-    @NotNull
     public List<Path> extractTxtFiles(long eachFileSizeBytes) throws WordsExtractorException {
         log.debug("Extracting text files with size " + eachFileSizeBytes + " of each one");
 
@@ -106,10 +105,13 @@ public class FileManager {
      */
     @NotNull
     public static Path getResourcesFilePath(String fileName, final Object obj) throws WordsExtractorException, URISyntaxException {
-        final URL url = obj.getClass().getClassLoader().getResource(fileName);
-        if (url != null) {
-            return Paths.get(url.toURI());
+        if(obj != null) {
+            final URL url = obj.getClass().getClassLoader().getResource(fileName);
+            if (url != null) {
+                return Paths.get(url.toURI());
+            }
+            throw new WordsExtractorException("Can't get URL of the resource file " + fileName);
         }
-        throw new WordsExtractorException("Can't get URL of the resource file " + fileName);
+        throw new WordsExtractorException("The given Object instance is NULL");
     }
 }

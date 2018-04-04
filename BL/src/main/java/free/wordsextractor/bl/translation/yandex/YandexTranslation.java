@@ -55,6 +55,4 @@ public class YandexTranslation extends WebTranslation {
     public Class getTranslationBean() {
         return YandexTranslationBean.class;
     }
-
-
 }

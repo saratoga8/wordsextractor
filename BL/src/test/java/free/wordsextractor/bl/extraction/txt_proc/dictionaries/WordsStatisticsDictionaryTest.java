@@ -58,9 +58,21 @@ class WordsStatisticsDictionaryTest {
     @DisplayName("Add an empty word, only punctuations or only nums")
     @ParameterizedTest
     @ValueSource(strings = {"", "    ", ":-", " 2,", "45"})
-    public void addEmptyWord() {
-        dict.addWord("");
+    public void addEmptyWord(String word) {
+        dict.addWord(word);
         Assert.assertEquals("", dict.toString());
+    }
+
+    @DisplayName("Adding words to a dictionary from a same thread")
+    @Test
+    public void sameThread() {
+        List<String> words1 = Arrays.asList("one", "two", "three", "four");
+        List<String> words2 = Arrays.asList("one", "two", "three", "four");
+
+        words1.forEach(dict::addWord);
+        words2.forEach(dict::addWord);
+        dict.getWords().sort(String::compareToIgnoreCase);
+        Assert.assertEquals("four 2one 2three 2two 2", dict.toString());
     }
 
     @DisplayName("Adding words to a dictionary from different threads")
@@ -70,6 +82,7 @@ class WordsStatisticsDictionaryTest {
         List<String> words2 = Arrays.asList("one", "two", "three", "four");
 
         Arrays.asList(words1, words2).parallelStream().forEach(words -> words.parallelStream().forEach(word -> dict.addWord(word)));
+        dict.getWords().sort(String::compareToIgnoreCase);
         Assert.assertEquals("four 2one 2three 2two 2", dict.toString());
     }
 

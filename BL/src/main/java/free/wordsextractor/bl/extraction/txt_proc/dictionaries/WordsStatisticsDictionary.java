@@ -2,13 +2,12 @@ package free.wordsextractor.bl.extraction.txt_proc.dictionaries;
 
 import com.drew.lang.annotations.NotNull;
 import free.wordsextractor.bl.WordsExtractorException;
-import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Hashtable;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -33,7 +32,7 @@ public class WordsStatisticsDictionary implements Dictionary {
      * @return The string representation of the dictionary
      */
     @NotNull
-    public String toString() {
+    synchronized public String toString() {
         final List<String> words = new ArrayList<>(wordsStat.keySet());
         words.sort(String::compareToIgnoreCase);
 
@@ -48,18 +47,16 @@ public class WordsStatisticsDictionary implements Dictionary {
      * @param word The new word
      */
     @NotNull
-    public void addWord(String word) {
-        log.debug("Add word '" + word + "' to dictionary");
-        if (StringUtils.isBlank(word)) {
-            log.error("Can't add NULL or EMPTY word to dictionary");
-            return;
-        }
-        String strippedWrd = stripAllExceptChars(word);
-        if (strippedWrd.isEmpty())
-            return;
-
-        final Integer num = wordsStat.containsKey(strippedWrd) ? wordsStat.get(strippedWrd) + 1: 1;
-        wordsStat.put(strippedWrd, num);
+    synchronized public void addWord(String word) {
+        final OperationOnWord<Void> operation = wrd -> {
+            String strippedWrd = stripAllExceptChars(wrd);
+            if (!strippedWrd.isEmpty()) {
+                final Integer num = wordsStat.containsKey(strippedWrd) ? wordsStat.get(strippedWrd) + 1 : 1;
+                wordsStat.put(strippedWrd, num);
+            }
+            return null;
+        };
+        Dictionary.secureOperationOnWord(word, operation);
     }
 
     @Override
@@ -73,7 +70,7 @@ public class WordsStatisticsDictionary implements Dictionary {
      * @return Stripped word
      */
     @NotNull
-    private String stripAllExceptChars(String word) {
+    static private String stripAllExceptChars(String word) {
         String PUNCTUATIONS_CHARS_EDGES_REG = "^\\W+|\\W+$", NUM_CHARS_EDGES_REG = "^\\d+|\\d+$";
         return word.replaceAll(PUNCTUATIONS_CHARS_EDGES_REG, "").replaceAll(NUM_CHARS_EDGES_REG, "");
     }
@@ -99,20 +96,26 @@ public class WordsStatisticsDictionary implements Dictionary {
      * @return The list of words
      */
     @Override
-    public List<String> getWords() {
+    synchronized public List<String> getWords() {
         return new ArrayList<>(wordsStat.keySet());
     }
 
     @Override
-    public List<Integer> getTranslations() {
+    synchronized public List<Integer> getTranslations() {
         return new ArrayList<>(wordsStat.values());
     }
 
     @Override
-    public List<?> getSortedTranslations() {
-        List<Integer> translations = new ArrayList<>(wordsStat.values());
-        Collections.sort(translations, Integer::compareTo);
+    synchronized public List<?> getSortedTranslations() {
+        final List<Integer> translations = new ArrayList<>(wordsStat.values());
+        translations.sort(Integer::compareTo);
         return translations;
+    }
+
+    @Override
+    public List<String> getNotTranslatedWords() {
+        log.error("There are no translations in a statistics dictionary");
+        return new LinkedList<>();
     }
 
     /**
@@ -121,8 +124,8 @@ public class WordsStatisticsDictionary implements Dictionary {
      * @return true - The word is in the dictionary
      */
     @NotNull
-    public boolean contains(String word) {
-        return wordsStat.containsKey(word);
+    synchronized public boolean contains(String word) {
+        return Dictionary.secureOperationOnWord(word, wordsStat::containsKey, Boolean.FALSE);
     }
 
     @NotNull
@@ -132,8 +135,8 @@ public class WordsStatisticsDictionary implements Dictionary {
      * @return
      */
     @Override
-    public boolean removeWord(String word) {
-        return wordsStat.remove(word) != null;
+    synchronized public boolean removeWord(String word) {
+        return Dictionary.secureOperationOnWord(word, wrd -> wordsStat.remove(wrd) != null, Boolean.FALSE);
     }
 
     @Override

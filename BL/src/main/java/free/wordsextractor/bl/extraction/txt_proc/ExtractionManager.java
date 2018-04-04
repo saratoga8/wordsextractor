@@ -15,16 +15,13 @@ import java.util.List;
  */
 public class ExtractionManager {
     private final Logger log = LogManager.getLogger(ExtractionManager.class);     /* log item */
-    final private List<TextExtractorInterface> extractors;                        /* text extractors */
+    final private List<TextExtractorInterface> extractors ;                       /* text extractors */
 
     /**
      * Constructor
-     * @throws WordsExtractorException
      */
     public ExtractionManager() throws WordsExtractorException {
         extractors = Collections.singletonList(new TikaTextExtractor());
-        if(extractors.isEmpty())
-            throw new WordsExtractorException("There are no text extractors in use");
     }
 
     /**
@@ -34,11 +31,14 @@ public class ExtractionManager {
      * @throws WordsExtractorException
      */
     public String extractTxtFrom(final Path path) throws WordsExtractorException {
-        for (final TextExtractorInterface txtExtractor: extractors) {
-            String txt = txtExtractor.extractTxtFrom(path);
-            if (!txt.isEmpty())
-                return txt;
+        if(path != null) {
+            for (final TextExtractorInterface txtExtractor : extractors) {
+                String txt = txtExtractor.extractTxtFrom(path);
+                if (!txt.isEmpty())
+                    return txt;
+            }
+            throw new WordsExtractorException("There is no text extractor for the given file " + path);
         }
-        throw new WordsExtractorException("There is no text extractor for the given file " + path);
+        throw new WordsExtractorException("The given path is NULL");
     }
 }

@@ -14,7 +14,6 @@ import org.junit.jupiter.params.provider.CsvSource;
 
 import java.net.URISyntaxException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 
 @DisplayName("E2E Tests")
@@ -34,9 +33,10 @@ public class E2ETest {
             final Dictionary wordsStatsDict = extractor.createWordsStatsDictionary();
 
             final TranslationManager translationMngr = new TranslationManager(wordsStatsDict);
-            translationMngr.removeKnownWords(Paths.get(TranslationManager.KNOWN_WORDS_FILE_NAME));
+            translationMngr.removeKnownWords(FileManager.getResourcesFilePath(TranslationManager.KNOWN_WORDS_FILE_NAME, this));
             List<String> words = translationMngr.getExtractedWordsDict().getWords();
-            String actual = new YandexTranslation(Translation.Langs.getLang(langFrom), Translation.Langs.getLang(langTo)).translate(words).getSortedTranslations().toString();
+            Dictionary dict = new YandexTranslation(Translation.Langs.getLang(langFrom), Translation.Langs.getLang(langTo)).translate(words);
+            String actual = dict.getSortedTranslations().toString();
 
             String expected = "[a [ə] pronoun\n" +
                     "\tодин, некий, каждый, какой-то\n" +
@@ -182,7 +182,7 @@ public class E2ETest {
                     "\tзадать\n" +
                     "\t(set) \n" +
                     "\n" +
-                    ", , data [ˈdeɪtə] noun\n" +
+                    ", data [ˈdeɪtə] noun\n" +
                     "\tданные, сведения, информация\n" +
                     "\t(information) \n" +
                     "\tобработка данных\n" +
@@ -288,7 +288,7 @@ public class E2ETest {
                     "\tкогда\n" +
                     "\t(once) \n" +
                     "\n" +
-                    ", , method [ˈmeθəd] noun\n" +
+                    ", method [ˈmeθəd] noun\n" +
                     "\tметод, способ, методика, прием, подход, технология, путь, методология, техника\n" +
                     "\t(technique, way, approach, methodology) \n" +
                     "\tсредство\n" +
@@ -298,7 +298,7 @@ public class E2ETest {
                     "\tметодический\n" +
                     "\t(methodical) \n" +
                     "\n" +
-                    ", , multiple [ˈmʌltɪpl] adjective\n" +
+                    ", multiple [ˈmʌltɪpl] adjective\n" +
                     "\tмногократный, многоразовый\n" +
                     "\t(repeated, reusable) \n" +
                     "\tразличный, многочисленный, разнообразный, неоднократный, разный, многообразный\n" +
@@ -335,7 +335,7 @@ public class E2ETest {
                     "\tмногократно\n" +
                     "\t(many times) \n" +
                     "\n" +
-                    ", , of [ɔv] preposition\n" +
+                    ", of [ɔv] preposition\n" +
                     "\tиз, от, с, при, среди\n" +
                     "\t(from, with, among) \n" +
                     "\tо, в, об, относительно, по, на, за, к, для\n" +
@@ -346,26 +346,6 @@ public class E2ETest {
                     "\t(as part) \n" +
                     "\tиз числа\n" +
                     "\t(among) \n" +
-                    "\n" +
-                    ", one [wʌn] pronoun\n" +
-                    "\tодин, какой-то\n" +
-                    "\t(a) \n" +
-                    "\tкто-то\n" +
-                    "\t(somebody) \n" +
-                    "\n" +
-                    "one [wʌn] numeral\n" +
-                    "\tпервый\n" +
-                    "\t(first) \n" +
-                    "\n" +
-                    "one [wʌn] noun\n" +
-                    "\tединица\n" +
-                    "\t(unit) \n" +
-                    "\tчеловек\n" +
-                    "\tодна\n" +
-                    "\n" +
-                    "one [wʌn] adjective\n" +
-                    "\tединственный, единый\n" +
-                    "\t(only, single) \n" +
                     "\n" +
                     ", only [ˈəʊnlɪ] particle\n" +
                     "\tтолько, всего, лишь, просто, только лишь\n" +
@@ -397,7 +377,7 @@ public class E2ETest {
                     "\tпараметризованный, параметрический\n" +
                     "\t(parametrized, parametric) \n" +
                     "\n" +
-                    ", , pass [pɑːs] verb\n" +
+                    ", pass [pɑːs] verb\n" +
                     "\tпройти, проходить, миновать\n" +
                     "\t(undergo, bypass) \n" +
                     "\tпередавать, передать\n" +
@@ -449,7 +429,7 @@ public class E2ETest {
                     "\tесли\n" +
                     "\t(if) \n" +
                     "\n" +
-                    ", , specify [ˈspesɪfaɪ] verb\n" +
+                    ", specify [ˈspesɪfaɪ] verb\n" +
                     "\tуказывать, обозначать, указать\n" +
                     "\t(indicate) \n" +
                     "\tзадавать, устанавливать, установить, задать\n" +
@@ -519,22 +499,14 @@ public class E2ETest {
                     "\n" +
                     ", the [ðiː] pronoun\n" +
                     "\tтот, этот, такой\n" +
-                    "\t(same, this) \n" +
+                    "\t(this) \n" +
                     "\tчем\n" +
                     "\n" +
                     "the [ðiː] \n" +
                     "\tthe\n" +
                     "\n" +
-                    "the [ðiː] adverb\n" +
-                    "\tнаиболее\n" +
-                    "\tна месте\n" +
-                    "\t(on) \n" +
-                    "\n" +
                     "the [ðiː] conjunction\n" +
                     "\tтем\n" +
-                    "\n" +
-                    "the [ðiː] adjective\n" +
-                    "\tпоследний\n" +
                     "\n" +
                     "the [ðiː] participle\n" +
                     "\tтак называемый\n" +
@@ -637,6 +609,10 @@ public class E2ETest {
                     "]";
 
             Assert.assertEquals(expected, actual);
+
+            List<String> notTranslated = dict.getNotTranslatedWords();
+            notTranslated.sort(String::compareToIgnoreCase);
+            Assert.assertEquals("[CsvSource, is, methods, objects, parameters, rules]", notTranslated.toString());
         }
         catch (WordsExtractorException | URISyntaxException e) {
             System.err.println("Running interrupted by exception " + e);
