@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * Created by saratoga on 31/03/18.
  */
-class TranslationsDictionaryTests {
+class TranslationsDictionaryTest {
     private TranslationsDictionary dict;
 
     @BeforeEach

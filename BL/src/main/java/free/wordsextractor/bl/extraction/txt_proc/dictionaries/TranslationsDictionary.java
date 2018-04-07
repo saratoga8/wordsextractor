@@ -37,8 +37,6 @@ public class TranslationsDictionary implements Dictionary {
             log.error("The given word is NULL or EMPTY");
     }
 
-
-
     @Override
     synchronized public boolean contains(String word) {
         OperationOnWord<Boolean> operation = wd -> dict.containsKey(wd) || notTranslatedWords.contains(wd);
