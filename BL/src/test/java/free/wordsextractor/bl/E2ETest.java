@@ -23,7 +23,6 @@ public class E2ETest {
     @ParameterizedTest(name = "{index} => path={0}, fromLang={1}, toLang={2}")
     @CsvSource({"eng.txt, eng, ru"})
     public void e2eWithoutKnowns(String path, String langFrom, String langTo) {
-        System.out.println("Path: " + path + ", from " + langFrom + ", to " + langTo);
         try {
             String EXTRACTED_WORDS_FILE = "extracted.words";
 

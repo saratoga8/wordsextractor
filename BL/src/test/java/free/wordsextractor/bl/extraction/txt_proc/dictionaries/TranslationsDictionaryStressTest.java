@@ -7,8 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-@DisplayName("Extreme tests of translations dictionary")
-public class TranslationsDictionaryStressTests {
+public class TranslationsDictionaryStressTest {
     private TranslationsDictionary dict;
 
     @BeforeEach
@@ -21,7 +20,7 @@ public class TranslationsDictionaryStressTests {
 
     @DisplayName("Adding NULL or EMPTY words or translations")
     @Test
-    void emptyWords() {
+    void addTranslation() {
         dict.addTranslation("", "empty translation");
         List<String> words = dict.getWords();
         words.sort(String::compareToIgnoreCase);
@@ -37,10 +36,6 @@ public class TranslationsDictionaryStressTests {
         words = dict.getWords();
         words.sort(String::compareToIgnoreCase);
         Assert.assertEquals("[one, two]", words.toString());
-
-        Assert.assertEquals("",dict.getTranslation("asdfasdf"));
-        Assert.assertEquals("",dict.getTranslation(""));
-        Assert.assertEquals("",dict.getTranslation(null));
     }
 
     @DisplayName("Get translation of NULL or EMPTY")
@@ -49,5 +44,24 @@ public class TranslationsDictionaryStressTests {
         Assert.assertEquals("",dict.getTranslation("asdfasdf"));
         Assert.assertEquals("",dict.getTranslation(""));
         Assert.assertEquals("",dict.getTranslation(null));
+    }
+
+    @DisplayName("Contains EMPTY or NULL words")
+    @Test
+    public void contains() {
+        Assert.assertFalse(dict.contains(""));
+        Assert.assertFalse(dict.contains(null));
+    }
+
+    @DisplayName("Remove EMPTY or NULL words")
+    @Test
+    public void removes() {
+        Assert.assertFalse(dict.removeWord(""));
+        Assert.assertFalse(dict.removeWord(null));
+        Assert.assertFalse(dict.removeWord("asdfasdfas"));
+
+        List<String> words = dict.getWords();
+        words.sort(String::compareToIgnoreCase);
+        Assert.assertEquals("[one, two]", words.toString());
     }
 }

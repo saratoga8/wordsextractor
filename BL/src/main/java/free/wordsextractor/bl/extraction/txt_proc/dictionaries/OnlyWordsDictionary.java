@@ -28,8 +28,12 @@ public class OnlyWordsDictionary implements Dictionary {
         words = Collections.synchronizedList(WordsExtractor.extractWordsFromFile(path));
     }
 
+    public OnlyWordsDictionary() {
+        this.words = new LinkedList<>();
+    }
+
     /**
-     * Add a new word to the dictionary
+     * Add a new word to the dictionary in sorted order
      * @param word The new word
      */
     @Override
