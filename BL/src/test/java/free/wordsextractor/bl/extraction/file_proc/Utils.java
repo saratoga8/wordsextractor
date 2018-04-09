@@ -76,7 +76,7 @@ public abstract class Utils {
             throw new WordsExtractorException("Unknown OS' name " + osName);
     }
 
-    public static String getResourcePath(Object obj, String fileName) throws URISyntaxException {
+    public static String getResourcePathStr(Object obj, String fileName) throws URISyntaxException {
         URL path = obj.getClass().getClassLoader().getResource(fileName);
         Assert.assertNotNull("Can't found the resource file " + fileName, path);
         return Paths.get(path.toURI()).toString();

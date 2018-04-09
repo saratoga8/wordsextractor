@@ -21,7 +21,7 @@ class FileManagerTest {
     void extractTxtFiles(String fileName) {
 
         try {
-            String TXT_FILE_PATH = Utils.getResourcePath(this, fileName);
+            String TXT_FILE_PATH = Utils.getResourcePathStr(this, fileName);
 
             Path extractedTxtFile = new FileManager(TXT_FILE_PATH).extractTxtFiles(123).get(0);
 
@@ -41,7 +41,7 @@ class FileManagerTest {
     @ValueSource(strings = {"empty.txt"})
     void emptyFile(String fileName) {
         try {
-            String TXT_FILE_PATH = Utils.getResourcePath(this, fileName);
+            String TXT_FILE_PATH = Utils.getResourcePathStr(this, fileName);
             new FileManager(TXT_FILE_PATH).extractTxtFiles(123).get(0);
             Assert.assertTrue("There should be exception of an empty text file", false);
         } catch (Exception e) {
@@ -62,5 +62,19 @@ class FileManagerTest {
                 return;
         }
         Assert.assertTrue("An exception hasn't thrown", false);
+    }
+
+    @DisplayName("Get path of resource file")
+    @Test
+    public void getResourcePath() {
+        try {
+            String FILE_NAME = "cyr.txt";
+            Path path = FileManager.getResourcesFilePath(FILE_NAME, this);
+            String pathStr = (Utils.getShell() == Utils.Shells.POWERSHELL) ? Utils.runSystemCommand("$pwd.Path"): "pwd";
+            Path expected = Paths.get(pathStr + "\\target\\test-classes\\" + FILE_NAME);
+            Assert.assertEquals(expected, path);
+        } catch (Exception e) {
+            Assert.assertTrue("The test aborted by exception: " + e, false);
+        }
     }
 }

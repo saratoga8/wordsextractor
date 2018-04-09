@@ -34,7 +34,7 @@ public class TranslationManager {
      */
     @NotNull
     public void removeKnownWords(final Path knownWordsFilePath) {
-        File file = knownWordsFilePath.toFile();
+       final File file = knownWordsFilePath.toFile();
         if (file.exists()) {
             if (file.isFile() && file.canRead()) {
                 try {

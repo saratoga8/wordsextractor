@@ -1,7 +1,10 @@
 package free.wordsextractor.bl.translation.yandex;
 
+import free.wordsextractor.bl.WordsExtractorException;
+import free.wordsextractor.bl.extraction.file_proc.FileManager;
 import free.wordsextractor.bl.translation.Translation;
 import org.junit.Assert;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -10,7 +13,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 class YandexTranslationTest {
-    private static final YandexTranslation yandex = new YandexTranslation(Translation.Langs.ENG, Translation.Langs.RUS);
+
+    private YandexTranslation yandex;
     private static final String WORD = "add";
     private static final String EXPECTED_TRANSLATION = "add [æd] verb\n" +
             "\tдобавлять, прибавлять, увеличивать, добавить, прибавить, увеличить\n" +
@@ -36,6 +40,15 @@ class YandexTranslationTest {
             "\t(additional) \n" +
             "\n";
 
+    @BeforeEach
+    void setUp() {
+        try {
+            yandex = new YandexTranslation(FileManager.getResourcesFilePath("yandex_api.key", this), Translation.Langs.ENG, Translation.Langs.RUS);
+        }
+        catch (Exception e) {
+            Assert.assertTrue("The test aborted by exception: " + e, false);
+        }
+    }
 
     @DisplayName("Build request")
     @Test
@@ -47,7 +60,12 @@ class YandexTranslationTest {
     @DisplayName("Translate a word")
     @Test
     void translate() {
-        Assert.assertEquals(EXPECTED_TRANSLATION,yandex.translate(WORD));
+        try {
+            Assert.assertEquals(EXPECTED_TRANSLATION, yandex.translate(WORD));
+        }
+        catch (WordsExtractorException e) {
+            Assert.assertTrue("The test aborted by the exception: " + e, false);
+        }
     }
 
     @DisplayName("Translate words")
@@ -60,8 +78,30 @@ class YandexTranslationTest {
     @DisplayName("Translate words(with not translatable ones)")
     @Test
     void translateWordsNotTranslatable() {
-        List<String> words = new LinkedList<> (Arrays.asList("test", WORD, "adfasdfasd"));
+        List<String> words = new LinkedList<>(Arrays.asList("test", WORD, "adfasdfasd"));
         Assert.assertEquals(2, yandex.translate(words).getSortedTranslations().size());
         Assert.assertEquals(1, yandex.translate(words).getNotTranslatedWords().size());
+    }
+
+    @DisplayName("Invalid Yandex Api Key")
+    @Test
+    public void invalidApiKey() {
+        try {
+            yandex = new YandexTranslation(FileManager.getResourcesFilePath("lingvo.token", this), Translation.Langs.ENG, Translation.Langs.RUS);
+            yandex.translate("test");
+        } catch (Exception e) {
+            Assert.assertEquals("There is error response from Yandex: API key is invalid", e.getMessage());
+        }
+    }
+
+    @DisplayName("Invalid translation langs")
+    @Test
+    public void invalidTransLangs() {
+        try {
+            yandex = new YandexTranslation(FileManager.getResourcesFilePath("yandex_api.key", this), Translation.Langs.ENG, Translation.Langs.TEST);
+            yandex.translate("test");
+        } catch (Exception e) {
+            Assert.assertEquals("There is error response from Yandex: The specified language is not supported", e.getMessage());
+        }
     }
 }

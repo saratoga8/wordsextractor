@@ -3,7 +3,6 @@ package free.wordsextractor.bl.net;
 import com.drew.lang.annotations.NotNull;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -13,7 +12,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
-import java.util.HashMap;
 
 /**
  * HTTP client
@@ -29,9 +27,9 @@ public abstract class HttpClient {
      * @param respCodes Response codes (error cases)
      * @return String of the response. Empty string if the request has failed
      */
-    public static String getResponseFrom(String url, final HashMap<Integer, String> respCodes) {
+    public static String getResponseFrom(String url) {
         try (final CloseableHttpClient client = HttpClients.createDefault()) {
-            final ResponseHandler<String> responseHandler = response -> handleResponse(response, respCodes);
+            final ResponseHandler<String> responseHandler = response -> handleResponse(response);
             return client.execute(new HttpGet(url), responseHandler);
         } catch (IOException e) {
             log.error("Can't get response from the URL: " + url + ": " + e);
@@ -47,14 +45,20 @@ public abstract class HttpClient {
      * @return String of response. . Empty string if the request has failed
      * @throws IOException
      */
-    private static String handleResponse(final HttpResponse response, final HashMap<Integer, String> respCodes) throws IOException {
+    private static String handleResponse(final HttpResponse response) {
         final int status = response.getStatusLine().getStatusCode();
-        if ((status >= RESPONSE_OK) && (status < RESPONSE_MULTIPLE_CHOICE)) {
-            final HttpEntity entity = response.getEntity();
+        if ((status < RESPONSE_OK) || (status > RESPONSE_MULTIPLE_CHOICE))
+            log.error("The response status code is " + status);
+        return getResponseEntityStr(response);
+    }
+
+    private static String getResponseEntityStr(final HttpResponse response) {
+        final HttpEntity entity = response.getEntity();
+        try {
             return entity != null ? EntityUtils.toString(entity) : "";
-        } else {
-            String errorStr = (respCodes.containsKey(status)) ? respCodes.get(status): "Unexpected response status: " + status;
-            throw new ClientProtocolException("Can't handle response: " + errorStr);
+        } catch (IOException e) {
+            log.error("Can't convert response entity to string: " + e);
         }
+        return "";
     }
 }

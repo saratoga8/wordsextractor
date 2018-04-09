@@ -2,6 +2,7 @@ package free.wordsextractor.bl.translation;
 
 import com.drew.lang.annotations.NotNull;
 import com.google.gson.Gson;
+import free.wordsextractor.bl.WordsExtractorException;
 import free.wordsextractor.bl.extraction.file_proc.extractors.TextExtractorInterface;
 import free.wordsextractor.bl.net.HttpClient;
 import org.apache.commons.lang.StringUtils;
@@ -10,7 +11,6 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.HashMap;
 import java.util.Scanner;
 
 public abstract class WebTranslation extends Translation {
@@ -43,21 +43,21 @@ public abstract class WebTranslation extends Translation {
     }
 
     @NotNull
-    protected abstract HashMap<Integer, String> getResponseCodes();
-
-    @NotNull
-    public String translate(String word) {
+    public String translate(String word) throws WordsExtractorException {
         log.debug("Translating the word '" + word + "' by " + getTranslationBean().getName() + "'s dictionary");
 
-        String responseTxt = HttpClient.getResponseFrom(buildRequest(word), getResponseCodes());
+        String responseTxt = HttpClient.getResponseFrom(buildRequest(word));
         if(StringUtils.isBlank(responseTxt)) {
             log.error("Can't get translation from " + serviceURL);
             return "";
         }
-        else
+        else {
+            chkResponseNotError(responseTxt);
             return new Gson().fromJson(responseTxt, getTranslationBean()).toString();
+        }
     }
 
-    @NotNull
     public abstract Class getTranslationBean();
+
+    public abstract void chkResponseNotError(String responseTxt) throws WordsExtractorException;
 }

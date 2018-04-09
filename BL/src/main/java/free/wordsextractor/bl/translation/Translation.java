@@ -4,6 +4,8 @@ import com.drew.lang.annotations.NotNull;
 import free.wordsextractor.bl.WordsExtractorException;
 import free.wordsextractor.bl.extraction.txt_proc.dictionaries.Dictionary;
 import free.wordsextractor.bl.extraction.txt_proc.dictionaries.TranslationsDictionary;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.List;
 
@@ -11,6 +13,8 @@ import java.util.List;
  * Translation from one language to another one
  */
 public abstract class Translation {
+    private static final Logger log = LogManager.getLogger(Translation.class);        /* logger */
+
     protected final Langs fromLang;                       /** translate from language */
     protected final Langs toLang;                         /** translate to language */
 
@@ -45,7 +49,7 @@ public abstract class Translation {
      * @param word The word
      * @return Translation string
      */
-    public abstract String translate(String word);
+    public abstract String translate(String word) throws WordsExtractorException;
 
     @NotNull
     /**
@@ -55,7 +59,13 @@ public abstract class Translation {
      */
     public Dictionary translate(final List<String> words) {
         final TranslationsDictionary dictionary = new TranslationsDictionary();
-        words.parallelStream().forEach(word -> dictionary.addTranslation(word,translate(word)) );
+        words.parallelStream().forEach(word -> {
+            try {
+                dictionary.addTranslation(word, translate(word));
+            } catch (WordsExtractorException e) {
+                log.error("Can't translate the word '" + word + "': " + e);
+            }
+        });
         return dictionary;
     }
 
@@ -63,7 +73,7 @@ public abstract class Translation {
      * Languages and their codes
      */
     public enum Langs {
-        ENG("en"), RUS("ru");
+        ENG("en"), RUS("ru"), TEST("test");
         final private String val;
 
         Langs(String val) {
