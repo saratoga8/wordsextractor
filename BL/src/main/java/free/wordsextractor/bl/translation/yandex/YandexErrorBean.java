@@ -2,12 +2,15 @@ package free.wordsextractor.bl.translation.yandex;
 
 import com.google.gson.annotations.SerializedName;
 
-public class YandexErrorBean {
+/**
+ * Error bean for JSON response from Yandex service
+ */
+class YandexErrorBean {
     @SerializedName("code")
-    private Integer code;
+    private Integer code;                                 /* the code of error */
 
     @SerializedName("message")
-    private String msg;
+    private String msg;                                   /* the error's message */
 
 
     public Integer getCode() {

@@ -1,6 +1,5 @@
 package free.wordsextractor.bl.translation;
 
-import com.drew.lang.annotations.NotNull;
 import free.wordsextractor.bl.WordsExtractorException;
 import free.wordsextractor.bl.extraction.txt_proc.dictionaries.Dictionary;
 import free.wordsextractor.bl.extraction.txt_proc.dictionaries.TranslationsDictionary;
@@ -15,24 +14,21 @@ import java.util.List;
 public abstract class Translation {
     private static final Logger log = LogManager.getLogger(Translation.class);        /* logger */
 
-    protected final Langs fromLang;                       /** translate from language */
-    protected final Langs toLang;                         /** translate to language */
+    protected final Langs fromLang;                       /* translate from language */
+    protected final Langs toLang;                         /* translate to language */
 
-    @NotNull
     /**
      * Get language translation from
      * @return Language enum
      */
     public Langs getFromLang() { return fromLang; }
 
-    @NotNull
     /**
      * Get language translation to
      * @return Language enum
      */
     public Langs getToLang()   { return toLang;   }
 
-    @NotNull
     /**
      * Constructor
      * @param fromLang Language translation from
@@ -43,7 +39,6 @@ public abstract class Translation {
         this.toLang = toLang;
     }
 
-    @NotNull
     /**
      * Translate the given word
      * @param word The word
@@ -51,7 +46,6 @@ public abstract class Translation {
      */
     public abstract String translate(String word) throws WordsExtractorException;
 
-    @NotNull
     /**
      * Translate the given words
      * @param words The given list of words

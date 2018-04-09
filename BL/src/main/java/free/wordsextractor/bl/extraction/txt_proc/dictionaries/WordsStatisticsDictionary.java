@@ -59,6 +59,9 @@ public class WordsStatisticsDictionary implements Dictionary {
         Dictionary.secureOperationOnWord(word, operation);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void addTranslation(String word, String translation) {
         log.error("Should be used addWord() function!");
@@ -90,7 +93,6 @@ public class WordsStatisticsDictionary implements Dictionary {
             throw new WordsExtractorException("There are no words in the dictionary");
     }
 
-    @NotNull
     /**
      * Get words of the dictionary
      * @return The list of words
@@ -100,11 +102,17 @@ public class WordsStatisticsDictionary implements Dictionary {
         return new ArrayList<>(wordsStat.keySet());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     synchronized public List<Integer> getTranslations() {
         return new ArrayList<>(wordsStat.values());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     synchronized public List<?> getSortedTranslations() {
         final List<Integer> translations = new ArrayList<>(wordsStat.values());
@@ -112,6 +120,9 @@ public class WordsStatisticsDictionary implements Dictionary {
         return translations;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<String> getNotTranslatedWords() {
         log.error("There are no translations in a statistics dictionary");
@@ -128,17 +139,19 @@ public class WordsStatisticsDictionary implements Dictionary {
         return Dictionary.secureOperationOnWord(word, wordsStat::containsKey, Boolean.FALSE);
     }
 
-    @NotNull
     /**
      * Remove the given word from the dictionary
      * @param word The word for removing
-     * @return
+     * @return true The word has been removed successfully
      */
     @Override
     synchronized public boolean removeWord(String word) {
         return Dictionary.secureOperationOnWord(word, wrd -> wordsStat.remove(wrd) != null, Boolean.FALSE);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getTranslation(String word) {
         log.error("There are no translations in a statistics dictionary");

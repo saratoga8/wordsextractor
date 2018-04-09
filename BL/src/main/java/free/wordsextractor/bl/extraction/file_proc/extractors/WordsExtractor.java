@@ -49,7 +49,6 @@ public class WordsExtractor {
      * Extract words from a file with the given path
      * @param path The file's path
      * @return The list of extracted words
-     * @throws WordsExtractorException
      * @throws IOException
      */
     @NotNull

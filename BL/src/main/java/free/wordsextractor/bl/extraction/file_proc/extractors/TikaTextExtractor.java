@@ -56,16 +56,15 @@ public class TikaTextExtractor implements TextExtractorInterface {
      * @return extracted text
      */
     @NotNull
-    public String extractTxtFrom(final Path path) {
+    public String extractTxtFrom(final Path path) throws WordsExtractorException {
         if(path != null) {
             try (final InputStream stream = new FileInputStream(new File(path.toUri()))) {
                 new AutoDetectParser(tikaConf).parse(stream, handler, new Metadata());
                 return handler.toString();
             } catch (IOException | TikaException | SAXException e) {
-                log.error("Can't extract text from " + path + ": " + e);
+                throw new WordsExtractorException("Can't extract text from " + path + ": " + e);
             }
         }
-        log.error("The given path is NULL");
-        return "";
+        throw new WordsExtractorException("The given path is NULL");
     }
 }

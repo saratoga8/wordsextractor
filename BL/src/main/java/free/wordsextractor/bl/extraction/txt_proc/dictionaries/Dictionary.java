@@ -36,11 +36,7 @@ public interface Dictionary {
     @NotNull
     void addTranslation(String word, String translation);
 
-    /**
-     * Check a given word is in the dictionary
-     * @param word The checked word
-     * @return true - The word is in the dictionary
-     */
+
     @NotNull
     boolean contains(String word);
 
@@ -120,11 +116,23 @@ public interface Dictionary {
      */
     List<String> getNotTranslatedWords();
 
+    /**
+     * Operation on a given word
+     * @param <T> Type of an operation's result
+     */
     @FunctionalInterface
     interface OperationOnWord<T> {
         T apply(String word);
     }
 
+    /**
+     * Securing operation on the given word: check the word isn't NULL or EMPTY
+     * @param word The given word
+     * @param operationOnWord Operation on the word
+     * @param defaultVal Default value for return if securing has failed
+     * @param <T>
+     * @return A result of the operation or the default value
+     */
     static <T> T secureOperationOnWord(String word, OperationOnWord<T> operationOnWord, T defaultVal) {
         if(!StringUtils.isBlank(word))
             return operationOnWord.apply(word);
@@ -133,6 +141,12 @@ public interface Dictionary {
         return defaultVal;
     }
 
+    /**
+     * Securing operation on the given word: check the word isn't NULL or EMPTY
+     * @param word The given word
+     * @param operationOnWord Operation on the word
+     * @param <T>
+     */
     static <T> void secureOperationOnWord(String word, OperationOnWord<T> operationOnWord) {
         if(!StringUtils.isBlank(word))
             operationOnWord.apply(word);
