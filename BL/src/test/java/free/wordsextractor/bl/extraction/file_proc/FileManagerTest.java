@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import java.io.File;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -70,8 +71,8 @@ class FileManagerTest {
         try {
             String FILE_NAME = "cyr.txt";
             Path path = FileManager.getResourcesFilePath(FILE_NAME, this);
-            String pathStr = (Utils.getShell() == Utils.Shells.POWERSHELL) ? Utils.runSystemCommand("$pwd.Path"): "pwd";
-            Path expected = Paths.get(pathStr + "\\target\\test-classes\\" + FILE_NAME);
+            String pathStr = (Utils.getShell() == Utils.Shells.POWERSHELL) ? Utils.runSystemCommand("$pwd.Path"): Utils.runSystemCommand("pwd");
+            Path expected = Paths.get(pathStr + File.separator + "target"+ File.separator + "test-classes" + File.separator + FILE_NAME);
             Assert.assertEquals(expected, path);
         } catch (Exception e) {
             Assert.assertTrue("The test aborted by exception: " + e, false);
