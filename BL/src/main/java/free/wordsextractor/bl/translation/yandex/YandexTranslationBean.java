@@ -1,6 +1,5 @@
 package free.wordsextractor.bl.translation.yandex;
 
-import com.drew.lang.annotations.NotNull;
 import com.google.gson.annotations.SerializedName;
 import free.wordsextractor.bl.translation.TranslationBean;
 import org.apache.commons.lang.StringUtils;
@@ -9,11 +8,14 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 
+/**
+ * Bean of translation response from Yandex web service
+ */
 public class YandexTranslationBean implements TranslationBean {
     private static final Logger log = LogManager.getLogger(YandexTranslationBean.class);     /* log item */
 
     @SerializedName("def")
-    private ArrayList<DictionaryEntry> dictEntries;
+    private ArrayList<DictionaryEntry> dictEntries;                                          /* dictionary entries */
 
     public ArrayList<DictionaryEntry> getDictEntries() {
         return dictEntries;
@@ -23,12 +25,17 @@ public class YandexTranslationBean implements TranslationBean {
         this.dictEntries = dictEntries;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getName() {
         return "Yandex";
     }
 
-
+    /**
+     * Section containing only text and speech part
+     */
     private class OnlyText {
         @SerializedName("text")
         protected String word;
@@ -57,7 +64,9 @@ public class YandexTranslationBean implements TranslationBean {
         }
     }
 
-
+    /**
+     * Dictionary entry: word, speech part, transcription, translations
+     */
     private class DictionaryEntry extends OnlyText {
         @SerializedName("ts")
         private String transcription;
@@ -82,13 +91,16 @@ public class YandexTranslationBean implements TranslationBean {
         }
 
         public String toString() {
-            final StringBuilder txt = new StringBuilder(word).append(" " + getTranscription() +  (" ") + getSpeechPart() + "\n");
+            final StringBuilder txt = new StringBuilder(word).append(" ").append(getTranscription()).append(" ").append(getSpeechPart()).append("\n");
             translations.forEach(translation -> txt.append("\t" + translation.toString() + "\n"));
 
             return txt.toString();
         }
     }
 
+    /**
+     * Translation with synonymouses and examples
+     */
     private class Translation extends OnlyText {
         @SerializedName("syn")
         private ArrayList<Synonymous> synonymouses;
@@ -140,8 +152,10 @@ public class YandexTranslationBean implements TranslationBean {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    @NotNull
     public String toString() {
         StringBuilder txt = new StringBuilder();
         dictEntries.forEach(entry -> txt.append(entry.toString() + "\n"));

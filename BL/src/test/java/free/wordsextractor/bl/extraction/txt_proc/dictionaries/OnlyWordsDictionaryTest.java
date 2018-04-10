@@ -25,8 +25,8 @@ public class OnlyWordsDictionaryTest {
     @ValueSource(strings = {"list.txt"})
     public void createDictFromFile(String fileName) {
         try {
-            Dictionary dict = new OnlyWordsDictionary(Paths.get(Utils.getResourcePath(this, fileName)));
-            Assert.assertEquals("The words in dictionary aren't equals to the words from file","[one, two, three, four, five, six, seven, eight]", dict.getWords().toString());
+            Dictionary dict = new OnlyWordsDictionary(Paths.get(Utils.getResourcePathStr(this, fileName)));
+            Assert.assertEquals("The words in dictionary aren't equals to the words from file","[six, four, one, seven, two, three, five, eight]", dict.getWords().toString());
         } catch (IOException | URISyntaxException e) {
             Assert.assertTrue("The test has aborted because of exception: " + e, false);
         }
@@ -37,7 +37,7 @@ public class OnlyWordsDictionaryTest {
     @ValueSource(strings = {"empty.txt"})
     public void createDictFromEmptyFile(String fileName) {
         try {
-            Assert.assertTrue(new OnlyWordsDictionary(Paths.get(Utils.getResourcePath(this, fileName))).getWords().isEmpty());
+            Assert.assertTrue(new OnlyWordsDictionary(Paths.get(Utils.getResourcePathStr(this, fileName))).getWords().isEmpty());
         } catch (Exception e) {
             Assert.assertTrue("The test aborted due the exception: " + e, false);
         }
@@ -50,7 +50,7 @@ public class OnlyWordsDictionaryTest {
         dict.addWord("two");
         dict.addWord("three");
 
-        Assert.assertEquals("[one, three, two]", dict.getWords().toString());
+        Assert.assertEquals("[one, two, three]", dict.getWords().toString());
     }
 
     @DisplayName("Contains words")
@@ -63,6 +63,8 @@ public class OnlyWordsDictionaryTest {
         Assert.assertTrue(dict.contains("one"));
         Assert.assertTrue(dict.contains("two"));
         Assert.assertTrue(dict.contains("three"));
+
+        Assert.assertFalse(dict.contains("asdfasdfasdfasf"));
     }
 
     @DisplayName("Removes words")
@@ -72,7 +74,7 @@ public class OnlyWordsDictionaryTest {
         dict.addWord("two");
         dict.addWord("three");
 
-        Assert.assertEquals("[one, three, two]", dict.getWords().toString());
+        Assert.assertEquals("[one, two, three]", dict.getWords().toString());
 
         dict.removeWord("two");
         Assert.assertEquals("[one, three]", dict.getWords().toString());

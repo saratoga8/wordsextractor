@@ -83,7 +83,6 @@ public class FileManager {
                 try (OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream, TextExtractorInterface.CHAR_SET)) {
                     try (BufferedWriter bufferedWriter = new BufferedWriter(outputStreamWriter)) {
                         bufferedWriter.write(txt);
-                        bufferedWriter.close();
                     }
                     log.debug("Text saved in the file " + txtFile.getCanonicalPath());
                     return Paths.get(txtFile.getCanonicalPath());

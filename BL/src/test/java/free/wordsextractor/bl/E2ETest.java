@@ -26,7 +26,7 @@ public class E2ETest {
         try {
             String EXTRACTED_WORDS_FILE = "extracted.words";
 
-            final FileManager fileMngr = new FileManager(Utils.getResourcePath(this, path));
+            final FileManager fileMngr = new FileManager(Utils.getResourcePathStr(this, path));
             final List<Path> pathsList = fileMngr.extractTxtFiles(123);
             final WordsExtractor extractor = new WordsExtractor(pathsList);
             final Dictionary wordsStatsDict = extractor.createWordsStatsDictionary();
@@ -34,7 +34,9 @@ public class E2ETest {
             final TranslationManager translationMngr = new TranslationManager(wordsStatsDict);
             translationMngr.removeKnownWords(FileManager.getResourcesFilePath(TranslationManager.KNOWN_WORDS_FILE_NAME, this));
             List<String> words = translationMngr.getExtractedWordsDict().getWords();
-            Dictionary dict = new YandexTranslation(Translation.Langs.getLang(langFrom), Translation.Langs.getLang(langTo)).translate(words);
+
+            Path apiKeyPath = FileManager.getResourcesFilePath("yandex_api.key", this);
+            Dictionary dict = new YandexTranslation(apiKeyPath, Translation.Langs.getLang(langFrom), Translation.Langs.getLang(langTo)).translate(words);
             String actual = dict.getSortedTranslations().toString();
 
             String expected = "[a [ə] pronoun\n" +

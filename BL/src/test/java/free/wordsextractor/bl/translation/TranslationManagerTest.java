@@ -17,12 +17,12 @@ class TranslationManagerTest {
     @Test
     void removeKnownWords() {
         try {
-            Dictionary dict = new OnlyWordsDictionary(Paths.get(Utils.getResourcePath(this, "list.txt")));
+            Dictionary dict = new OnlyWordsDictionary(Paths.get(Utils.getResourcePathStr(this, "list.txt")));
             TranslationManager mngr = new TranslationManager(dict);
-            Assert.assertEquals("[one, two, three, four, five, six, seven, eight]", mngr.getExtractedWordsDict().getWords().toString());
+            Assert.assertEquals("[six, four, one, seven, two, three, five, eight]", mngr.getExtractedWordsDict().getWords().toString());
 
             mngr.removeKnownWords(Paths.get(this.getClass().getClassLoader().getResource(TranslationManager.KNOWN_WORDS_FILE_NAME).toURI()));
-            Assert.assertEquals("[four, five, six, seven, eight]", mngr.getExtractedWordsDict().getWords().toString());
+            Assert.assertEquals("[six, four, seven, five, eight]", mngr.getExtractedWordsDict().getWords().toString());
         } catch (IOException | URISyntaxException e) {
             System.err.println("Test has aborted because of exception: " + e);
         }
