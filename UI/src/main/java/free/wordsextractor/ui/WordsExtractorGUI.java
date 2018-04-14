@@ -1,20 +1,25 @@
 package free.wordsextractor.ui;
 
-import free.wordsextractor.bl.WordsExtractorException;
-import free.wordsextractor.bl.extraction.file_proc.FileManager;
-import free.wordsextractor.bl.extraction.file_proc.extractors.WordsExtractor;
-import free.wordsextractor.bl.extraction.txt_proc.dictionaries.Dictionary;
-import free.wordsextractor.bl.translation.TranslationManager;
+import javafx.application.Application;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.List;
-
-public class Main {
+public class WordsExtractorGUI extends Application {
     public static void main(String [] args) {
+        Application.launch(args);
+    }
+
+    @Override
+    public void start(Stage stage) {
+        Scene scene = new Scene(new FindWordsViewController());
+        stage.setScene(scene);
+        stage.setTitle("Extracted words from text");
+        stage.show();
+
+    }
+/*    private void bl() {
         if (args.length > 2) {
-            String txtFilePath = args[1],
-                    extractedWordsTxtFilePath = args[2];
+            String txtFilePath = args[1], extractedWordsTxtFilePath = args[2];
 
             try {
                 final FileManager fileMngr = new FileManager(txtFilePath);
@@ -32,5 +37,5 @@ public class Main {
         }
         else
             System.err.println("Invalid number of parameters.\nShould be: " + args[0] + " file1 file2\nWhere: \n\tfile1 - where text should be extracted from\n\tfile2 - where the extracted text should be saved");
-    }
+    }*/
 }
