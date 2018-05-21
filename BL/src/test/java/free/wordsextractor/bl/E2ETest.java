@@ -212,9 +212,6 @@ public class E2ETest {
                     "\tнебольшое количество, незначительное число\n" +
                     "\t(small amount, small number) \n" +
                     "\n" +
-                    "few [fjuː] conjunction\n" +
-                    "\tнескольку\n" +
-                    "\n" +
                     "few [fjuː] predicative\n" +
                     "\tпочти нет\n" +
                     "\n" +
