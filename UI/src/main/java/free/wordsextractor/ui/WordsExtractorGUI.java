@@ -1,22 +1,46 @@
 package free.wordsextractor.ui;
 
+import free.wordsextractor.bl.extraction.txt_proc.dictionaries.TranslationsDictionary;
 import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.io.IOException;
 
 public class WordsExtractorGUI extends Application {
-    public static void main(String [] args) {
-        Application.launch(args);
+    private static final Logger log = LogManager.getLogger(WordsExtractorGUI.class);
+
+    protected TranslationsDictionary dict = new TranslationsDictionary();
+    private Parent root;
+
+    @Override
+    public void init() throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("found_words_list.fxml"));
+        ListWordsViewController controller = new ListWordsViewController(dict);
+        loader.setController(controller);
+        root = loader.load();
     }
 
     @Override
     public void start(Stage stage) {
-        Scene scene = new Scene(new FindWordsViewController());
-        stage.setScene(scene);
+        stage.setScene(new Scene(root, 850, 550));
+        stage.centerOnScreen();
         stage.setTitle("Extracted words from text");
+        stage.setOnCloseRequest(handle -> {
+            log.debug("on closing");
+        });
         stage.show();
-
     }
+
+    @Override
+    public void stop() {
+        log.debug("stop the app");
+    }
+
 /*    private void bl() {
         if (args.length > 2) {
             String txtFilePath = args[1], extractedWordsTxtFilePath = args[2];
