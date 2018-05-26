@@ -1,18 +1,15 @@
 package free.wordsextractor.ui;
 
-import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hamcrest.Matchers;
 import org.junit.Assert;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.loadui.testfx.controls.impl.VisibleNodesMatcher;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
@@ -25,9 +22,6 @@ import static org.testfx.api.FxToolkit.registerPrimaryStage;
 
 public class WordsExtractorGUITest  extends ApplicationTest {
     private static final Logger log = LogManager.getLogger(WordsExtractorGUITest.class);
-
-    private Button cancelBtn;
-
 
     @BeforeAll
     public static void setUpAll() throws TimeoutException {
@@ -59,6 +53,7 @@ public class WordsExtractorGUITest  extends ApplicationTest {
         release(new MouseButton[]{});
     }
 
+    @DisplayName("Cancel")
     @Test
     void testCancel() {
         Assert.assertNotNull(lookup("#vbox").query());
@@ -67,10 +62,48 @@ public class WordsExtractorGUITest  extends ApplicationTest {
         Assert.assertNull(lookup("#vbox").query());
     }
 
+    @DisplayName("Select All")
     @Test
     void selectAll() {
         ListView list = lookup("#wordsListView").queryListView();
-        Assert.assertEquals("[one, two, three]", list.getItems().toString());
+        Assert.assertEquals(0, list.getSelectionModel().getSelectedItems().size());
+        clickOn("#selectAllBtn");
+        Assert.assertEquals(3, list.getSelectionModel().getSelectedItems().size());
+    }
+
+    @DisplayName("Deselect All")
+    @Test
+    void deSelectAll() {
+        ListView list = lookup("#wordsListView").queryListView();
+        Assert.assertEquals(0, list.getSelectionModel().getSelectedItems().size());
+        clickOn("#selectAllBtn");
+        Assert.assertEquals(3, list.getSelectionModel().getSelectedItems().size());
+        clickOn("#deselectAllBtn");
+        Assert.assertEquals(0, list.getSelectionModel().getSelectedItems().size());
+    }
+
+    @DisplayName("Selection title")
+    @Test
+    void selectionTitle() {
+        Text txt = lookup("#selectedTxt").queryText();
+        Assert.assertEquals("Selected: 0", txt.getText());
+        ListView list = lookup("#wordsListView").queryListView();
+        clickOn("one");
+        Assert.assertEquals("Selected 1 from 3", txt.getText());
+        clickOn("two");
+        Assert.assertEquals("Selected 2 from 3", txt.getText());
+        clickOn("three");
+        Assert.assertEquals("Selected 3 from 3", txt.getText());
+        clickOn("one");
+        Assert.assertEquals("Selected 2 from 3", txt.getText());
+        clickOn("two");
+        Assert.assertEquals("Selected 1 from 3", txt.getText());
+        clickOn("three");
+        Assert.assertEquals("Selected 0 from 3", txt.getText());
+        clickOn("#selectAllBtn");
+        Assert.assertEquals("Selected 3 from 3", txt.getText());
+        clickOn("#deselectAllBtn");
+        Assert.assertEquals("Selected 1 from 3", txt.getText());
     }
 
     @Override

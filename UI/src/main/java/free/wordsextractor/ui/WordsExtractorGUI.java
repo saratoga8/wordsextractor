@@ -20,6 +20,9 @@ public class WordsExtractorGUI extends Application {
     @Override
     public void init() throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("found_words_list.fxml"));
+
+
+
         ListWordsViewController controller = new ListWordsViewController(dict);
         loader.setController(controller);
         root = loader.load();

@@ -56,7 +56,7 @@ public class ListWordsViewController {
     }
 
     private void initList() {
-        wordsList = FXCollections.observableList(dict.getSortedTranslations());
+        wordsList = FXCollections.observableList(dict.getWords()).sorted();
         wordsListView.setItems(wordsList);
         wordsListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         wordsListView.setCellFactory(param -> {
@@ -69,7 +69,6 @@ public class ListWordsViewController {
                 final Stage stage = (Stage) ((Node)event.getSource()).getScene().getWindow();
                 String word = cell.getItem();
                 if (!TextUtils.isBlank(word)) {
-                    log.debug("Translation: " + dict.getTranslation(word));
                     translationPopUp.setTxt(dict.getTranslation(word));
                     translationPopUp.show(stage);
                 }
@@ -88,7 +87,6 @@ public class ListWordsViewController {
         btnCancel.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
             final Node source = (Node) event.getSource();
             ((Stage) source.getScene().getWindow()).close();
-            log.debug("canceling");
         });
     }
 
