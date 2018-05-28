@@ -7,15 +7,21 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.*;
 import java.util.*;
 
 /**
  * Dictionary of words and translations
  */
-public class TranslationsDictionary implements Dictionary {
+public class TranslationsDictionary implements Dictionary, Serializable {
+    private static final long serialVersionUID = 1L;
+
     private static final Logger log = LogManager.getLogger(TranslationsDictionary.class);                /* logger */
 
-    private final Hashtable<String, String> dict = new Hashtable<>();                                    /** dictionary of words and translations */
+    private final Hashtable<String, String> dict = new Hashtable<>();
+    /**
+     * dictionary of words and translations
+     */
     private final List<String> notTranslatedWords = Collections.synchronizedList(new LinkedList<>());    /** not translated words */
 
     /**
@@ -28,27 +34,27 @@ public class TranslationsDictionary implements Dictionary {
 
     /**
      * Add translation of a word
-     * @param word The word
+     *
+     * @param word        The word
      * @param translation The word's translation
      */
     @Override
     synchronized public void addTranslation(String word, String translation) {
-        if(!StringUtils.isBlank(word)) {
-            if(translation != null) {
+        if (!StringUtils.isBlank(word)) {
+            if (translation != null) {
                 if (!translation.isEmpty())
                     dict.put(word, translation);
                 else
                     notTranslatedWords.add(word);
-            }
-            else
+            } else
                 log.error("The given translation of '" + word + "' is NULL");
-        }
-        else
+        } else
             log.error("The given word is NULL or EMPTY");
     }
 
     /**
      * Check a given word is in the dictionary
+     *
      * @param word The checked word
      * @return true - The word is in the dictionary
      */
@@ -60,17 +66,19 @@ public class TranslationsDictionary implements Dictionary {
 
     /**
      * Remove the given word from the dictionary
+     *
      * @param word The word for removing
      * @return true - The word removed successfully
      */
     @Override
     synchronized public boolean removeWord(String word) {
-        OperationOnWord<Boolean> operation = wd -> (dict.containsKey(word)) ? (dict.remove(word) != null): notTranslatedWords.remove(word);
+        OperationOnWord<Boolean> operation = wd -> (dict.containsKey(word)) ? (dict.remove(word) != null) : notTranslatedWords.remove(word);
         return Dictionary.secureOperationOnWord(word, operation, Boolean.FALSE);
     }
 
     /**
      * Get translation of the word
+     *
      * @param word The word
      * @return Word's translation
      */
@@ -81,6 +89,7 @@ public class TranslationsDictionary implements Dictionary {
 
     /**
      * Get all the words of the dictionary
+     *
      * @return The list of dictionary's words
      */
     @Override
@@ -92,6 +101,7 @@ public class TranslationsDictionary implements Dictionary {
 
     /**
      * Get list of translations
+     *
      * @return The translations
      */
     @Override
@@ -101,6 +111,7 @@ public class TranslationsDictionary implements Dictionary {
 
     /**
      * Get sorted list of translations(sorted by translated words)
+     *
      * @return The sorted list
      */
     @Override
@@ -115,11 +126,41 @@ public class TranslationsDictionary implements Dictionary {
 
     /**
      * Get list of words they aren't translated
+     *
      * @return The list of words
      */
     @NotNull
     @Override
     public List<String> getNotTranslatedWords() {
         return notTranslatedWords;
+    }
+
+    /**
+     * Save the dictionary in a temporary file
+     * @param name The name of the temporary file
+     * @return path of the saved dictionary
+     */
+    public String saveInTmpDir(String name) {
+        String path = "";
+        try {
+            path = File.createTempFile(name, null).getAbsolutePath();
+            try (FileOutputStream fileOutputStream = new FileOutputStream(path)) {
+                try (ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream)) {
+                    objectOutputStream.writeObject(this);
+                    objectOutputStream.flush();
+                }
+            }
+        } catch (IOException e) {
+            log.error("Can't save dictionary in a temporary file: " + e);
+        }
+        return path;
+    }
+
+    public static TranslationsDictionary readFrom(String path) throws IOException, ClassNotFoundException {
+        try (FileInputStream fileInputStream = new FileInputStream(path)) {
+            try (ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream)) {
+                return (TranslationsDictionary) objectInputStream.readObject();
+            }
+        }
     }
 }
