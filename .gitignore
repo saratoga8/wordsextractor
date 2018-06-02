@@ -1,0 +1,8 @@
+.idea/*
+target/*
+*/target/*
+/Distribution.iml
+/BL/BL.iml
+/Distribution/Distribution.iml
+/WordsExtractor.iml
+/UI/UI.iml
