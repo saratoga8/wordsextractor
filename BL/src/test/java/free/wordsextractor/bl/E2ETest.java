@@ -240,7 +240,7 @@ public class E2ETest {
                     "\n" +
                     ", have [hæv] verb\n" +
                     "\tиметь, содержать, иметься\n" +
-                    "\t(include, there) \n" +
+                    "\t(include) \n" +
                     "\tобладать, располагать, пользоваться, владеть\n" +
                     "\t(possess, use) \n" +
                     "\tполучать, принимать\n" +
