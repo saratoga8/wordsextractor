@@ -94,7 +94,7 @@ class WordsStatisticsDictionaryTest {
             File file = File.createTempFile("dict", ".txt");
             file.deleteOnExit();
             String path = file.getAbsolutePath();
-            dict.saveIn(path);
+            dict.saveAsTxtIn(path);
 
             String commandStr = "";
             Utils.Shells shell = Utils.getShell();

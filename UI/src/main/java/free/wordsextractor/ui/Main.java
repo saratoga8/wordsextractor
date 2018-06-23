@@ -24,7 +24,7 @@ public class Main {
 
                 final TranslationManager translationMngr = new TranslationManager(wordsStatsDict);
                 translationMngr.removeKnownWords(Paths.get(TranslationManager.KNOWN_WORDS_FILE_NAME));
-                translationMngr.getExtractedWordsDict().saveIn(extractedWordsTxtFilePath);
+                translationMngr.getExtractedWordsDict().saveAsTxtIn(extractedWordsTxtFilePath);
             }
             catch (WordsExtractorException e) {
                 System.err.println("Running interrupted by exception " + e);

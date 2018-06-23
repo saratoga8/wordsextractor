@@ -7,9 +7,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
@@ -62,7 +60,7 @@ public interface Dictionary {
      * @throws WordsExtractorException
      */
     @NotNull
-    default void saveIn(String path) throws WordsExtractorException {
+    default void saveAsTxtIn(String path) throws WordsExtractorException {
         final File file = new File(path);
         if (file.exists()) {
             try (BufferedWriter writer = Files.newBufferedWriter(file.toPath(), Charset.forName(TextExtractorInterface.CHAR_SET), StandardOpenOption.CREATE)) {
@@ -75,6 +73,46 @@ public interface Dictionary {
         }
         else
             throw new WordsExtractorException("The path " + path + " doesn't exist");
+    }
+
+    /**
+     * Save instance of the dictionary class in a file
+     * @param path The file's path
+     */
+    void saveAsBinIn(String path);
+
+    /**
+     * Save instance of the given dictionary class in a file
+     * @param path The file's path
+     * @param obj Class instance
+     */
+    default void saveAsBinIn(String path, final Serializable obj) {
+        try {
+            try (FileOutputStream fileOutputStream = new FileOutputStream(path)) {
+                try (ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream)) {
+                    objectOutputStream.writeObject(obj);
+                    objectOutputStream.flush();
+                }
+            }
+        } catch (IOException e) {
+            log.error("Can't save dictionary in the file " + path + ": " + e);
+        }
+    }
+
+    /**
+     * Read dictionary class instance from a file
+     * @param path The file's path
+     * @param <T> Class name
+     * @return Binary class instance
+     * @throws IOException
+     * @throws ClassNotFoundException
+     */
+    static <T extends Dictionary> T readAsBinFrom(String path) throws IOException, ClassNotFoundException {
+        try (FileInputStream fileInputStream = new FileInputStream(path)) {
+            try (ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream)) {
+                return (T) objectInputStream.readObject();
+            }
+        }
     }
 
     /**

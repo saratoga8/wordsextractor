@@ -7,7 +7,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.*;
+import java.io.Serializable;
 import java.util.*;
 
 /**
@@ -88,6 +88,14 @@ public class TranslationsDictionary implements Dictionary, Serializable {
     }
 
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void saveAsBinIn(String path) {
+        saveAsBinIn(path, this);
+    }
+
+    /**
      * Get all the words of the dictionary
      *
      * @return The list of dictionary's words
@@ -133,34 +141,5 @@ public class TranslationsDictionary implements Dictionary, Serializable {
     @Override
     public List<String> getNotTranslatedWords() {
         return notTranslatedWords;
-    }
-
-    /**
-     * Save the dictionary in a temporary file
-     * @param name The name of the temporary file
-     * @return path of the saved dictionary
-     */
-    public String saveInTmpDir(String name) {
-        String path = "";
-        try {
-            path = File.createTempFile(name, null).getAbsolutePath();
-            try (FileOutputStream fileOutputStream = new FileOutputStream(path)) {
-                try (ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream)) {
-                    objectOutputStream.writeObject(this);
-                    objectOutputStream.flush();
-                }
-            }
-        } catch (IOException e) {
-            log.error("Can't save dictionary in a temporary file: " + e);
-        }
-        return path;
-    }
-
-    public static TranslationsDictionary readFrom(String path) throws IOException, ClassNotFoundException {
-        try (FileInputStream fileInputStream = new FileInputStream(path)) {
-            try (ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream)) {
-                return (TranslationsDictionary) objectInputStream.readObject();
-            }
-        }
     }
 }
