@@ -1,12 +1,12 @@
 package free.wordsextractor.bl.extraction.txt_proc.dictionaries;
 
 import free.wordsextractor.bl.WordsExtractorException;
-import org.apache.http.util.TextUtils;
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.io.File;
 import java.util.List;
 
 /**
@@ -137,12 +137,13 @@ class TranslationsDictionaryTest {
 
         Assert.assertEquals("[translation1, translation2, translation3]", dict.getSortedTranslations().toString());
 
-        String path = dict.saveInTmpDir("dict");
-        Assert.assertFalse( "Dictionary hasn't saved", TextUtils.isEmpty(path));
-
-
         try {
-            Assert.assertEquals("[translation1, translation2, translation3]", TranslationsDictionary.readFrom(path).getSortedTranslations().toString());
+            File file = File.createTempFile("dict", "bin");
+            file.deleteOnExit();
+            dict.saveAsBinIn(file.getAbsolutePath());
+            TranslationsDictionary readDict = Dictionary.readAsBinFrom(file.getAbsolutePath());
+
+            Assert.assertEquals("[translation1, translation2, translation3]", readDict.getSortedTranslations().toString());
         } catch (Exception e) {
             Assert.assertTrue("Test aborted by the exception: " + e, false);
         }

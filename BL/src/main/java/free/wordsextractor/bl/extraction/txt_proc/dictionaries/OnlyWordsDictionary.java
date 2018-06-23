@@ -6,13 +6,16 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.nio.file.Path;
 import java.util.*;
 
 /**
  * Dictionary containing only words
  */
-public class OnlyWordsDictionary implements Dictionary {
+public class OnlyWordsDictionary implements Dictionary, Serializable {
+    private static final long serialVersionUID = 1L;
+
     final private static Logger log = LogManager.getLogger(OnlyWordsDictionary.class);        /* logger */
     final private Set<String> words;                                                          /* words of the dictionary */
 
@@ -85,6 +88,11 @@ public class OnlyWordsDictionary implements Dictionary {
     public String getTranslation(String word) {
         log.error("There are no translations in a only words dictionary");
         return "";
+    }
+
+    @Override
+    public void saveAsBinIn(String path) {
+        saveAsBinIn(path, this);
     }
 
     /**

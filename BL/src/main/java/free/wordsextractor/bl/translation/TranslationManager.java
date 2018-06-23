@@ -6,9 +6,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.nio.file.Path;
 
 /**
@@ -38,11 +36,14 @@ public class TranslationManager {
        final File file = knownWordsFilePath.toFile();
         if (file.exists()) {
             if (file.isFile() && file.canRead()) {
-                try (ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream(file))) {
-                    Dictionary knownWordsDict = (Dictionary) objectInputStream.readObject();
+                try {
+//                try (ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream(file))) {
+//                    Dictionary knownWordsDict = (Dictionary) objectInputStream.readObject();
+//                    dict.removeWordsOfDict(knownWordsDict);
+                    Dictionary knownWordsDict = Dictionary.readAsBinFrom(knownWordsFilePath.toAbsolutePath().toString());
                     dict.removeWordsOfDict(knownWordsDict);
                 } catch (IOException | ClassNotFoundException e) {
-                    log.error("Can't build a dictionary from the file containing known words " + knownWordsFilePath);
+                    log.error("Can't build a dictionary from the file containing known words " + knownWordsFilePath + ": " + e);
                 }
             }
             else

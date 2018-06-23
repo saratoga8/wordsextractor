@@ -90,7 +90,7 @@ public class FileManager {
             }
         }
         catch (IOException e) {
-            throw new WordsExtractorException("Can't saveIn text in file: " + e.toString());
+            throw new WordsExtractorException("Can't saveAsTxtIn text in file: " + e.toString());
         }
     }
 

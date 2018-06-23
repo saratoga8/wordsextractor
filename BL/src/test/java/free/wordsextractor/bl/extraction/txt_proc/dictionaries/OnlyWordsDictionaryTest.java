@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
@@ -82,5 +83,27 @@ public class OnlyWordsDictionaryTest {
         Assert.assertEquals("[three]", dict.getWords().toString());
         dict.removeWord("three");
         Assert.assertTrue(dict.getWords().isEmpty());
+    }
+
+    @DisplayName("Save/Read dictionary")
+    @Test
+    void saveDict() {
+        try {
+            dict.addWord("one");
+            dict.addWord("two");
+            dict.addWord("three");
+
+            File file = File.createTempFile("dict", "bin");
+            file.deleteOnExit();
+            dict.saveAsBinIn(file.getAbsolutePath());
+            OnlyWordsDictionary readDict = Dictionary.readAsBinFrom(file.getAbsolutePath());
+
+            Assert.assertTrue(readDict.contains("one"));
+            Assert.assertTrue(readDict.contains("two"));
+            Assert.assertTrue(readDict.contains("three"));
+
+        } catch (IOException | ClassNotFoundException e) {
+            Assert.assertTrue("Test aborted because of: " + e, false);
+        }
     }
 }

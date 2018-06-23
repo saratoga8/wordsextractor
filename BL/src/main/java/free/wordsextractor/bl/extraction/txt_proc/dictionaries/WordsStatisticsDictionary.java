@@ -5,6 +5,7 @@ import free.wordsextractor.bl.WordsExtractorException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.LinkedList;
@@ -13,7 +14,9 @@ import java.util.List;
 /**
  * WordsStatisticsDictionary of word statistics
  */
-public class WordsStatisticsDictionary implements Dictionary {
+public class WordsStatisticsDictionary implements Dictionary, Serializable {
+    private static final long serialVersionUID = 1L;
+
     private static final Logger log = LogManager.getLogger(WordsStatisticsDictionary.class);        /** logger */
 
     private final Hashtable<String, Integer> wordsStat;                                             /** words statistics */
@@ -84,13 +87,21 @@ public class WordsStatisticsDictionary implements Dictionary {
      * @throws WordsExtractorException
      */
     @NotNull
-    public void saveIn(String path) throws WordsExtractorException {
+    public void saveAsTxtIn(String path) throws WordsExtractorException {
         log.debug ("Saving dictionary to the file " + path);
 
         if (!wordsStat.isEmpty())
-            Dictionary.super.saveIn(path);
+            Dictionary.super.saveAsTxtIn(path);
         else
             throw new WordsExtractorException("There are no words in the dictionary");
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void saveAsBinIn(String path) {
+        saveAsBinIn(path, this);
     }
 
     /**
