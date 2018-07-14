@@ -1,6 +1,9 @@
 package free.wordsextractor.ui;
 
+import free.wordsextractor.bl.extraction.txt_proc.dictionaries.Dictionary;
+import free.wordsextractor.bl.extraction.txt_proc.dictionaries.OnlyWordsDictionary;
 import free.wordsextractor.bl.extraction.txt_proc.dictionaries.TranslationsDictionary;
+import free.wordsextractor.bl.extraction.txt_proc.dictionaries.WordsStatisticsDictionary;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -10,20 +13,31 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
+import java.util.List;
 
 public class WordsExtractorGUI extends Application {
     private static final Logger log = LogManager.getLogger(WordsExtractorGUI.class);
 
-    protected TranslationsDictionary dict = new TranslationsDictionary();
+    protected TranslationsDictionary translations = new TranslationsDictionary();
+    protected WordsStatisticsDictionary stats = new WordsStatisticsDictionary();
+    protected OnlyWordsDictionary knownWords = new OnlyWordsDictionary();
+
     private Parent root;
 
     @Override
     public void init() throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("found_words_list.fxml"));
 
+        List<String> params = getParameters().getUnnamed();
+        try {
+            translations = Dictionary.readAsBinFrom(params.get(0));
+            stats = Dictionary.readAsBinFrom(params.get(1));
+            knownWords = Dictionary.readAsBinFrom(params.get(2));
+        } catch (ClassNotFoundException e) {
+            log.error("Can't initialize dictionaries: " + e);
+        }
 
-
-        ListWordsViewController controller = new ListWordsViewController(dict);
+        ListWordsViewController controller = new ListWordsViewController(translations);
         loader.setController(controller);
         root = loader.load();
     }

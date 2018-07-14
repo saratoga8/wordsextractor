@@ -36,15 +36,14 @@ public class Main {
             Dictionary translations = new YandexTranslation(Paths.get(apiKeyPath), Translation.Langs.getLang("eng"), Translation.Langs.getLang("ru")).translate(unknownWordsDict.getWords());
 
             String paths[] = { ".translations", ".stats", ".knowns" };
-            translations.saveIn(args[0]);
-            wordsStatsDict.saveIn(args[1]);
-            knownWordsDict.saveIn(args[2]);
+            translations.saveAsBinIn(paths[0]);
+            wordsStatsDict.saveAsBinIn(paths[1]);
+            knownWordsDict.saveAsBinIn(paths[2]);
 
             Application.launch(WordsExtractorGUI.class, paths);
         }
         catch (WordsExtractorException | IOException e) {
             System.err.println("Running interrupted by exception " + e);
         }
-
     }
 }

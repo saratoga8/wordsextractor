@@ -98,7 +98,7 @@ public class ListWordsViewController {
             else
                 selectedIndices.add(selectedWord);
             wordsListView.getSelectionModel().clearSelection();
-            selectedIndices.parallelStream().forEach(wordsListView.getSelectionModel()::select);
+            selectedIndices.forEach(wordsListView.getSelectionModel()::select);
 
             selectedTxt.setText("Selected " + selectedIndices.size() + " from " + wordsList.size());
         }
