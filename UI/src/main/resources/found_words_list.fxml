@@ -11,18 +11,24 @@
             <TextField fx:id="searchField" />
             <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0">
                <children>
-                  <Text fx:id="selectedTxt" strokeType="OUTSIDE" strokeWidth="0.0" text="Selected: 0" />
-                  <Button fx:id="selectAllBtn" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" text="Select All" />
-                  <Button fx:id="deselectAllBtn" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" text="Deselect All" />
+                  <Text fx:id="removingTxt" strokeType="OUTSIDE" strokeWidth="0.0" text="Removed: 0" />
+                  <Button fx:id="undoBtn" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" text="Undo" />
+                  <Button fx:id="undoAllBtn" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" text="Undo All" />
                </children>
             </HBox>
          </children>
       </HBox>
+      <ButtonBar prefHeight="40.0" prefWidth="200.0">
+        <buttons>
+            <Button mnemonicParsing="false" text="Word" ButtonBar.buttonData="LEFT"/>
+            <Button mnemonicParsing="false" text="Statistics" ButtonBar.buttonData="RIGHT"/>
+        </buttons>
+      </ButtonBar>
       <ListView fx:id="wordsListView" prefHeight="466.0" prefWidth="800.0" stylesheets="@words_list.css" />
       <ButtonBar prefHeight="40.0" prefWidth="200.0" translateX="1.0">
         <buttons>
-           <Button fx:id = "btnOK" mnemonicParsing="false" text="OK" translateX="1.0" translateY="1.0" ButtonBar.buttonData="LEFT"/>
-           <Button fx:id = "btnCancel" mnemonicParsing="false" text="Cancel" ButtonBar.buttonData="RIGHT" cancelButton="false"/>
+           <Button fx:id="btnOK" mnemonicParsing="false" text="OK" translateX="1.0" translateY="1.0" ButtonBar.buttonData="LEFT" />
+           <Button fx:id="btnCancel" cancelButton="true" mnemonicParsing="false" text="Cancel" ButtonBar.buttonData="RIGHT" />
         </buttons>
       </ButtonBar>
    </children>
