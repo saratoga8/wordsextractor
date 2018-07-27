@@ -144,4 +144,17 @@ class WordsStatisticsDictionaryTest {
         }
         Assert.assertTrue("After removing all words added before, the dictionary isn't empty", dict.getWords().isEmpty());
     }
+
+    @DisplayName("Words statistics")
+    @Test
+    public void statsWords() {
+        List<String> words1 = Arrays.asList("one", "two", "three", "four", "two", "four", "four", "four", "three", "three");
+        words1.parallelStream().forEach(word -> dict.addWord(word));
+
+        Assert.assertEquals("1", dict.getTranslation("one"));
+        Assert.assertEquals("2", dict.getTranslation("two"));
+        Assert.assertEquals("3", dict.getTranslation("three"));
+        Assert.assertEquals("4", dict.getTranslation("four"));
+        Assert.assertEquals("", dict.getTranslation("bla-bla"));
+    }
 }

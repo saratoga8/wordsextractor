@@ -165,7 +165,9 @@ public class WordsStatisticsDictionary implements Dictionary, Serializable {
      */
     @Override
     public String getTranslation(String word) {
-        log.error("There are no translations in a statistics dictionary");
-        return "";
+        final Integer foundNum = wordsStat.get(word);
+        if (foundNum == null)
+            log.error("There is no word '" + word + "'");
+        return (foundNum != null) ? foundNum.toString(): "";
     }
 }
