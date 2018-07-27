@@ -4,4 +4,6 @@ WordsExtractor.iml
 .idea
 .idea/**/*.*
 */target
-*/.*
+BL/BL.iml
+Distribution/Distribution.iml
+**/.*
