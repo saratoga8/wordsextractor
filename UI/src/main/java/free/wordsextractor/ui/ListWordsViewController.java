@@ -1,12 +1,17 @@
 package free.wordsextractor.ui;
 
-import free.wordsextractor.bl.extraction.txt_proc.dictionaries.Dictionary;
+import free.wordsextractor.bl.extraction.txt_proc.dictionaries.TranslationsDictionary;
+import free.wordsextractor.bl.extraction.txt_proc.dictionaries.WordsStatisticsDictionary;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventType;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.Node;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
+import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
 import javafx.stage.Popup;
@@ -17,10 +22,14 @@ import org.apache.http.util.TextUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.net.URL;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.ResourceBundle;
 import java.util.Stack;
 import java.util.function.Supplier;
 
-public class ListWordsViewController {
+public class ListWordsViewController implements Initializable {
     private static final Logger log = LogManager.getLogger(ListWordsViewController.class);
 
     @FXML
@@ -38,17 +47,23 @@ public class ListWordsViewController {
     @FXML
     private Button undoBtn, undoAllBtn;
 
-    final private Dictionary dict;
+    final private TranslationsDictionary translations;
+    final private WordsStatisticsDictionary stats;
 
+    final List<WordInfo> words;
 
-    public ListWordsViewController(final Dictionary dict) {
-        this.dict = dict;
+    public ListWordsViewController(final TranslationsDictionary translations, final WordsStatisticsDictionary stats) {
+        this.translations = translations;
+        this.stats = stats;
+
+        words = new LinkedList<>();
+        translations.getWords().forEach(word -> new WordInfo(word, stats.));
     }
 
     private TranslationPopUp translationPopUp;
 
     @FXML
-    private void initialize() {
+    public void initialize(URL location, ResourceBundle resources) {
         initList();
         initBtns();
 
@@ -61,14 +76,14 @@ public class ListWordsViewController {
         wordsListView.setItems(wordsList);
 
         wordsListView.setCellFactory(param -> {
-            final WordCell cell = new WordCell();
+            final WordCellController cell = new WordCellController();
             cell.setOnMouseClicked(event -> {
                 if (event.getEventType() == MouseEvent.MOUSE_CLICKED)
                     handleWordSelection();
             });
             cell.addEventHandler(MouseEvent.MOUSE_ENTERED, event -> {
                 final Stage stage = (Stage) ((Node)event.getSource()).getScene().getWindow();
-                String word = cell.getItem();
+                String word = cell.getWord();
                 if (!TextUtils.isBlank(word))
                     showTranslationPopUp(stage, word);
             });
@@ -105,20 +120,6 @@ public class ListWordsViewController {
         else
             log.warn("Selected word is blank or NULL");
     }
-
-    private class WordCell extends ListCell<String> {
-
-        @Override
-        protected void updateItem(String item, boolean empty) {
-            super.updateItem(item, empty);
-            if (item == null || empty) {
-                setText(null);
-            } else {
-                setText(item);
-            }
-        }
-    }
-
 
     private Void undoHandling() {
         if (!deletedWords.isEmpty()) {

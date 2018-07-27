@@ -20,8 +20,8 @@
       </HBox>
       <ButtonBar prefHeight="40.0" prefWidth="200.0">
         <buttons>
-            <Button mnemonicParsing="false" text="Word" ButtonBar.buttonData="LEFT"/>
-            <Button mnemonicParsing="false" text="Statistics" ButtonBar.buttonData="RIGHT"/>
+            <Button mnemonicParsing="false" text="Word" ButtonBar.buttonData="LEFT" />
+            <Button mnemonicParsing="false" text="Statistics" ButtonBar.buttonData="RIGHT" />
         </buttons>
       </ButtonBar>
       <ListView fx:id="wordsListView" prefHeight="466.0" prefWidth="800.0" stylesheets="@words_list.css" />

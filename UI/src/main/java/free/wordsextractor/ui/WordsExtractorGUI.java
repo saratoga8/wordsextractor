@@ -37,9 +37,14 @@ public class WordsExtractorGUI extends Application {
             log.error("Can't initialize dictionaries: " + e);
         }
 
-        ListWordsViewController controller = new ListWordsViewController(translations);
-        loader.setController(controller);
-        root = loader.load();
+
+        if (stats.getWords().size() == translations.getWords().size()) {
+            ListWordsViewController controller = new ListWordsViewController(translations, stats);
+            loader.setController(controller);
+            root = loader.load();
+        }
+        else
+            log.error("Number of translated words is " + translations.getWords().size() + ", but number of statistics is " + stats.getWords().size());
     }
 
     @Override
