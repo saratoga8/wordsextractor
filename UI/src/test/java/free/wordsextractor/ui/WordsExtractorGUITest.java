@@ -54,7 +54,6 @@ public class WordsExtractorGUITest  extends ApplicationTest {
         for(int i= 0; i < 3; ++i) { stats.addWord("three"); }
         for(int i= 0; i < 2; ++i) { stats.addWord("two"); }
         stats.addWord("one");
-        for(int i= 0; i < 20; ++i) { stats.addWord("known1"); }
 
         translations.saveAsBinIn(paths[0]);
         stats.saveAsBinIn(paths[1]);

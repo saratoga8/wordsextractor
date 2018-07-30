@@ -5,7 +5,7 @@ public class WordInfo {
     final private String stats;
     final private String translation;
 
-    public WordInfo(String word, String stats, String translation) {
+    public WordInfo(String word, String translation, String stats) {
         this.word = word;
         this.stats = stats;
         this.translation = translation;

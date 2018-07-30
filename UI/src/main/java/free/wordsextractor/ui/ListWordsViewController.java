@@ -16,15 +16,11 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
-import javafx.util.Pair;
 import org.apache.commons.lang.StringUtils;
-import org.apache.http.util.TextUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.net.URL;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Stack;
 import java.util.function.Supplier;
@@ -37,28 +33,29 @@ public class ListWordsViewController implements Initializable {
     @FXML
     private TextField searchField;
     @FXML
-    private ListView<String> wordsListView;
+    private ListView<WordInfo> wordsListView;
     private int initialWordsNum = 0;
-    private ObservableList<String> wordsList;
-    final private Stack<Pair<String, String>> deletedWords = new Stack<>();
+    private ObservableList<WordInfo> wordsList;
+    final private Stack<WordInfo> deletedWords = new Stack<>();
 
     @FXML
     private Button btnOK, btnCancel;
     @FXML
     private Button undoBtn, undoAllBtn;
 
-    final private TranslationsDictionary translations;
-    final private WordsStatisticsDictionary stats;
-
-    final List<WordInfo> words;
+//    final Hashtable<String, WordInfo> words;
 
     public ListWordsViewController(final TranslationsDictionary translations, final WordsStatisticsDictionary stats) {
-        this.translations = translations;
-        this.stats = stats;
+        wordsList = FXCollections.observableArrayList();
 
-        words = new LinkedList<>();
-        translations.getWords().forEach(word -> new WordInfo(word, stats.));
+//        words = new Hashtable<>();
+        translations.getWords().forEach(word -> {
+            final WordInfo info = new WordInfo(word, translations.getTranslation(word), stats.getTranslation(word));
+//            words.put(word, info);
+            wordsList.add(info);
+        });
     }
+
 
     private TranslationPopUp translationPopUp;
 
@@ -68,13 +65,11 @@ public class ListWordsViewController implements Initializable {
         initBtns();
 
         translationPopUp = new TranslationPopUp();
-        initialWordsNum = dict.getWords().size();
+//        initialWordsNum = words.size();
     }
 
     private void initList() {
-        wordsList = FXCollections.observableList(dict.getWords()).sorted();
         wordsListView.setItems(wordsList);
-
         wordsListView.setCellFactory(param -> {
             final WordCellController cell = new WordCellController();
             cell.setOnMouseClicked(event -> {
@@ -83,20 +78,20 @@ public class ListWordsViewController implements Initializable {
             });
             cell.addEventHandler(MouseEvent.MOUSE_ENTERED, event -> {
                 final Stage stage = (Stage) ((Node)event.getSource()).getScene().getWindow();
-                String word = cell.getWord();
-                if (!TextUtils.isBlank(word))
-                    showTranslationPopUp(stage, word);
+                showTranslationPopUp(stage, cell.getItem());
             });
             cell.addEventHandler(MouseEvent.MOUSE_EXITED, event -> translationPopUp.hide());
             return cell;
         });
     }
 
-    private void showTranslationPopUp(Stage stage, String word) {
-        translationPopUp.setTxt(dict.getTranslation(word));
-        translationPopUp.show(stage);
-        translationPopUp.setX(stage.getX() + stage.getWidth() + 3);
-        translationPopUp.setY(stage.getY());
+    private void showTranslationPopUp(Stage stage, WordInfo info) {
+        if (info != null) {
+            translationPopUp.setTxt(info.getTranslation());
+            translationPopUp.show(stage);
+            translationPopUp.setX(stage.getX() + stage.getWidth() + 3);
+            translationPopUp.setY(stage.getY());
+        }
     }
 
     private void initBtns() {
@@ -110,12 +105,16 @@ public class ListWordsViewController implements Initializable {
     }
 
     private void handleWordSelection() {
-        String selectedWord = wordsListView.getSelectionModel().getSelectedItem();
-        if(!StringUtils.isBlank(selectedWord)) {
-            deletedWords.push(new Pair<>(selectedWord, dict.getTranslation(selectedWord)));
-            dict.removeWord(selectedWord);
-            initList();
-            removingTxt.setText("Removed " + deletedWords.size() + " from " + initialWordsNum);
+        WordInfo selectedInfo = wordsListView.getSelectionModel().getSelectedItem();
+        if(!StringUtils.isBlank(selectedInfo.getWord())) {
+            deletedWords.push(selectedInfo);
+//            words.remove(selectedInfo);
+            if (wordsList.remove(selectedInfo)) {
+                initList();
+                removingTxt.setText("Removed " + deletedWords.size() + " from " + initialWordsNum);
+            }
+            else
+                log.error("Can't remove '" + selectedInfo.getWord() + "' from words list");
         }
         else
             log.warn("Selected word is blank or NULL");
@@ -123,21 +122,22 @@ public class ListWordsViewController implements Initializable {
 
     private Void undoHandling() {
         if (!deletedWords.isEmpty()) {
-            Pair<String, String> deleted = deletedWords.pop();
-            dict.addTranslation(deleted.getKey(), deleted.getValue());
-            initList();
-            removingTxt.setText("Selected " + deletedWords.size() + " from " + wordsList.size());
+            WordInfo deleted = deletedWords.pop();
+//            words.put(deleted.getWord(), deleted);
+            if (wordsList.add(deleted)) {
+                initList();
+                removingTxt.setText("Selected " + deletedWords.size() + " from " + wordsList.size());
+            }
+            else
+                log.error("Can't add '" + deleted.getWord() + "' from words list");
         }
         return null;
     }
 
     private Void undoAllHandling() {
         while(!deletedWords.isEmpty()) {
-            Pair<String, String> deleted = deletedWords.pop();
-            dict.addTranslation(deleted.getKey(), deleted.getValue());
+            undoHandling();
         }
-        initList();
-        removingTxt.setText("Selected " + deletedWords.size() + " from " + wordsList.size());
         return null;
     }
 
