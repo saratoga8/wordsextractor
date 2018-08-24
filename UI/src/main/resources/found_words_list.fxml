@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
-<VBox fx:id="vbox" spacing="3.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1">
+<VBox fx:id="vbox" maxHeight="-Infinity" maxWidth="-Infinity" spacing="3.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <HBox fillHeight="false" prefHeight="13.0" prefWidth="800.0">
          <children>
@@ -18,18 +20,26 @@
             </HBox>
          </children>
       </HBox>
-      <ButtonBar prefHeight="40.0" prefWidth="200.0">
-        <buttons>
-            <Button mnemonicParsing="false" text="Word" ButtonBar.buttonData="LEFT" />
-            <Button mnemonicParsing="false" text="Statistics" ButtonBar.buttonData="RIGHT" />
-        </buttons>
-      </ButtonBar>
-      <ListView fx:id="wordsListView" prefHeight="466.0" prefWidth="800.0" stylesheets="@words_list.css" />
-      <ButtonBar prefHeight="40.0" prefWidth="200.0" translateX="1.0">
+      <TableView fx:id="table" minHeight="-Infinity" minWidth="-Infinity">
+          <columns>
+              <TableColumn fx:id="wordsCol" editable="false" text="words" minWidth="-Infinity" resizable="true">
+                  <cellValueFactory><PropertyValueFactory property="word" />
+                  </cellValueFactory>
+              </TableColumn>
+              <TableColumn fx:id="statsCol" editable="false" style="-fx-alignment: center-righ;" text="statistics" resizable="true">
+                  <cellValueFactory><PropertyValueFactory property="stats" />
+                  </cellValueFactory>
+            </TableColumn>
+        </columns>
+      </TableView>
+      <ButtonBar translateX="1.0">
         <buttons>
            <Button fx:id="btnOK" mnemonicParsing="false" text="OK" translateX="1.0" translateY="1.0" ButtonBar.buttonData="LEFT" />
            <Button fx:id="btnCancel" cancelButton="true" mnemonicParsing="false" text="Cancel" ButtonBar.buttonData="RIGHT" />
         </buttons>
+         <VBox.margin>
+            <Insets bottom="2.0" left="1.0" right="1.0" />
+         </VBox.margin>
       </ButtonBar>
    </children>
 </VBox>

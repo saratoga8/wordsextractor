@@ -5,6 +5,7 @@ import free.wordsextractor.bl.extraction.txt_proc.dictionaries.TranslationsDicti
 import free.wordsextractor.bl.extraction.txt_proc.dictionaries.WordsStatisticsDictionary;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TableView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
 import javafx.scene.text.Text;
@@ -64,7 +65,7 @@ public class WordsExtractorGUITest  extends ApplicationTest {
     public void before() {
         try {
             ApplicationTest.launch(WordsExtractorGUI.class, paths);
-            waitUntil("#wordsListView", Matchers.is(VisibleNodesMatcher.visible()), 10);
+            waitUntil("#table", Matchers.is(VisibleNodesMatcher.visible()), 10);
             waitUntil("#searchField", Matchers.is(VisibleNodesMatcher.visible()), 10);
         } catch (Exception e) {
             log.error("Aborted by exception: " + e);
@@ -90,44 +91,44 @@ public class WordsExtractorGUITest  extends ApplicationTest {
 
     @DisplayName("Undo All")
     @Test
-    void selectAll() {
-        ListView list = lookup("#wordsListView").queryListView();
-        Assert.assertEquals(3, list.getItems().size());
+    void undoAll() {
+        TableView table = lookup("#table").queryTableView();
+        Assert.assertEquals(3, table.getItems().size());
         clickOn("one");
         clickOn("two");
         clickOn("three");
-        Assert.assertEquals(0, list.getItems().size());
+        Assert.assertEquals(0, table.getItems().size());
         clickOn("#undoAllBtn");
-        Assert.assertEquals(3, list.getItems().size());
+        Assert.assertEquals(3, table.getItems().size());
         clickOn("#undoAllBtn");
-        Assert.assertEquals(3, list.getItems().size());
+        Assert.assertEquals(3, table.getItems().size());
         clickOn("one");
         clickOn("#undoAllBtn");
-        Assert.assertEquals(3, list.getItems().size());
+        Assert.assertEquals(3, table.getItems().size());
     }
 
     @DisplayName("Undo")
     @Test
-    void deSelectAll() {
-        ListView list = lookup("#wordsListView").queryListView();
-        Assert.assertEquals(3, list.getItems().size());
+    void undo() {
+        TableView table = lookup("#table").queryTableView();
+        Assert.assertEquals(3, table.getItems().size());
         clickOn("one");
         clickOn("#undoBtn");
-        Assert.assertEquals(3, list.getItems().size());
+        Assert.assertEquals(3, table.getItems().size());
         clickOn("#undoBtn");
-        Assert.assertEquals(3, list.getItems().size());
+        Assert.assertEquals(3, table.getItems().size());
         clickOn("one");
         clickOn("two");
         clickOn("three");
-        Assert.assertEquals(0, list.getItems().size());
+        Assert.assertEquals(0, table.getItems().size());
         clickOn("#undoBtn");
-        Assert.assertEquals(1, list.getItems().size());
+        Assert.assertEquals(1, table.getItems().size());
         clickOn("#undoBtn");
-        Assert.assertEquals(2, list.getItems().size());
+        Assert.assertEquals(2, table.getItems().size());
         clickOn("#undoBtn");
-        Assert.assertEquals(3, list.getItems().size());
+        Assert.assertEquals(3, table.getItems().size());
         clickOn("#undoBtn");
-        Assert.assertEquals(3, list.getItems().size());
+        Assert.assertEquals(3, table.getItems().size());
     }
 
     @DisplayName("Title")
@@ -144,18 +145,27 @@ public class WordsExtractorGUITest  extends ApplicationTest {
         Assert.assertEquals("Removed 3 from 3", txt.getText());
     }
 
+    private String tableViewToStr(TableView table) {
+        StringBuilder builder = new StringBuilder();
+        table.getItems().forEach(item -> builder.append("[" + item.toString() + "],"));
+        return (builder.length() > 0) ? "{" + builder.deleteCharAt(builder.length() - 1).toString() + "}": "{}";
+    }
 
-    @DisplayName("Remove")
+    @DisplayName("Remove by selection")
     @Test
-    void selectUnSelect() {
-        ListView list = lookup("#wordsListView").queryListView();
+    void remove() {
+        TableView list = lookup("#table").queryTableView();
         Assert.assertEquals(3, list.getItems().size());
         clickOn("one");
-        Assert.assertEquals("[three, two]", list.getItems().toString());
+        Assert.assertEquals("{[three 3],[two 2]}", tableViewToStr(list));
         clickOn("two");
-        Assert.assertEquals("[three]", list.getItems().toString());
+        Assert.assertEquals("{[three 3]}", tableViewToStr(list));
         clickOn("three");
-        Assert.assertEquals("[]", list.getItems().toString());
+        Assert.assertEquals("{}", tableViewToStr(list));
+        clickOn("#undoBtn");
+        Assert.assertEquals("{[three 3]}", tableViewToStr(list));
+        clickOn("#undoBtn");
+        Assert.assertEquals("{[three 3],[two 2]}", tableViewToStr(list));
     }
 
 

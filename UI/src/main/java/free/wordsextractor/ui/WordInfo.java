@@ -22,4 +22,6 @@ public class WordInfo {
     public String getTranslation() {
         return translation;
     }
+
+    public String toString() { return word + " " + stats; }
 }

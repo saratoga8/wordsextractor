@@ -5,58 +5,296 @@ import free.wordsextractor.bl.extraction.txt_proc.dictionaries.OnlyWordsDictiona
 import free.wordsextractor.bl.extraction.txt_proc.dictionaries.TranslationsDictionary;
 import free.wordsextractor.bl.extraction.txt_proc.dictionaries.WordsStatisticsDictionary;
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
+import javafx.beans.value.ChangeListener;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.event.EventType;
+import javafx.geometry.Dimension2D;
+import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.scene.shape.StrokeType;
+import javafx.scene.text.Text;
+import javafx.stage.Popup;
 import javafx.stage.Stage;
+import org.apache.commons.lang.StringUtils;
+import org.apache.http.util.TextUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Stack;
+import java.util.function.Supplier;
 
 public class WordsExtractorGUI extends Application {
     private static final Logger log = LogManager.getLogger(WordsExtractorGUI.class);
 
-    protected TranslationsDictionary translations = new TranslationsDictionary();
-    protected WordsStatisticsDictionary stats = new WordsStatisticsDictionary();
-    protected OnlyWordsDictionary knownWords = new OnlyWordsDictionary();
+     private int initialWordsNum = 0;
+    private ObservableList<WordInfo> wordsList;
+    final private Stack<WordInfo> deletedWords = new Stack<>();
 
-    private Parent root;
+    private TranslationPopUp translationPopUp;
+
+    private Text text = null;
+    private TableView<WordInfo> table = null;
+    private VBox vBox = null;
+    private ButtonBar bar = null;
+
+    private Dimension2D stageSize = new Dimension2D(850, 550);
+
 
     @Override
     public void init() throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("found_words_list.fxml"));
-
-        List<String> params = getParameters().getUnnamed();
+        wordsList = FXCollections.observableArrayList();
         try {
-            translations = Dictionary.readAsBinFrom(params.get(0));
-            stats = Dictionary.readAsBinFrom(params.get(1));
-            knownWords = Dictionary.readAsBinFrom(params.get(2));
+            List<String> params = getParameters().getUnnamed();
+            final TranslationsDictionary translations = Dictionary.readAsBinFrom(params.get(0));
+            final WordsStatisticsDictionary stats = Dictionary.readAsBinFrom(params.get(1));
+            final OnlyWordsDictionary knownWords = Dictionary.readAsBinFrom(params.get(2));
+
+            translations.getWords().forEach(word -> {
+                final WordInfo info = new WordInfo(word, translations.getTranslation(word), stats.getTranslation(word));
+                wordsList.add(info);
+            });
         } catch (ClassNotFoundException e) {
-            log.error("Can't initialize dictionaries: " + e);
+            throw new IOException("Can't initialize dictionaries: " + e);
         }
-
-
-        if (stats.getWords().size() == translations.getWords().size()) {
-            ListWordsViewController controller = new ListWordsViewController(translations, stats);
-            loader.setController(controller);
-            root = loader.load();
-        }
-        else
-            log.error("Number of translated words is " + translations.getWords().size() + ", but number of statistics is " + stats.getWords().size());
+        initialWordsNum = wordsList.size();
     }
 
     @Override
     public void start(Stage stage) {
-        stage.setScene(new Scene(root, 850, 550));
+        stage.setMinWidth(stageSize.getWidth());
+        stage.setMinHeight(stageSize.getHeight());
+
         stage.centerOnScreen();
         stage.setTitle("Extracted words from text");
         stage.setOnCloseRequest(handle -> {
             log.debug("on closing");
         });
+
+        translationPopUp = new TranslationPopUp();
+
+        vBox = new VBox();
+        vBox.setSpacing(3);
+        vBox.setMinWidth(stageSize.getWidth());
+        vBox.setMinHeight(stageSize.getHeight());
+        vBox.setId("vbox");
+
+        initHeader(vBox);
+        initTable(vBox);
+        initChangeListener(stage);
+        initFooter(vBox);
+
+        final Scene scene = new Scene(new Group());
+        ((Group)scene.getRoot()).getChildren().add(vBox);
+        stage.setScene(scene);
         stage.show();
     }
+
+    private void initChangeListener(final  Stage stage) {
+        ChangeListener<Number> stageSizeListener = (observable, oldValue, newValue) -> {
+            vBox.setPrefHeight(stage.getHeight()); vBox.setMinWidth(stage.getWidth());
+            stageSize = new Dimension2D(stage.getWidth(), stage.getHeight());
+            initTable(vBox);
+            initFooter(vBox);
+
+            double tbl_height = stage.getHeight() - ((HBox)vBox.getChildren().get(0)).getHeight() - bar.getHeight() - table.lookup(".column-header-background").getBoundsInLocal().getHeight();
+            table.setPrefHeight(tbl_height);
+        };
+
+        stage.widthProperty().addListener(stageSizeListener);
+        stage.heightProperty().addListener(stageSizeListener);
+    }
+
+    private void initFooter(final VBox vBox) {
+        if (bar == null) {
+            bar = new ButtonBar();
+            final Button okBtn = new Button();
+            okBtn.setText("OK");
+            okBtn.setMnemonicParsing(false);
+
+            final Button cancelBtn = new Button();
+            cancelBtn.setText("Cancel");
+            cancelBtn.setMnemonicParsing(false);
+            cancelBtn.setCancelButton(true);
+            cancelBtn.setId("btnCancel");
+
+            cancelBtn.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+                final Node source = (Node) event.getSource();
+                ((Stage) source.getScene().getWindow()).close();
+            });
+
+            ButtonBar.setButtonData(cancelBtn, ButtonBar.ButtonData.RIGHT);
+            ButtonBar.setButtonData(okBtn, ButtonBar.ButtonData.LEFT);
+            bar.getButtons().addAll(okBtn, cancelBtn);
+            vBox.getChildren().add(bar);
+        }
+        bar.setMaxHeight(((Button)bar.getButtons().get(0)).getHeight());
+    }
+
+    private void initHeader(final VBox vBox) {
+        text = new Text();
+        text.setStrokeType(StrokeType.OUTSIDE);
+        text.setStrokeWidth(0);
+        text.setText("Removed: 0");
+        text.setId("removingTxt");
+
+        final TextField txtField = new TextField();
+        txtField.setId("searchField");
+
+        final HBox hBox = new HBox();
+        hBox.getChildren().addAll(txtField, text);
+        initBtns(hBox);
+
+        vBox.getChildren().add(hBox);
+    }
+
+    private void initCols(final TableView table) {
+        final TableColumn<WordInfo, String> statsCol, wordsCol;
+
+        if (table.getColumns() == null || table.getColumns().isEmpty()) {
+            wordsCol = initCol("words", "word", "");
+            statsCol = initCol("stats", "stats", "-fx-alignment: CENTER-RIGHT;");
+
+            table.getColumns().addAll(wordsCol, statsCol);
+        } else {
+            wordsCol = (TableColumn<WordInfo, String>) table.getColumns().get(0);
+            statsCol = (TableColumn<WordInfo, String>) table.getColumns().get(1);
+        }
+
+        double max_int_width = new Text().getFont().getSize() * Integer.toString(Integer.MAX_VALUE).length();
+        wordsCol.setPrefWidth(stageSize.getWidth() - max_int_width);
+        statsCol.setMaxWidth(max_int_width);
+    }
+
+    private TableColumn<WordInfo, String> initCol(String name, String propVal, String style) {
+        final TableColumn<WordInfo, String> column = new TableColumn<>(name);
+        column.setCellValueFactory(new PropertyValueFactory<>(propVal));
+        if (!TextUtils.isBlank(style))
+            column.setStyle(style);
+        column.setEditable(false);
+        column.setResizable(true);
+        return column;
+    }
+
+    private void initTable(final VBox vBox) {
+        if (table == null) {
+            table = new TableView<>();
+            table.setId("table");
+            vBox.getChildren().add(table);
+        }
+
+        initCols(table);
+
+        table.setItems(wordsList);
+        table.setRowFactory(tableView -> {
+            TableRow<WordInfo> row = new TableRow<>();
+            row.setOnMouseClicked(event -> {
+                if (event.getEventType() == MouseEvent.MOUSE_CLICKED)
+                    handleWordSelection(table.getSelectionModel().getSelectedItem());
+            });
+            row.addEventHandler(MouseEvent.MOUSE_ENTERED, event -> {
+                final Stage stage = (Stage) ((Node)event.getSource()).getScene().getWindow();
+                showTranslationPopUp(stage, row.getItem());
+            });
+            row.addEventHandler(MouseEvent.MOUSE_EXITED, event -> translationPopUp.hide());
+            return row;
+        });
+    }
+
+    private void showTranslationPopUp(Stage stage, WordInfo info) {
+        if (info != null) {
+            translationPopUp.setTxt(info.getTranslation());
+            translationPopUp.show(stage);
+            translationPopUp.setX(stage.getX() + stage.getWidth() + 3);
+            translationPopUp.setY(stage.getY());
+        }
+    }
+
+    private void initBtns(final HBox hBox) {
+        final Button undoBtn = initUndoBtn("Undo", "undoBtn");
+        final Button undoAllBtn = initUndoBtn("Undo All", "undoAllBtn");
+
+        initButton(undoBtn,    MouseEvent.MOUSE_CLICKED, () -> undoHandling());
+        initButton(undoAllBtn, MouseEvent.MOUSE_CLICKED, () -> undoAllHandling());
+
+        hBox.getChildren().addAll(undoBtn, undoAllBtn);
+    }
+
+    private Button initUndoBtn(String txt, String id) {
+        final Button undoBtn = new Button();
+        undoBtn.setText(txt);
+        undoBtn.setMnemonicParsing(false);
+        undoBtn.setId(id);
+        return undoBtn;
+    }
+
+    private void handleWordSelection(final WordInfo selectedInfo) {
+//        WordInfo selectedInfo = wordsListView.getSelectionModel().getSelectedItem();
+
+        if(!StringUtils.isBlank(selectedInfo.getWord())) {
+            deletedWords.push(selectedInfo);
+//            words.remove(selectedInfo);
+            if (wordsList.remove(selectedInfo)) {
+                initTable(vBox);
+                text.setText("Removed " + deletedWords.size() + " from " + initialWordsNum);
+            }
+            else
+                log.error("Can't remove '" + selectedInfo.getWord() + "' from words list");
+        }
+        else
+            log.warn("Selected word is blank or NULL");
+    }
+
+    private Void undoHandling() {
+        if (!deletedWords.isEmpty()) {
+            WordInfo deleted = deletedWords.pop();
+//            words.put(deleted.getWord(), deleted);
+            if (wordsList.add(deleted)) {
+                initTable(vBox);
+                text.setText("Removed " + deletedWords.size() + " from " + wordsList.size());
+            }
+            else
+                log.error("Can't add '" + deleted.getWord() + "' from words list");
+        }
+        return null;
+    }
+
+    private Void undoAllHandling() {
+        while(!deletedWords.isEmpty()) {
+            undoHandling();
+        }
+        return null;
+    }
+
+    private static void initButton(final Button btn, EventType<MouseEvent> eventType, final Supplier<Void> supplier) {
+        btn.addEventHandler(eventType, event -> supplier.get());
+    }
+
+    private class TranslationPopUp extends Popup {
+        private Label lbl;
+
+        public TranslationPopUp() {
+            super();
+            setX(300);
+            setY(200);
+
+            lbl = new Label();
+            getContent().add(lbl);
+        }
+
+        public void setTxt(String txt) {
+            lbl.setText(txt);
+        }
+    }
+
 
     @Override
     public void stop() {
