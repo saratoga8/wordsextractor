@@ -5,6 +5,7 @@ import free.wordsextractor.bl.extraction.txt_proc.dictionaries.OnlyWordsDictiona
 import free.wordsextractor.bl.extraction.txt_proc.dictionaries.TranslationsDictionary;
 import free.wordsextractor.bl.extraction.txt_proc.dictionaries.WordsStatisticsDictionary;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -48,16 +49,23 @@ public class WordsExtractorGUI extends Application {
 
     private Dimension2D stageSize = new Dimension2D(850, 550);
 
+    private OnlyWordsDictionary knownWords = new OnlyWordsDictionary();
+    private String knownWordsPath = "";
 
     @Override
     public void init() throws IOException {
         wordsList = FXCollections.observableArrayList();
         try {
-            List<String> params = getParameters().getUnnamed();
-            final TranslationsDictionary translations = Dictionary.readAsBinFrom(params.get(0));
-            final WordsStatisticsDictionary stats = Dictionary.readAsBinFrom(params.get(1));
-            final OnlyWordsDictionary knownWords = Dictionary.readAsBinFrom(params.get(2));
+            final List<String> params = getParameters().getUnnamed();
 
+            final WordsStatisticsDictionary stats = Dictionary.readAsBinFrom(params.get(1));
+
+            if (params.size() > 2) {
+                knownWordsPath = params.get(2);
+                knownWords = Dictionary.readAsBinFrom(knownWordsPath);
+            }
+
+            final TranslationsDictionary translations = Dictionary.readAsBinFrom(params.get(0));
             translations.getWords().forEach(word -> {
                 final WordInfo info = new WordInfo(word, translations.getTranslation(word), stats.getTranslation(word));
                 wordsList.add(info);
@@ -116,20 +124,8 @@ public class WordsExtractorGUI extends Application {
     private void initFooter(final VBox vBox) {
         if (bar == null) {
             bar = new ButtonBar();
-            final Button okBtn = new Button();
-            okBtn.setText("OK");
-            okBtn.setMnemonicParsing(false);
-
-            final Button cancelBtn = new Button();
-            cancelBtn.setText("Cancel");
-            cancelBtn.setMnemonicParsing(false);
-            cancelBtn.setCancelButton(true);
-            cancelBtn.setId("btnCancel");
-
-            cancelBtn.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-                final Node source = (Node) event.getSource();
-                ((Stage) source.getScene().getWindow()).close();
-            });
+            final Button okBtn = initOkBtn();
+            final Button cancelBtn = initCancelBtn();
 
             ButtonBar.setButtonData(cancelBtn, ButtonBar.ButtonData.RIGHT);
             ButtonBar.setButtonData(okBtn, ButtonBar.ButtonData.LEFT);
@@ -137,6 +133,32 @@ public class WordsExtractorGUI extends Application {
             vBox.getChildren().add(bar);
         }
         bar.setMaxHeight(((Button)bar.getButtons().get(0)).getHeight());
+    }
+
+    private Button initOkBtn() {
+        final Button okBtn = new Button();
+        okBtn.setText("OK");
+        okBtn.setMnemonicParsing(false);
+
+        okBtn.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+            deletedWords.forEach(word -> knownWords.addWord(word.getWord()));
+            knownWords.saveAsBinIn(knownWordsPath);
+        });
+        return okBtn;
+    }
+
+    private Button initCancelBtn() {
+        final Button cancelBtn = new Button();
+        cancelBtn.setText("Cancel");
+        cancelBtn.setMnemonicParsing(false);
+        cancelBtn.setCancelButton(true);
+        cancelBtn.setId("btnCancel");
+
+        cancelBtn.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+            final Node source = (Node) event.getSource();
+            ((Stage) source.getScene().getWindow()).close();
+        });
+        return cancelBtn;
     }
 
     private void initHeader(final VBox vBox) {
@@ -151,7 +173,7 @@ public class WordsExtractorGUI extends Application {
 
         final HBox hBox = new HBox();
         hBox.getChildren().addAll(txtField, text);
-        initBtns(hBox);
+        initUndoBtns(hBox);
 
         vBox.getChildren().add(hBox);
     }
@@ -209,7 +231,7 @@ public class WordsExtractorGUI extends Application {
         });
     }
 
-    private void showTranslationPopUp(Stage stage, WordInfo info) {
+    private void showTranslationPopUp(final Stage stage, final WordInfo info) {
         if (info != null) {
             translationPopUp.setTxt(info.getTranslation());
             translationPopUp.show(stage);
@@ -218,7 +240,7 @@ public class WordsExtractorGUI extends Application {
         }
     }
 
-    private void initBtns(final HBox hBox) {
+    private void initUndoBtns(final HBox hBox) {
         final Button undoBtn = initUndoBtn("Undo", "undoBtn");
         final Button undoAllBtn = initUndoBtn("Undo All", "undoAllBtn");
 
@@ -298,7 +320,8 @@ public class WordsExtractorGUI extends Application {
 
     @Override
     public void stop() {
-        log.debug("stop the app");
+        Platform.exit();
+        System.exit(0);
     }
 
 /*    private void bl() {
