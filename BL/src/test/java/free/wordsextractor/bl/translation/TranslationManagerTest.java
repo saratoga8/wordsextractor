@@ -1,6 +1,5 @@
 package free.wordsextractor.bl.translation;
 
-import free.wordsextractor.bl.WordsExtractorException;
 import free.wordsextractor.bl.extraction.file_proc.Utils;
 import free.wordsextractor.bl.extraction.txt_proc.dictionaries.Dictionary;
 import free.wordsextractor.bl.extraction.txt_proc.dictionaries.OnlyWordsDictionary;
@@ -27,11 +26,11 @@ class TranslationManagerTest {
             knownWords.addTranslation("one", "number 1");
             knownWords.addTranslation("two", "number 2");
             knownWords.addTranslation("three", "number 3");
-            knownWords.saveAsTxtIn("known.dict");
-            mngr.removeKnownWords(Paths.get("known.dict"));
+            knownWords.saveAsBinIn(".knowns");
+            mngr.removeKnownWords(Paths.get(".knowns"));
             Assert.assertEquals("[six, four, seven, five, eight]", mngr.getExtractedWordsDict().getWords().toString());
-        } catch (IOException | URISyntaxException | WordsExtractorException e) {
-            System.err.println("Test has aborted because of exception: " + e);
+        } catch (IOException | URISyntaxException e) {
+            Assert.assertTrue("Test has aborted because of exception: " + e, false);
         }
     }
 }
