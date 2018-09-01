@@ -7,6 +7,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.*;
 
@@ -91,7 +92,7 @@ public class TranslationsDictionary implements Dictionary, Serializable {
      * {@inheritDoc}
      */
     @Override
-    public void saveAsBinIn(String path) {
+    public void saveAsBinIn(String path) throws IOException {
         saveAsBinIn(path, this);
     }
 

@@ -10,6 +10,7 @@ import org.apache.logging.log4j.Logger;
 import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.List;
 
@@ -79,14 +80,19 @@ public interface Dictionary {
      * Save instance of the dictionary class in a file
      * @param path The file's path
      */
-    void saveAsBinIn(String path);
+    void saveAsBinIn(String path) throws IOException;
 
     /**
      * Save instance of the given dictionary class in a file
      * @param path The file's path
      * @param obj Class instance
      */
-    default void saveAsBinIn(String path, final Serializable obj) {
+    default void saveAsBinIn(String path, final Serializable obj) throws IOException {
+        try {
+            Files.deleteIfExists(Paths.get(path));
+        } catch (IOException e) {
+            throw new IOException("Can't remove file " + path + ": " + e);
+        }
         try {
             try (FileOutputStream fileOutputStream = new FileOutputStream(path)) {
                 try (ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream)) {
@@ -95,7 +101,7 @@ public interface Dictionary {
                 }
             }
         } catch (IOException e) {
-            log.error("Can't save dictionary in the file " + path + ": " + e);
+            throw new IOException("Can't save dictionary in the file " + path + ": " + e);
         }
     }
 

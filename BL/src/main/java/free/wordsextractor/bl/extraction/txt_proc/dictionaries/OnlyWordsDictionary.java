@@ -91,7 +91,7 @@ public class OnlyWordsDictionary implements Dictionary, Serializable {
     }
 
     @Override
-    public void saveAsBinIn(String path) {
+    public void saveAsBinIn(String path) throws IOException {
         saveAsBinIn(path, this);
     }
 
