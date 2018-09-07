@@ -9,25 +9,33 @@ import free.wordsextractor.bl.translation.Translation;
 import free.wordsextractor.bl.translation.TranslationManager;
 import free.wordsextractor.bl.translation.yandex.YandexTranslation;
 import javafx.application.Application;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Map;
 
+/**
+ * The main class of the application
+ */
 public class Main {
-    private static final Logger log = LogManager.getLogger(Main.class);
 
+    /**
+     * Translate the text from the file with the given path
+     * @param paths Array of paths of used files
+     * @return Array of paths of created files
+     * @throws IOException
+     * @throws WordsExtractorException
+     */
     public static String[] translate(String[] paths) throws IOException, WordsExtractorException {
+        if (paths.length < 2)
+            throw new WordsExtractorException("Invalid arguments list. The arguments should be: path1 path2 path3(optional)\nWhere: path1 - path of a file being translated\n       path2 - path of a file with API key\n       path3 - path of a file with known words");
+
         String txtFilePath = paths[0];
         String apiKeyPath = paths[1];
-        Path knownWordsPath = (paths.length > 2) ? Paths.get(paths[2]): createLocalEmptyFile("knowns.dict");
-
-        if(knownWordsPath == null)
-            return new String[] {};
+        final Path knownWordsPath = (paths.length > 2) ? Paths.get(paths[2]): createLocalEmptyFile("knowns.dict");
 
         final FileManager fileMngr = new FileManager(txtFilePath);
         final List<Path> pathsList = fileMngr.extractTxtFiles(123);
@@ -44,31 +52,44 @@ public class Main {
 
         final Dictionary translations = new YandexTranslation(Paths.get(apiKeyPath), Translation.Langs.getLang("eng"), Translation.Langs.getLang("ru")).translate(unknownWordsDict.getWords());
 
-        String createdPaths[] = { ".translations", ".stats", ".knowns" };
-        translations.saveAsBinIn(paths[0]);
-        wordsStatsDict.saveAsBinIn(paths[1]);
-        knownWordsDict.saveAsBinIn(paths[2]);
-        return createdPaths;
+        final Map<Dictionary, String> dictsMap = Map.of(translations, ".translations", wordsStatsDict, ".stats", knownWordsDict, ".knowns");
+        return saveDictionaries(dictsMap);
     }
 
+    private static String[] saveDictionaries(final Map<Dictionary, String> dictsMap) {
+        dictsMap.forEach((dict, path) -> {
+            try {
+                dict.saveAsBinIn(path);
+            } catch (IOException e) {
+                System.err.println("Can't save dictionary in file " + path + ": " + e);
+            }
+        });
+        return dictsMap.values().toArray(new String[dictsMap.values().size()]);
+    }
+
+    /**
+     * Main function
+     * @param args App's parameters
+     */
     public static void main(String [] args) {
         try {
             String [] paths = translate(args);
             Application.launch(WordsExtractorGUI.class, paths);
         }
         catch (WordsExtractorException | IOException e) {
-            System.err.println("Running interrupted by exception " + e.fillInStackTrace());
+            System.err.println("Running interrupted by exception: " + e);
         }
     }
 
-    private static Path createLocalEmptyFile(final String name) {
-        try {
-            File file = new File(name);
-            file.createNewFile();
-            return Paths.get(file.getAbsolutePath());
-        } catch (IOException e) {
-            System.err.println("Can't create an empty file: " + e);
-            return null;
-        }
+    /**
+     * Create local empty file
+     * @param name File's name
+     * @return File's path
+     * @throws IOException
+     */
+    private static Path createLocalEmptyFile(String name) throws IOException {
+        final File file = new File(name);
+        file.createNewFile();
+        return Paths.get(file.getAbsolutePath());
     }
 }

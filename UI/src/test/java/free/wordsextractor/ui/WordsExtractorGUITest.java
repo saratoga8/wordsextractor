@@ -4,7 +4,6 @@ import free.wordsextractor.bl.extraction.txt_proc.dictionaries.OnlyWordsDictiona
 import free.wordsextractor.bl.extraction.txt_proc.dictionaries.TranslationsDictionary;
 import free.wordsextractor.bl.extraction.txt_proc.dictionaries.WordsStatisticsDictionary;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
 import javafx.scene.control.TableView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
@@ -13,16 +12,15 @@ import javafx.stage.Popup;
 import javafx.stage.Stage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.jupiter.api.*;
-import org.loadui.testfx.controls.impl.VisibleNodesMatcher;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 
+import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 
-import static org.loadui.testfx.GuiTest.waitUntil;
+import static org.testfx.api.FxToolkit.cleanupStages;
 import static org.testfx.api.FxToolkit.registerPrimaryStage;
 
 
@@ -33,13 +31,6 @@ public class WordsExtractorGUITest  extends ApplicationTest {
 
     @BeforeAll
     public static void setUpAll() throws TimeoutException {
-        if (Boolean.getBoolean("headless")) {
-            System.setProperty("testfx.robot", "glass");
-            System.setProperty("testfx.headless", "true");
-            System.setProperty("prism.order", "sw");
-            System.setProperty("prism.text", "t2k");
-            System.setProperty("java.awt.headless", "true");
-        }
         registerPrimaryStage();
 
         TranslationsDictionary translations = new TranslationsDictionary();
@@ -56,19 +47,21 @@ public class WordsExtractorGUITest  extends ApplicationTest {
         for(int i= 0; i < 2; ++i) { stats.addWord("two"); }
         stats.addWord("one");
 
-        translations.saveAsBinIn(paths[0]);
-        stats.saveAsBinIn(paths[1]);
-        knowns.saveAsBinIn(paths[2]);
+        try {
+            translations.saveAsBinIn(paths[0]);
+            stats.saveAsBinIn(paths[1]);
+            knowns.saveAsBinIn(paths[2]);
+        } catch (IOException e) {
+            Assert.assertTrue("Can't save dictionaries objects: " + e, false);
+        }
     }
 
     @BeforeEach
     public void before() {
         try {
             ApplicationTest.launch(WordsExtractorGUI.class, paths);
-            waitUntil("#table", Matchers.is(VisibleNodesMatcher.visible()), 10);
-            waitUntil("#searchField", Matchers.is(VisibleNodesMatcher.visible()), 10);
-        } catch (Exception e) {
-            log.error("Aborted by exception: " + e);
+         } catch (Exception e) {
+            Assert.assertTrue("Aborted by exception: " + e, false);
         }
     }
 
@@ -77,15 +70,17 @@ public class WordsExtractorGUITest  extends ApplicationTest {
         FxToolkit.hideStage();
         release(new KeyCode[]{});
         release(new MouseButton[]{});
+        cleanupStages();
     }
 
     @DisplayName("Cancel")
     @Test
     void testCancel() {
-        Assert.assertNotNull(lookup("#vbox").query());
+        int before = listWindows().size();
+        Assert.assertNotNull(lookup("#vbox"));
         Assert.assertTrue(lookup("#vbox").query().isVisible());
         clickOn("#btnCancel");
-        Assert.assertNull(lookup("#vbox").query());
+        Assert.assertEquals(before - 1, listWindows().size());
     }
 
 
@@ -105,6 +100,7 @@ public class WordsExtractorGUITest  extends ApplicationTest {
         clickOn("one");
         clickOn("#undoAllBtn");
         Assert.assertEquals(3, table.getItems().size());
+        clickOn("#btnCancel");
     }
 
     @DisplayName("Undo")
@@ -129,6 +125,7 @@ public class WordsExtractorGUITest  extends ApplicationTest {
         Assert.assertEquals(3, table.getItems().size());
         clickOn("#undoBtn");
         Assert.assertEquals(3, table.getItems().size());
+        clickOn("#btnCancel");
     }
 
     @DisplayName("Title")
@@ -136,13 +133,14 @@ public class WordsExtractorGUITest  extends ApplicationTest {
     void selectionTitle() {
         Text txt = lookup("#removingTxt").queryText();
         Assert.assertEquals("Removed: 0", txt.getText());
-        ListView list = lookup("#wordsListView").queryListView();
+        TableView list = lookup("#table").queryTableView();
         clickOn("one");
         Assert.assertEquals("Removed 1 from 3", txt.getText());
         clickOn("two");
         Assert.assertEquals("Removed 2 from 3", txt.getText());
         clickOn("three");
         Assert.assertEquals("Removed 3 from 3", txt.getText());
+        clickOn("#btnCancel");
     }
 
     private String tableViewToStr(TableView table) {
@@ -166,6 +164,7 @@ public class WordsExtractorGUITest  extends ApplicationTest {
         Assert.assertEquals("{[three 3]}", tableViewToStr(list));
         clickOn("#undoBtn");
         Assert.assertEquals("{[three 3],[two 2]}", tableViewToStr(list));
+        clickOn("#btnCancel");
     }
 
 
@@ -191,6 +190,7 @@ public class WordsExtractorGUITest  extends ApplicationTest {
         Assert.assertTrue("Pop up window of translation isn't at the same Y position as the parent win", listWindows().get(0).getY() == listWindows().get(1).getY());
         expectedX = listWindows().get(0).getX() + listWindows().get(0).getWidth() + 3;
         Assert.assertTrue("Translation's pop up X position isn't at the right side of the parent win", expectedX == listWindows().get(1).getX());
+        clickOn("#btnCancel");
     }
 
     @Override

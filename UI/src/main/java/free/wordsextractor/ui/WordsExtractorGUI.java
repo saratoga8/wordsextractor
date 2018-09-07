@@ -1,9 +1,7 @@
 package free.wordsextractor.ui;
 
+import free.wordsextractor.bl.WordsExtractorException;
 import free.wordsextractor.bl.extraction.txt_proc.dictionaries.Dictionary;
-import free.wordsextractor.bl.extraction.txt_proc.dictionaries.OnlyWordsDictionary;
-import free.wordsextractor.bl.extraction.txt_proc.dictionaries.TranslationsDictionary;
-import free.wordsextractor.bl.extraction.txt_proc.dictionaries.WordsStatisticsDictionary;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
@@ -29,14 +27,19 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Stack;
 import java.util.function.Supplier;
 
+/**
+ * GUI of the application
+ */
 public class WordsExtractorGUI extends Application {
     private static final Logger log = LogManager.getLogger(WordsExtractorGUI.class);
 
-     private int initialWordsNum = 0;
+    private int initialWordsNum = 0;
     private ObservableList<WordInfo> wordsList;
     final private Stack<WordInfo> deletedWords = new Stack<>();
 
@@ -49,23 +52,29 @@ public class WordsExtractorGUI extends Application {
 
     private Dimension2D stageSize = new Dimension2D(850, 550);
 
-    private OnlyWordsDictionary knownWords = new OnlyWordsDictionary();
     private String knownWordsPath = "";
 
+    /**
+     * Initialization of app: get known words, statistics and translations from files
+     * @throws IOException
+     */
     @Override
     public void init() throws IOException {
         wordsList = FXCollections.observableArrayList();
-        try {
-            final List<String> params = getParameters().getUnnamed();
+        readDictionariesFromFiles(getParameters().getUnnamed());
+        initialWordsNum = wordsList.size();
+    }
 
-            final WordsStatisticsDictionary stats = Dictionary.readAsBinFrom(params.get(1));
+    private void readDictionariesFromFiles(final List<String> params) throws IOException {
+        try {
+            final Dictionary stats = readDictionaryFromFile(params.get(1));
 
             if (params.size() > 2) {
                 knownWordsPath = params.get(2);
-                knownWords = Dictionary.readAsBinFrom(knownWordsPath);
+
             }
 
-            final TranslationsDictionary translations = Dictionary.readAsBinFrom(params.get(0));
+            final Dictionary translations = readDictionaryFromFile(params.get(0));
             translations.getWords().forEach(word -> {
                 final WordInfo info = new WordInfo(word, translations.getTranslation(word), stats.getTranslation(word));
                 wordsList.add(info);
@@ -73,9 +82,19 @@ public class WordsExtractorGUI extends Application {
         } catch (ClassNotFoundException e) {
             throw new IOException("Can't initialize dictionaries: " + e);
         }
-        initialWordsNum = wordsList.size();
     }
 
+    final Dictionary readDictionaryFromFile(String path) throws IOException, ClassNotFoundException {
+        if (!TextUtils.isEmpty(path) && Files.exists(Paths.get(path)))
+            return Dictionary.readAsBinFrom(path);
+        else
+            throw new IOException("Can't read dictionary from file " + path);
+    }
+
+    /**
+     * Start the GUI
+     * @param stage App's stage
+     */
     @Override
     public void start(Stage stage) {
         stage.setMinWidth(stageSize.getWidth());
@@ -121,6 +140,10 @@ public class WordsExtractorGUI extends Application {
         stage.heightProperty().addListener(stageSizeListener);
     }
 
+    /**
+     * Initialization of the footer of the main win
+     * @param vBox Vertical box of the app
+     */
     private void initFooter(final VBox vBox) {
         if (bar == null) {
             bar = new ButtonBar();
@@ -140,11 +163,30 @@ public class WordsExtractorGUI extends Application {
         okBtn.setText("OK");
         okBtn.setMnemonicParsing(false);
 
-        okBtn.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-            deletedWords.forEach(word -> knownWords.addWord(word.getWord()));
-            knownWords.saveAsBinIn(knownWordsPath);
-        });
+        okBtn.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> saveDeletedWords());
         return okBtn;
+    }
+
+    private void saveDeletedWords() {
+        Dictionary knownWordsDict;
+        try {
+            knownWordsDict = readDictionaryFromFile(knownWordsPath);
+        } catch (IOException | ClassNotFoundException e) {
+            log.error("Can't read file " + knownWordsPath + " with known words: " + e);
+            return;
+        }
+        deletedWords.forEach(wordInfo -> {
+            try {
+                knownWordsDict.addWord(wordInfo.getWord());
+            } catch (WordsExtractorException e) {
+                log.error("Can't add deleted word '" + wordInfo.getWord() + "' to the known words dictionary: " + e);
+            }
+        });
+        try {
+            knownWordsDict.saveAsBinIn(knownWordsPath);
+        } catch (IOException e) {
+            log.error("Can't save known words dictionary " + knownWordsPath + " after adding deleted words: " + e);
+        }
     }
 
     private Button initCancelBtn() {
