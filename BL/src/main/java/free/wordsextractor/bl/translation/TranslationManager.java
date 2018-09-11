@@ -2,6 +2,7 @@ package free.wordsextractor.bl.translation;
 
 import com.drew.lang.annotations.NotNull;
 import free.wordsextractor.bl.extraction.txt_proc.dictionaries.Dictionary;
+import free.wordsextractor.bl.extraction.txt_proc.dictionaries.OnlyWordsDictionary;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -40,9 +41,9 @@ public class TranslationManager {
 //                try (ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream(file))) {
 //                    Dictionary knownWordsDict = (Dictionary) objectInputStream.readObject();
 //                    dict.removeWordsOfDict(knownWordsDict);
-                    Dictionary knownWordsDict = Dictionary.readAsBinFrom(knownWordsFilePath.toAbsolutePath().toString());
-                    dict.removeWordsOfDict(knownWordsDict);
-                } catch (IOException | ClassNotFoundException e) {
+//                    Dictionary knownWordsDict = Dictionary.readAsBinFrom(knownWordsFilePath.toAbsolutePath().toString());
+                    dict.removeWordsOfDict(new OnlyWordsDictionary(knownWordsFilePath));
+                } catch (IOException e) {
                     log.error("Can't build a dictionary from the file containing known words " + knownWordsFilePath + ": " + e);
                 }
             }

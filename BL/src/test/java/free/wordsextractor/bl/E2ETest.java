@@ -13,8 +13,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
+import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 @DisplayName("E2E Tests")
@@ -32,14 +34,8 @@ public class E2ETest {
 
             final TranslationManager translationMngr = new TranslationManager(wordsStatsDict);
 
-            OnlyWordsDictionary knownWordsDict = new OnlyWordsDictionary();
-            knownWordsDict.addWord("one");
-            knownWordsDict.addWord("two");
-            knownWordsDict.addWord("three");
-
-
             Dictionary extractedWords = translationMngr.getExtractedWordsDict();
-            extractedWords.removeWordsOfDict(knownWordsDict);
+            extractedWords.removeWordsOfDict(new OnlyWordsDictionary(Paths.get(Utils.getResourcePathStr(this, "knowns.dict"))));
             List<String> words = extractedWords.getWords();
 
             Path apiKeyPath = FileManager.getResourcesFilePath("yandex_api.key", this);
@@ -619,7 +615,7 @@ public class E2ETest {
             notTranslated.sort(String::compareToIgnoreCase);
             Assert.assertEquals("[CsvSource, is, methods, objects, parameters, rules]", notTranslated.toString());
         }
-        catch (WordsExtractorException | URISyntaxException e) {
+        catch (WordsExtractorException | URISyntaxException | IOException e) {
             System.err.println("Running interrupted by exception " + e);
         }
     }

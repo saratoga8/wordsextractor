@@ -27,7 +27,7 @@ class TranslationManagerTest {
             knownWords.addTranslation("two", "number 2");
             knownWords.addTranslation("three", "number 3");
             knownWords.saveAsBinIn(".knowns");
-            mngr.removeKnownWords(Paths.get(".knowns"));
+            mngr.removeKnownWords(Paths.get(Utils.getResourcePathStr(this, "knowns.dict")));
             Assert.assertEquals("[six, four, seven, five, eight]", mngr.getExtractedWordsDict().getWords().toString());
         } catch (IOException | URISyntaxException e) {
             Assert.assertTrue("Test has aborted because of exception: " + e, false);

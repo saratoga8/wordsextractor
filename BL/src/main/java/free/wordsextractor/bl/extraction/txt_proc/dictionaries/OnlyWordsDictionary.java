@@ -133,4 +133,15 @@ public class OnlyWordsDictionary implements Dictionary, Serializable {
         log.error("There are no translations in a dictionary with only words!");
         return new LinkedList<>();
     }
+
+    /**
+     * Get string implementation of the dictionary
+     * @return List of words separated by new lines
+     */
+    @Override
+    public String toString() {
+        StringBuffer buffer = new StringBuffer();
+        words.parallelStream().forEach(word -> buffer.append(word + "\n"));
+        return buffer.toString();
+    }
 }

@@ -1,6 +1,5 @@
 package free.wordsextractor.ui;
 
-import free.wordsextractor.bl.WordsExtractorException;
 import free.wordsextractor.bl.extraction.txt_proc.dictionaries.Dictionary;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -28,7 +27,9 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.List;
 import java.util.Stack;
 import java.util.function.Supplier;
@@ -52,7 +53,7 @@ public class WordsExtractorGUI extends Application {
 
     private Dimension2D stageSize = new Dimension2D(850, 550);
 
-    private String knownWordsPath = "";
+    private Path knownWordsPath = null;
 
     /**
      * Initialization of app: get known words, statistics and translations from files
@@ -65,14 +66,18 @@ public class WordsExtractorGUI extends Application {
         initialWordsNum = wordsList.size();
     }
 
+    /**
+     * Read dictionaries from binary files
+     * @param params Paths of the dictionaries files
+     * @throws IOException
+     */
     private void readDictionariesFromFiles(final List<String> params) throws IOException {
         try {
             final Dictionary stats = readDictionaryFromFile(params.get(1));
 
-            if (params.size() > 2) {
-                knownWordsPath = params.get(2);
-
-            }
+            knownWordsPath = Paths.get(params.get(2));
+            if (!Files.exists(knownWordsPath))
+                throw new IOException("The file with known words " + knownWordsPath.toString() + " doesn't exist");
 
             final Dictionary translations = readDictionaryFromFile(params.get(0));
             translations.getWords().forEach(word -> {
@@ -84,6 +89,14 @@ public class WordsExtractorGUI extends Application {
         }
     }
 
+
+    /**
+     * Read a dictionary from file
+     * @param path File's path
+     * @return Dictionary instance
+     * @throws IOException
+     * @throws ClassNotFoundException
+     */
     final Dictionary readDictionaryFromFile(String path) throws IOException, ClassNotFoundException {
         if (!TextUtils.isEmpty(path) && Files.exists(Paths.get(path)))
             return Dictionary.readAsBinFrom(path);
@@ -108,11 +121,7 @@ public class WordsExtractorGUI extends Application {
 
         translationPopUp = new TranslationPopUp();
 
-        vBox = new VBox();
-        vBox.setSpacing(3);
-        vBox.setMinWidth(stageSize.getWidth());
-        vBox.setMinHeight(stageSize.getHeight());
-        vBox.setId("vbox");
+        vBox = initVBox();
 
         initHeader(vBox);
         initTable(vBox);
@@ -123,6 +132,15 @@ public class WordsExtractorGUI extends Application {
         ((Group)scene.getRoot()).getChildren().add(vBox);
         stage.setScene(scene);
         stage.show();
+    }
+
+    private VBox initVBox() {
+        final VBox vBox = new VBox();
+        vBox.setSpacing(3);
+        vBox.setMinWidth(stageSize.getWidth());
+        vBox.setMinHeight(stageSize.getHeight());
+        vBox.setId("vbox");
+        return vBox;
     }
 
     private void initChangeListener(final  Stage stage) {
@@ -162,31 +180,26 @@ public class WordsExtractorGUI extends Application {
         final Button okBtn = new Button();
         okBtn.setText("OK");
         okBtn.setMnemonicParsing(false);
+        okBtn.setId("btnOk");
 
         okBtn.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> saveDeletedWords());
         return okBtn;
     }
 
     private void saveDeletedWords() {
-        Dictionary knownWordsDict;
-        try {
-            knownWordsDict = readDictionaryFromFile(knownWordsPath);
-        } catch (IOException | ClassNotFoundException e) {
-            log.error("Can't read file " + knownWordsPath + " with known words: " + e);
-            return;
-        }
-        deletedWords.forEach(wordInfo -> {
+        if (knownWordsPath != null) {
             try {
-                knownWordsDict.addWord(wordInfo.getWord());
-            } catch (WordsExtractorException e) {
-                log.error("Can't add deleted word '" + wordInfo.getWord() + "' to the known words dictionary: " + e);
+                final StringBuilder builder = new StringBuilder();
+                deletedWords.forEach(wordInfo -> builder.append(wordInfo.getWord() + "\n"));
+                Files.write(knownWordsPath, builder.toString().getBytes(), StandardOpenOption.APPEND);
+                deletedWords.empty();
+                text.setText("Removed: 0");
+            } catch (IOException e) {
+                log.error("Can't add removed words to the file of known words " + knownWordsPath.toAbsolutePath().toString() + ": " + e);
             }
-        });
-        try {
-            knownWordsDict.saveAsBinIn(knownWordsPath);
-        } catch (IOException e) {
-            log.error("Can't save known words dictionary " + knownWordsPath + " after adding deleted words: " + e);
         }
+        else
+            log.error("The path of known words file is NULL");
     }
 
     private Button initCancelBtn() {
@@ -301,11 +314,8 @@ public class WordsExtractorGUI extends Application {
     }
 
     private void handleWordSelection(final WordInfo selectedInfo) {
-//        WordInfo selectedInfo = wordsListView.getSelectionModel().getSelectedItem();
-
         if(!StringUtils.isBlank(selectedInfo.getWord())) {
             deletedWords.push(selectedInfo);
-//            words.remove(selectedInfo);
             if (wordsList.remove(selectedInfo)) {
                 initTable(vBox);
                 text.setText("Removed " + deletedWords.size() + " from " + initialWordsNum);
@@ -320,7 +330,6 @@ public class WordsExtractorGUI extends Application {
     private Void undoHandling() {
         if (!deletedWords.isEmpty()) {
             WordInfo deleted = deletedWords.pop();
-//            words.put(deleted.getWord(), deleted);
             if (wordsList.add(deleted)) {
                 initTable(vBox);
                 text.setText("Removed " + deletedWords.size() + " from " + wordsList.size());
@@ -359,32 +368,9 @@ public class WordsExtractorGUI extends Application {
         }
     }
 
-
     @Override
     public void stop() {
         Platform.exit();
         System.exit(0);
     }
-
-/*    private void bl() {
-        if (args.length > 2) {
-            String txtFilePath = args[1], extractedWordsTxtFilePath = args[2];
-
-            try {
-                final FileManager fileMngr = new FileManager(txtFilePath);
-                final List<Path> pathsList = fileMngr.extractTxtFiles(123);
-                final WordsExtractor extractor = new WordsExtractor(pathsList);
-                Dictionary wordsStatsDict = extractor.createWordsStatsDictionary();
-
-                final TranslationManager translationMngr = new TranslationManager(wordsStatsDict);
-                translationMngr.removeKnownWords(Paths.get(TranslationManager.KNOWN_WORDS_FILE_NAME));
-                translationMngr.getExtractedWordsDict().saveIn(extractedWordsTxtFilePath);
-            }
-            catch (WordsExtractorException e) {
-                System.err.println("Running interrupted by exception " + e);
-            }
-        }
-        else
-            System.err.println("Invalid number of parameters.\nShould be: " + args[0] + " file1 file2\nWhere: \n\tfile1 - where text should be extracted from\n\tfile2 - where the extracted text should be saved");
-    }*/
 }

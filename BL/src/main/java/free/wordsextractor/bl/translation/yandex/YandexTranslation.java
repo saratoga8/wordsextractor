@@ -16,7 +16,7 @@ public class YandexTranslation extends WebTranslation {
     private static final Logger log = LogManager.getLogger(YandexTranslation.class);     /* log item */
 
     private final static String SERVICE_URL = "https://dictionary.yandex.net/api/v1/dicservice.json/lookup";   /* URL of the Yandex dictionary web service */
-    private final Path apiPath;                                                                                /* Path of a file containing API key */
+    private final String apiKey;                                                                                /* Path of a file containing API key */
 
     /**
      * Constructor
@@ -24,9 +24,11 @@ public class YandexTranslation extends WebTranslation {
      * @param fromLang Translate from language
      * @param toLang Translate to language
      */
-    public YandexTranslation(final Path apiPath, final Langs fromLang, final Langs toLang) {
+    public YandexTranslation(final Path apiPath, final Langs fromLang, final Langs toLang) throws WordsExtractorException {
         super(SERVICE_URL, fromLang, toLang);
-        this.apiPath = apiPath;
+        this.apiKey = getApiKey(apiPath);
+        if (StringUtils.isBlank(apiKey))
+            throw new WordsExtractorException("Can't get API key of Yandex from file " + apiPath.toString());
     }
 
     /**
@@ -35,7 +37,6 @@ public class YandexTranslation extends WebTranslation {
     @Override
     protected String buildRequest(String word) {
         if (!StringUtils.isBlank(word)) {
-            String apiKey = getApiKey(apiPath);
             if (!StringUtils.isBlank(apiKey))
                 return super.serviceURL + "?key=" + apiKey + "&lang=" + fromLang.getVal() + "-" + toLang.getVal() + "&text=" + word;
         }
