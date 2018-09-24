@@ -193,6 +193,65 @@ public class WordsExtractorGUITest  extends ApplicationTest {
         clickOn("#btnCancel");
     }
 
+    @DisplayName("Translation window after undo")
+    @Test
+    void translationWinUndoDel() {
+        moveTo("one");
+        Assert.assertEquals(2, listWindows().size());
+        Label lbl = (Label) ((Popup)listWindows().get(1)).getContent().get(0);
+        Assert.assertEquals("Translation\nof\none", lbl.getText());
+
+        clickOn("one");
+        clickOn("#undoBtn");
+
+        moveTo("one");
+        Assert.assertEquals(2, listWindows().size());
+        lbl = (Label) ((Popup)listWindows().get(1)).getContent().get(0);
+        Assert.assertEquals("Translation\nof\none", lbl.getText());
+    }
+
+
+    @DisplayName("Usual Sorting")
+    @Test
+    void sorting() {
+        TableView list = lookup("#table").queryTableView();
+        Assert.assertEquals(3, list.getItems().size());
+        clickOn("words");
+        Assert.assertEquals("{[one 1],[three 3],[two 2]}", tableViewToStr(list));
+        clickOn("stats");
+        Assert.assertEquals("{[one 1],[two 2],[three 3]}", tableViewToStr(list));
+        clickOn("stats");
+        Assert.assertEquals("{[three 3],[two 2],[one 1]}", tableViewToStr(list));
+        clickOn("words");
+        Assert.assertEquals("{[one 1],[three 3],[two 2]}", tableViewToStr(list));
+        clickOn("words");
+        Assert.assertEquals("{[two 2],[three 3],[one 1]}", tableViewToStr(list));
+        clickOn("#btnCancel");
+    }
+
+    @DisplayName("Sorting with delete/undo" )
+    @Test
+    void sortingUndoDel() {
+        TableView list = lookup("#table").queryTableView();
+        Assert.assertEquals(3, list.getItems().size());
+        clickOn("words");
+        Assert.assertEquals("{[one 1],[three 3],[two 2]}", tableViewToStr(list));
+        clickOn("one");
+        clickOn("stats");
+        Assert.assertEquals("{[two 2],[three 3]}", tableViewToStr(list));
+        clickOn("#undoBtn");
+        clickOn("words");
+        Assert.assertEquals("{[one 1],[three 3],[two 2]}", tableViewToStr(list));
+        clickOn("#btnCancel");
+    }
+
+    @DisplayName("Hide/show")
+    @Test
+    void hideShow() {
+        TableView list = lookup("#table").queryTableView();
+    }
+
+
     @Override
     public void start(Stage stage) {
         stage.show();

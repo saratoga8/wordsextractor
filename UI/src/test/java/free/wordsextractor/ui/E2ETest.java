@@ -72,6 +72,9 @@ public class E2ETest extends ApplicationTest {
             clickOn("can");
             scroll(30, VerticalDirection.DOWN);
             clickOn("using");
+            clickOn("used");
+            clickOn("#undoBtn");
+            moveTo("this");
             scroll(30, VerticalDirection.UP);
             clickOn("configure");
 
