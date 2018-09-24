@@ -1,4 +1,0 @@
-If we have to pass multiple method parameters to our parameterized test and the provided test data is used by only one
- test method (or a few test methods), we can configure our test data by using the @CsvSource annotation. When we add
- this annotation to a test method, we have to configure the test data by using an array of String objects. When we
- specify our test data, we have to follow these rules:

@@ -19,9 +19,15 @@
   <dependencies>
     <dependency>
       <groupId>LangStudy.bl</groupId>
-      <artifactId>BL</artifactId>
+      <artifactId>bl</artifactId>
       <version>1.0-SNAPSHOT</version>
     </dependency>
+    <dependency>
+      <groupId>LangStudy.bl</groupId>
+      <artifactId>tests</artifactId>
+      <version>1.0-SNAPSHOT</version>
+    </dependency>
+
     <dependency>
       <groupId>org.testfx</groupId>
       <artifactId>testfx-junit</artifactId>
@@ -46,15 +52,11 @@
       <version>4.0.13-alpha</version>
       <scope>test</scope>
     </dependency>
-
-
     <dependency>
       <groupId>org.hamcrest</groupId>
       <artifactId>hamcrest-library</artifactId>
       <version>1.3</version>
       <scope>test</scope>
     </dependency>
-
-
   </dependencies>
 </project>
