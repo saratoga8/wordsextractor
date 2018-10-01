@@ -63,7 +63,7 @@ public class E2ETest extends ApplicationTest {
 
             TableView table = lookup("#table").queryTableView();
             int before = listWindows().size();
-            String expected = "[add 1, an 1, and 1, annotation 2, array 1, by 3, can 1, configure 2, CsvSource 1, data 4, few 1, follow 1, have 3, If 1, is 1, method 3, methods 1, multiple 1, objects 1, of 1, one 1, only 1, or 1, our 3, parameterized 1, parameters 1, pass 1, provided 1, rules 1, specify 1, String 1, test 8, the 3, these 1, this 1, used 1, using 2, When 2]";
+            String expected = "[add 1, an 1, and 1, annotation 2, array 1, by 3, can 1, configure 2, csvsource 1, data 4, few 1, follow 1, have 3, if 1, is 1, method 3, methods 1, multiple 1, objects 1, of 1, one 1, only 1, or 1, our 3, parameterized 1, parameters 1, pass 1, provided 1, rules 1, specify 1, string 1, test 8, the 3, these 1, this 1, used 1, using 2, when 2]";
             Assert.assertEquals(expected, table.getItems().sorted().toString());
 
             clickOn("words");
@@ -99,7 +99,7 @@ public class E2ETest extends ApplicationTest {
             launch(WordsExtractorGUI.class, paths);
 
             TableView table = lookup("#table").queryTableView();
-            String expected = "[a 2, add 1, an 1, and 1, annotation 2, array 1, by 3, can 1, configure 2, CsvSource 1, data 4, few 1, follow 1, have 3, If 1, is 1, method 3, methods 1, multiple 1, objects 1, of 1, one 1, only 1, or 1, our 3, parameterized 1, parameters 1, pass 1, provided 1, rules 1, specify 1, String 1, test 8, the 3, these 1, this 1, to 5, used 1, using 2, we 6, When 2]";
+            String expected = "[a 2, add 1, an 1, and 1, annotation 2, array 1, by 3, can 1, configure 2, csvsource 1, data 4, few 1, follow 1, have 3, if 1, is 1, method 3, methods 1, multiple 1, objects 1, of 1, one 1, only 1, or 1, our 3, parameterized 1, parameters 1, pass 1, provided 1, rules 1, specify 1, string 1, test 8, the 3, these 1, this 1, to 5, used 1, using 2, we 6, when 2]";
             Assert.assertEquals(expected, table.getItems().sorted().toString());
         } catch (Exception e) {
             Assert.assertTrue("Test aborted because of: " + e, false);

@@ -3,6 +3,7 @@ package free.wordsextractor.ui;
 import free.wordsextractor.bl.extraction.txt_proc.dictionaries.OnlyWordsDictionary;
 import free.wordsextractor.bl.extraction.txt_proc.dictionaries.TranslationsDictionary;
 import free.wordsextractor.bl.extraction.txt_proc.dictionaries.WordsStatisticsDictionary;
+import free.wordsextractor.common.tests.Utils;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
 import javafx.scene.input.KeyCode;
@@ -10,6 +11,7 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.text.Text;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
+import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
@@ -125,7 +127,6 @@ public class WordsExtractorGUITest  extends ApplicationTest {
         Assert.assertEquals(3, table.getItems().size());
         clickOn("#undoBtn");
         Assert.assertEquals(3, table.getItems().size());
-        clickOn("#btnCancel");
     }
 
     @DisplayName("Title")
@@ -226,8 +227,7 @@ public class WordsExtractorGUITest  extends ApplicationTest {
         Assert.assertEquals("{[one 1],[three 3],[two 2]}", tableViewToStr(list));
         clickOn("words");
         Assert.assertEquals("{[two 2],[three 3],[one 1]}", tableViewToStr(list));
-        clickOn("#btnCancel");
-    }
+     }
 
     @DisplayName("Sorting with delete/undo" )
     @Test
@@ -248,9 +248,35 @@ public class WordsExtractorGUITest  extends ApplicationTest {
     @DisplayName("Hide/show")
     @Test
     void hideShow() {
-        TableView list = lookup("#table").queryTableView();
+        lookup("#table").queryTableView();
+        var output = Utils.runSystemCommand("xdotool -v");
+        if (StringUtils.isBlank(output))
+            Assert.assertTrue("xdotool isn't installed", false);
+        var id = Utils.runSystemCommand("xdotool search --name \"" + WordsExtractorGUI.TITLE + "\"");
+        Assert.assertFalse("Can't get ID of the active window", StringUtils.isBlank(id));
+        translationWinUndoDel();
+        Utils.runSystemCommand("xdotool windowminimize " + id);
+        sleep(3000);
+        Utils.runSystemCommand("xdotool windowactivate " + id);
+        remove();
     }
 
+    @Disabled
+    @DisplayName("Resize")
+    @Test
+    void resize() {
+        lookup("#table").queryTableView();
+        undo();
+        var width = listWindows().get(0).getWidth() + 100;
+        var height = listWindows().get(0).getWidth() + 100;
+        listWindows().get(0).setWidth(width);
+        listWindows().get(0).setHeight(height);
+        sleep(3000);
+        sorting();
+        listWindows().get(0).setWidth(width - 50);
+        listWindows().get(0).setHeight(height - 50);
+        translationWin();
+    }
 
     @Override
     public void start(Stage stage) {

@@ -39,6 +39,7 @@ import java.util.function.Supplier;
  */
 public class WordsExtractorGUI extends Application {
     private static final Logger log = LogManager.getLogger(WordsExtractorGUI.class);
+    public static final String TITLE = "Extracted words from text";
 
     private int initialWordsNum = 0;
     private ObservableList<WordInfo> wordsList;
@@ -114,7 +115,7 @@ public class WordsExtractorGUI extends Application {
         stage.setMinHeight(stageSize.getHeight());
 
         stage.centerOnScreen();
-        stage.setTitle("Extracted words from text");
+        stage.setTitle(TITLE);
         stage.setOnCloseRequest(handle -> {
             log.debug("on closing");
         });
