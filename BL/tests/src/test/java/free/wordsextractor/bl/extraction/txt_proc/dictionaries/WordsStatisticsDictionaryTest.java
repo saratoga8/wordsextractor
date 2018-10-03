@@ -63,6 +63,14 @@ class WordsStatisticsDictionaryTest {
         Assert.assertEquals("", dict.toString());
     }
 
+    @DisplayName("Containing minus")
+    @ParameterizedTest
+    @ValueSource(strings = {"forty-one", "one-two-free"})
+    public void withMinus(String word) {
+        dict.addWord(word);
+        Assert.assertEquals(word + " 1", dict.toString());
+    }
+
     @DisplayName("Adding words to a dictionary from a same thread")
     @Test
     public void sameThread() {

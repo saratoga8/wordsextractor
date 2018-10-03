@@ -26,8 +26,8 @@ import static org.testfx.api.FxToolkit.cleanupStages;
 import static org.testfx.api.FxToolkit.registerPrimaryStage;
 
 
-public class WordsExtractorGUITest  extends ApplicationTest {
-    private static final Logger log = LogManager.getLogger(WordsExtractorGUITest.class);
+public class GuiTest extends ApplicationTest {
+    private static final Logger log = LogManager.getLogger(GuiTest.class);
 
     private static String paths[] = { ".translations", ".stats", ".knowns" };
 
@@ -144,7 +144,7 @@ public class WordsExtractorGUITest  extends ApplicationTest {
         clickOn("#btnCancel");
     }
 
-    private String tableViewToStr(TableView table) {
+    public static String tableViewToStr(TableView table) {
         StringBuilder builder = new StringBuilder();
         table.getItems().forEach(item -> builder.append("[" + item.toString() + "],"));
         return (builder.length() > 0) ? "{" + builder.deleteCharAt(builder.length() - 1).toString() + "}": "{}";

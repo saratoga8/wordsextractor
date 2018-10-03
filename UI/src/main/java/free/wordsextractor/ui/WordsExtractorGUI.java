@@ -30,6 +30,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Stack;
 import java.util.function.Supplier;
@@ -246,6 +247,7 @@ public class WordsExtractorGUI extends Application {
             wordsCol = (TableColumn<WordInfo, String>) table.getColumns().get(0);
             statsCol = (TableColumn<WordInfo, String>) table.getColumns().get(1);
         }
+        statsCol.setComparator(Comparator.comparing(Integer::valueOf));
 
         double max_int_width = new Text().getFont().getSize() * Integer.toString(Integer.MAX_VALUE).length();
         wordsCol.setPrefWidth(stageSize.getWidth() - max_int_width);

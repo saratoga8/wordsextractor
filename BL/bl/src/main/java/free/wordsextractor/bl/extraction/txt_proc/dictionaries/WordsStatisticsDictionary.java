@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * WordsStatisticsDictionary of word statistics
@@ -78,8 +79,11 @@ public class WordsStatisticsDictionary implements Dictionary, Serializable {
      */
     @NotNull
     static private String stripAllExceptChars(String word) {
-//        String PUNCTUATIONS_CHARS_EDGES_REG = "^\\W+|\\W+$", NUM_CHARS_EDGES_REG = "^\\d+|\\d+$";
-        return word.replaceAll("\\W+", "").replaceAll("\\d+", "");
+        String PUNCTUATIONS_CHARS_EDGES_REG = "^\\W+|\\W+$";
+        var str = word.replaceAll(PUNCTUATIONS_CHARS_EDGES_REG, "").replaceAll("\\d+", "");
+        final Pattern pattern1 = Pattern.compile("\\w+");
+        final Pattern pattern2 = Pattern.compile("(\\w+-\\w+)+");
+        return (pattern1.matcher(str).matches() || pattern2.matcher(str).matches()) ? str: "";
     }
 
     /**
