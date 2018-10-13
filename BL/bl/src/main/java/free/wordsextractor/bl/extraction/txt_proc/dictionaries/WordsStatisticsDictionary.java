@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.regex.Pattern;
 
 /**
  * WordsStatisticsDictionary of word statistics
@@ -54,7 +53,7 @@ public class WordsStatisticsDictionary implements Dictionary, Serializable {
     @NotNull
     synchronized public void addWord(String word) {
         final OperationOnWord<Void> operation = wrd -> {
-            String strippedWrd = stripAllExceptChars(wrd);
+            String strippedWrd = Dictionary.stripAllExceptChars(wrd);
             if (!strippedWrd.isEmpty()) {
                 final Integer num = wordsStat.containsKey(strippedWrd) ? wordsStat.get(strippedWrd) + 1 : 1;
                 wordsStat.put(strippedWrd, num);
@@ -72,19 +71,6 @@ public class WordsStatisticsDictionary implements Dictionary, Serializable {
         log.error("Should be used addWord() function!");
     }
 
-    /**
-     * Remove from beginning and end of the word numbers and punctuation chars
-     * @param word The word for stripping
-     * @return Stripped word
-     */
-    @NotNull
-    static private String stripAllExceptChars(String word) {
-        String PUNCTUATIONS_CHARS_EDGES_REG = "^\\W+|\\W+$";
-        var str = word.replaceAll(PUNCTUATIONS_CHARS_EDGES_REG, "").replaceAll("\\d+", "");
-        final Pattern pattern1 = Pattern.compile("\\w+");
-        final Pattern pattern2 = Pattern.compile("(\\w+-\\w+)+");
-        return (pattern1.matcher(str).matches() || pattern2.matcher(str).matches()) ? str: "";
-    }
 
     /**
      * Save the dictionary

@@ -46,7 +46,7 @@ public class OnlyWordsDictionary implements Dictionary, Serializable {
                 log.error("Can't add the give word '" + word + "' to the dictionary");
             return null;
         };
-        Dictionary.secureOperationOnWord(word, operation);
+        Dictionary.secureOperationOnWord(Dictionary.stripAllExceptChars(word), operation);
     }
 
     /**
@@ -66,7 +66,7 @@ public class OnlyWordsDictionary implements Dictionary, Serializable {
      */
     @Override
     synchronized public boolean contains(String word) {
-        return Dictionary.secureOperationOnWord(word, words::contains, false);
+        return Dictionary.secureOperationOnWord(Dictionary.stripAllExceptChars(word), words::contains, false);
     }
 
     /**
@@ -76,7 +76,7 @@ public class OnlyWordsDictionary implements Dictionary, Serializable {
      */
     @Override
     synchronized public boolean removeWord(String word) {
-        return Dictionary.secureOperationOnWord(word, words::remove, false);
+        return Dictionary.secureOperationOnWord(Dictionary.stripAllExceptChars(word), words::remove, false);
     }
 
     /**

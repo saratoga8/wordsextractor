@@ -41,14 +41,15 @@ public class TranslationsDictionary implements Dictionary, Serializable {
      */
     @Override
     synchronized public void addTranslation(String word, String translation) {
-        if (!StringUtils.isBlank(word)) {
+        String strippedWrd = Dictionary.stripAllExceptChars(word);
+        if (!StringUtils.isBlank(strippedWrd)) {
             if (translation != null) {
                 if (!translation.isEmpty())
-                    dict.put(word, translation);
+                    dict.put(strippedWrd, translation);
                 else
-                    notTranslatedWords.add(word);
+                    notTranslatedWords.add(strippedWrd);
             } else
-                log.error("The given translation of '" + word + "' is NULL");
+                log.error("The given translation of '" + strippedWrd + "' is NULL");
         } else
             log.error("The given word is NULL or EMPTY");
     }
@@ -62,7 +63,7 @@ public class TranslationsDictionary implements Dictionary, Serializable {
     @Override
     synchronized public boolean contains(String word) {
         OperationOnWord<Boolean> operation = wd -> dict.containsKey(wd) || notTranslatedWords.contains(wd);
-        return Dictionary.secureOperationOnWord(word, operation, Boolean.FALSE);
+        return Dictionary.secureOperationOnWord(Dictionary.stripAllExceptChars(word), operation, Boolean.FALSE);
     }
 
     /**

@@ -13,6 +13,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * Dictionary interface
@@ -196,5 +197,23 @@ public interface Dictionary {
             operationOnWord.apply(word.toLowerCase());
         else
             log.error("The given word is NULL or EMPTY");
+    }
+
+    /**
+     * Remove from beginning and end of the word numbers and punctuation chars
+     * @param word The word for stripping
+     * @return Stripped word
+     */
+    @NotNull
+    static String stripAllExceptChars(String word) {
+        if (!StringUtils.isBlank(word)) {
+            String PUNCTUATIONS_CHARS_EDGES_REG = "^\\W+|\\W+$";
+            var str = word.replaceAll(PUNCTUATIONS_CHARS_EDGES_REG, "").replaceAll("\\d+", "");
+            final Pattern pattern1 = Pattern.compile("\\w+");
+            final Pattern pattern2 = Pattern.compile("(\\w+-\\w+)+");
+            return (pattern1.matcher(str).matches() || pattern2.matcher(str).matches()) ? str : "";
+        }
+        log.warn("The given word is NULL or EMPTY");
+        return "";
     }
 }
