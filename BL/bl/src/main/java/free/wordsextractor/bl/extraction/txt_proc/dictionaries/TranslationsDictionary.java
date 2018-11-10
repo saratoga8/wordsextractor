@@ -14,7 +14,7 @@ import java.util.*;
 /**
  * Dictionary of words and translations
  */
-public class TranslationsDictionary implements Dictionary, Serializable {
+public class TranslationsDictionary extends Dictionary, implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private static final Logger log = LogManager.getLogger(TranslationsDictionary.class);                /* logger */

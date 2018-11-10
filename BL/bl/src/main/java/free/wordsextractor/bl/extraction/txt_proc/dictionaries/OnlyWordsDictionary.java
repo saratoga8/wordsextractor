@@ -13,7 +13,7 @@ import java.util.*;
 /**
  * Dictionary containing only words
  */
-public class OnlyWordsDictionary implements Dictionary, Serializable {
+public class OnlyWordsDictionary extends Dictionary implements Serializable {
     private static final long serialVersionUID = 1L;
 
     final private static Logger log = LogManager.getLogger(OnlyWordsDictionary.class);        /* logger */

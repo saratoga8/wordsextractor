@@ -3,6 +3,8 @@ package free.wordsextractor.bl.extraction.txt_proc.dictionaries;
 import com.drew.lang.annotations.NotNull;
 import free.wordsextractor.bl.WordsExtractorException;
 import free.wordsextractor.bl.extraction.file_proc.extractors.TextExtractorInterface;
+import free.wordsextractor.bl.extraction.txt_proc.parsers.WordParser;
+import free.wordsextractor.bl.translation.Translation;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -18,15 +20,21 @@ import java.util.regex.Pattern;
 /**
  * Dictionary interface
  */
-public interface Dictionary {
-    Logger log = LogManager.getLogger(Dictionary.class);        /* logger */
+public abstract class Dictionary {
+    private static Logger log = LogManager.getLogger(Dictionary.class);        /* logger */
+
+    protected final WordParser parser;
+
+    public Dictionary(final Translation.Langs lang) throws WordsExtractorException {
+        parser = new WordParser(lang);
+    }
 
     /**
      * Add only a word to the dictionary without translation
      * @param word The new word
      */
     @NotNull
-    void addWord(String word) throws WordsExtractorException;
+    abstract void addWord(String word) throws WordsExtractorException;
 
     /**
      * Add translation to the dictionary
@@ -34,11 +42,11 @@ public interface Dictionary {
      * @param translation The word's translation
      */
     @NotNull
-    void addTranslation(String word, String translation);
+    abstract void addTranslation(String word, String translation);
 
 
     @NotNull
-    boolean contains(String word);
+    abstract boolean contains(String word);
 
     /**
      * Remove the given word from dictionary
@@ -46,7 +54,7 @@ public interface Dictionary {
      * @return true - The word has been removed successfully. false - The word can't be removed
      */
     @NotNull
-    boolean removeWord(String word);
+    abstract boolean removeWord(String word);
 
     /**
      * Get translation of the given word
@@ -54,7 +62,7 @@ public interface Dictionary {
      * @return The word's translation
      */
     @NotNull
-    String getTranslation(String word);
+    abstract String getTranslation(String word);
 
     /**
      * Save the dictionary
@@ -62,7 +70,7 @@ public interface Dictionary {
      * @throws WordsExtractorException
      */
     @NotNull
-    default void saveAsTxtIn(String path) throws WordsExtractorException {
+    protected void saveAsTxtIn(String path) throws WordsExtractorException {
         final File file = new File(path);
         if (file.exists()) {
             try (BufferedWriter writer = Files.newBufferedWriter(file.toPath(), Charset.forName(TextExtractorInterface.CHAR_SET), StandardOpenOption.CREATE)) {
@@ -81,14 +89,14 @@ public interface Dictionary {
      * Save instance of the dictionary class in a file
      * @param path The file's path
      */
-    void saveAsBinIn(String path) throws IOException;
+    abstract void saveAsBinIn(String path) throws IOException;
 
     /**
      * Save instance of the given dictionary class in a file
      * @param path The file's path
      * @param obj Class instance
      */
-    default void saveAsBinIn(String path, final Serializable obj) throws IOException {
+    protected void saveAsBinIn(String path, final Serializable obj) throws IOException {
         try {
             Files.deleteIfExists(Paths.get(path));
         } catch (IOException e) {
@@ -127,7 +135,7 @@ public interface Dictionary {
      * @param dict The dictionary containing words for removing from the current one
      */
     @NotNull
-    default void removeWordsOfDict(final Dictionary dict) {
+    protected void removeWordsOfDict(final Dictionary dict) {
         if(dict != null)
             dict.getWords().forEach(word -> { if(!removeWord(word)) log.warn("Can't remove word '" + word + "' from dictionary"); });
         else
@@ -139,27 +147,27 @@ public interface Dictionary {
      * @return The words list
      */
     @NotNull
-    List<String> getWords();
+    abstract List<String> getWords();
 
     /**
      * Get list of translations
      * @return The translations
      */
     @NotNull
-    List<?> getTranslations();
+    abstract List<?> getTranslations();
 
     /**
      * Get sorted list of translations(sorted by translated words)
      * @return The sorted list
      */
     @NotNull
-    List<?> getSortedTranslations();
+    abstract List<?> getSortedTranslations();
 
     /**
      * Get list of words they aren't translated
      * @return The list of words
      */
-    List<String> getNotTranslatedWords();
+    abstract List<String> getNotTranslatedWords();
 
     /**
      * Operation on a given word
