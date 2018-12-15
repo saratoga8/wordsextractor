@@ -3,6 +3,7 @@ package free.wordsextractor.bl.extraction.txt_proc.dictionaries;
 import com.drew.lang.annotations.NotNull;
 import com.google.common.collect.Lists;
 import free.wordsextractor.bl.WordsExtractorException;
+import free.wordsextractor.bl.translation.Translation;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -14,7 +15,7 @@ import java.util.*;
 /**
  * Dictionary of words and translations
  */
-public class TranslationsDictionary extends Dictionary, implements Serializable {
+public class TranslationsDictionary extends Dictionary implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private static final Logger log = LogManager.getLogger(TranslationsDictionary.class);                /* logger */
@@ -24,6 +25,15 @@ public class TranslationsDictionary extends Dictionary, implements Serializable 
      * dictionary of words and translations
      */
     private final List<String> notTranslatedWords = Collections.synchronizedList(new LinkedList<>());    /** not translated words */
+
+    /**
+     * Constructor
+     * @param lang language of translation from
+     * @throws WordsExtractorException
+     */
+    public TranslationsDictionary(final Translation.Langs lang) throws WordsExtractorException {
+        super(lang);
+    }
 
     /**
      * {@inheritDoc}
@@ -55,10 +65,10 @@ public class TranslationsDictionary extends Dictionary, implements Serializable 
     }
 
     /**
-     * Check a given word is in the dictionary
+     * Check a given word is isIn the dictionary
      *
      * @param word The checked word
-     * @return true - The word is in the dictionary
+     * @return true - The word is isIn the dictionary
      */
     @Override
     synchronized public boolean contains(String word) {

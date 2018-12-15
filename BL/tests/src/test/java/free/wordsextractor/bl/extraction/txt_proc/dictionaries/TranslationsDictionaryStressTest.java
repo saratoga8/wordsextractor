@@ -1,5 +1,7 @@
 package free.wordsextractor.bl.extraction.txt_proc.dictionaries;
 
+import free.wordsextractor.bl.WordsExtractorException;
+import free.wordsextractor.bl.translation.Translation;
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -12,7 +14,11 @@ public class TranslationsDictionaryStressTest {
 
     @BeforeEach
     void setUp() {
-        dict = new TranslationsDictionary();
+        try {
+            dict = new TranslationsDictionary(Translation.Langs.ENG);
+        } catch (WordsExtractorException e) {
+            Assert.assertTrue("The test aborted by the exception: " + e, false);
+        }
 
         dict.addTranslation("one", "translation1");
         dict.addTranslation("two", "translation2");

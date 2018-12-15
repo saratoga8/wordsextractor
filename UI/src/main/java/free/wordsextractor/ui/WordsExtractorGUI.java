@@ -189,6 +189,7 @@ public class WordsExtractorGUI extends Application {
     }
 
     private void saveDeletedWords() {
+        log.debug("Save deleted words " + deletedWords.toString() + " to the file " + knownWordsPath);
         if (knownWordsPath != null) {
             try {
                 final StringBuilder builder = new StringBuilder();

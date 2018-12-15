@@ -10,7 +10,7 @@ public class Suffix extends WordPart {
     }
 
     @Override
-    boolean in(String word) {
+    boolean isIn(String word) {
         return word.endsWith(str);
     }
 }

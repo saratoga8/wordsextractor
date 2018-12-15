@@ -4,6 +4,7 @@ import free.wordsextractor.bl.WordsExtractorException;
 import free.wordsextractor.bl.extraction.file_proc.FileManager;
 import free.wordsextractor.bl.extraction.file_proc.extractors.WordsExtractor;
 import free.wordsextractor.bl.extraction.txt_proc.dictionaries.Dictionary;
+import free.wordsextractor.bl.extraction.txt_proc.dictionaries.OnlyWordsDictionary;
 import free.wordsextractor.bl.translation.Translation;
 import free.wordsextractor.bl.translation.TranslationManager;
 import free.wordsextractor.bl.translation.yandex.YandexTranslation;
@@ -23,6 +24,7 @@ import java.util.Map;
  */
 public class Main {
     private static final Logger log = LogManager.getLogger(Main.class);
+    private static int FROM = 0, TO = 1;
 
     /**
      * Translate the text from the file with the given path
@@ -31,7 +33,7 @@ public class Main {
      * @throws IOException
      * @throws WordsExtractorException
      */
-    public static String[] translate(String[] paths) throws IOException, WordsExtractorException {
+    public static String[] translate(String[] paths, Translation.Langs[] langs) throws IOException, WordsExtractorException {
         if (paths.length < 2)
             throw new WordsExtractorException("Invalid arguments list. The arguments should be: path1 path2 path3(optional)\nWhere: path1 - path of a file being translated\n       path2 - path of a file with API key\n       path3 - path of a file with known words");
 
@@ -45,20 +47,21 @@ public class Main {
 
         log.debug("Extract words from file " + pathsList.get(0).toString());
         final WordsExtractor extractor = new WordsExtractor(pathsList);
-        final Dictionary wordsStatsDict = extractor.createWordsStatsDictionary();
+        final Dictionary wordsStatsDict = extractor.createWordsStatsDictionary(langs[FROM]);
 
         log.debug("Remove know words by file " + knownWordsPath.toString() + " from words");
         final TranslationManager translationMngr = new TranslationManager(wordsStatsDict);
-        translationMngr.removeKnownWords(knownWordsPath);
         final Dictionary unknownWordsDict = translationMngr.getExtractedWordsDict();
+        final OnlyWordsDictionary knownWordsDict = new OnlyWordsDictionary(knownWordsPath, langs[FROM]);
+        unknownWordsDict.removeWordsOfDictUsingParser(knownWordsDict);
 
         log.debug("Translate words with API from " + apiKeyPath);
         final Dictionary translations = new YandexTranslation(Paths.get(apiKeyPath), Translation.Langs.getLang("eng"), Translation.Langs.getLang("ru")).translate(unknownWordsDict.getWords());
 
         log.debug("Save binary dictionaries");
-        final Map<Dictionary, String> dictsMap = Map.of(translations, ".translations", wordsStatsDict, ".stats");
+        final Map<Dictionary, String> dictsMap = Map.of(translations, ".translations", wordsStatsDict, ".stats", knownWordsDict, ".knowns");
         saveDictionaries(dictsMap);
-        return new String[] {".translations", ".stats", "knowns.dict"};
+        return new String[] {".translations", ".stats", ".knowns"};
     }
 
     private static void saveDictionaries(final Map<Dictionary, String> dictsMap) {
@@ -77,7 +80,7 @@ public class Main {
      */
     public static void main(String [] args) {
         try {
-            String [] paths = translate(args);
+            String [] paths = translate(args, new Translation.Langs[] {Translation.Langs.ENG, Translation.Langs.RUS});
             Application.launch(WordsExtractorGUI.class, paths);
         }
         catch (WordsExtractorException | IOException e) {

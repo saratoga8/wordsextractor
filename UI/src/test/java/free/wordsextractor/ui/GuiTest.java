@@ -1,8 +1,10 @@
 package free.wordsextractor.ui;
 
+import free.wordsextractor.bl.WordsExtractorException;
 import free.wordsextractor.bl.extraction.txt_proc.dictionaries.OnlyWordsDictionary;
 import free.wordsextractor.bl.extraction.txt_proc.dictionaries.TranslationsDictionary;
 import free.wordsextractor.bl.extraction.txt_proc.dictionaries.WordsStatisticsDictionary;
+import free.wordsextractor.bl.translation.Translation;
 import free.wordsextractor.common.tests.Utils;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
@@ -34,27 +36,30 @@ public class GuiTest extends ApplicationTest {
     @BeforeAll
     public static void setUpAll() throws TimeoutException {
         registerPrimaryStage();
-
-        TranslationsDictionary translations = new TranslationsDictionary();
-        translations.addTranslation("one", "Translation\nof\none");
-        translations.addTranslation("two", "Translation of two");
-        translations.addTranslation("three", "Translation\nof three");
-
-        OnlyWordsDictionary knowns = new OnlyWordsDictionary();
-        knowns.addWord("known1");
-        knowns.addWord("known2");
-
-        WordsStatisticsDictionary stats = new WordsStatisticsDictionary();
-        for(int i= 0; i < 3; ++i) { stats.addWord("three"); }
-        for(int i= 0; i < 2; ++i) { stats.addWord("two"); }
-        stats.addWord("one");
-
         try {
+            TranslationsDictionary translations = new TranslationsDictionary(Translation.Langs.ENG);
+            translations.addTranslation("one", "Translation\nof\none");
+            translations.addTranslation("two", "Translation of two");
+            translations.addTranslation("three", "Translation\nof three");
+
+            OnlyWordsDictionary knowns = new OnlyWordsDictionary(Translation.Langs.ENG);
+            knowns.addWord("known1");
+            knowns.addWord("known2");
+
+            WordsStatisticsDictionary stats = new WordsStatisticsDictionary(Translation.Langs.ENG);
+            for(int i= 0; i < 3; ++i) { stats.addWord("three"); }
+            for(int i= 0; i < 2; ++i) { stats.addWord("two"); }
+            stats.addWord("one");
+
+
             translations.saveAsBinIn(paths[0]);
             stats.saveAsBinIn(paths[1]);
             knowns.saveAsBinIn(paths[2]);
         } catch (IOException e) {
-            Assert.assertTrue("Can't save dictionaries objects: " + e, false);
+            Assert.fail("Can't save dictionaries objects: " + e);
+        }
+        catch (WordsExtractorException e) {
+            Assert.fail("Can't start a test because of exception: " + e);
         }
     }
 
@@ -63,7 +68,7 @@ public class GuiTest extends ApplicationTest {
         try {
             ApplicationTest.launch(WordsExtractorGUI.class, paths);
          } catch (Exception e) {
-            Assert.assertTrue("Aborted by exception: " + e, false);
+            Assert.fail("Aborted by exception: " + e);
         }
     }
 

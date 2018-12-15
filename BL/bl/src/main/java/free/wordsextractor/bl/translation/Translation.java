@@ -51,8 +51,8 @@ public abstract class Translation {
      * @param words The given list of words
      * @return Hash table of the translations
      */
-    public Dictionary translate(final List<String> words) {
-        final TranslationsDictionary dictionary = new TranslationsDictionary();
+    public Dictionary translate(final List<String> words) throws WordsExtractorException {
+        final TranslationsDictionary dictionary = new TranslationsDictionary(fromLang);
         words.parallelStream().forEach(word -> {
             try {
                 dictionary.addTranslation(word, translate(word));

@@ -10,7 +10,7 @@ public class Prefix extends WordPart {
     }
 
     @Override
-    public boolean in(String word) {
+    public boolean isIn(String word) {
         return word.startsWith(str);
     }
 }

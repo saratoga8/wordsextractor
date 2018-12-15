@@ -1,7 +1,9 @@
 package free.wordsextractor.bl.extraction.txt_proc.dictionaries;
 
 import com.google.common.collect.Sets;
+import free.wordsextractor.bl.WordsExtractorException;
 import free.wordsextractor.bl.extraction.file_proc.extractors.WordsExtractor;
+import free.wordsextractor.bl.translation.Translation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -24,14 +26,18 @@ public class OnlyWordsDictionary extends Dictionary implements Serializable {
      * @param path The path of the file containing words for dictionary
      * @throws IOException Can't open or find the file
      */
-    public OnlyWordsDictionary(final Path path) throws IOException {
+    public OnlyWordsDictionary(final Path path, final Translation.Langs lang) throws IOException, WordsExtractorException {
+        super(lang);
         words = Collections.synchronizedSet(Sets.newHashSet(WordsExtractor.extractWordsFromFile(path)));
     }
 
     /**
-     * Construct an empty dictionary
+     * Constructor
+     * @param lang language of translation from
+     * @throws WordsExtractorException
      */
-    public OnlyWordsDictionary() {
+    public OnlyWordsDictionary(final Translation.Langs lang) throws WordsExtractorException {
+        super(lang);
         this.words = new HashSet<>();
     }
 
@@ -90,6 +96,9 @@ public class OnlyWordsDictionary extends Dictionary implements Serializable {
         return "";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void saveAsBinIn(String path) throws IOException {
         saveAsBinIn(path, this);
@@ -120,7 +129,7 @@ public class OnlyWordsDictionary extends Dictionary implements Serializable {
      */
     @Override
     public List<?> getSortedTranslations() {
-        log.error("There are no translations in a dictionary with only words!");
+        log.error("There are no translations isIn a dictionary with only words!");
         return new LinkedList<>();
     }
 
@@ -130,7 +139,7 @@ public class OnlyWordsDictionary extends Dictionary implements Serializable {
      */
     @Override
     public List<String> getNotTranslatedWords() {
-        log.error("There are no translations in a dictionary with only words!");
+        log.error("There are no translations isIn a dictionary with only words!");
         return new LinkedList<>();
     }
 

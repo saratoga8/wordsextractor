@@ -1,5 +1,6 @@
 package free.wordsextractor.bl.extraction.file_proc.extractors;
 
+import free.wordsextractor.bl.translation.Translation;
 import free.wordsextractor.common.tests.Utils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -25,8 +26,8 @@ class WordsExtractorTest {
         String command = getCommandStr(path.getPath());
         if (!StringUtils.isBlank(command)) {
             try {
-                String expectedWords = new WordsExtractor(Collections.singletonList(Paths.get(path.toURI()))).createWordsStatsDictionary().toString();
-                String actualWords = Utils.runSystemCommand(command).toLowerCase();
+                String actualWords = new WordsExtractor(Collections.singletonList(Paths.get(path.toURI()))).createWordsStatsDictionary(Translation.Langs.ENG).toString();
+                String expectedWords = Utils.runSystemCommand(command).toLowerCase();
 
                  Assert.assertEquals(expectedWords, actualWords);
             } catch (Exception e) {

@@ -72,15 +72,24 @@ class YandexTranslationTest {
     @Test
     public void translateWords() {
         List<String> words = new LinkedList<> (Arrays.asList("test", WORD));
-        Assert.assertEquals(EXPECTED_TRANSLATION, yandex.translate(words).getTranslation(WORD));
+        try {
+            Assert.assertEquals(EXPECTED_TRANSLATION, yandex.translate(words).getTranslation(WORD));
+        } catch (WordsExtractorException e) {
+            Assert.assertTrue("The test aborted by the exception: " + e, false);
+        }
     }
 
     @DisplayName("Translate words(with not translatable ones)")
     @Test
     public void translateWordsNotTranslatable() {
         List<String> words = new LinkedList<>(Arrays.asList("test", WORD, "adfasdfasd"));
-        Assert.assertEquals(2, yandex.translate(words).getSortedTranslations().size());
-        Assert.assertEquals(1, yandex.translate(words).getNotTranslatedWords().size());
+        try {
+            Assert.assertEquals(2, yandex.translate(words).getSortedTranslations().size());
+            Assert.assertEquals(1, yandex.translate(words).getNotTranslatedWords().size());
+        }
+        catch (WordsExtractorException e) {
+            Assert.assertTrue("The test aborted by the exception: " + e, false);
+        }
     }
 
     @DisplayName("Invalid Yandex Api Key")

@@ -8,15 +8,15 @@ public abstract class WordPart {
     final protected String name;
 
     protected WordPart(String str, String name) throws WordsExtractorException {
-        if (TextUtils.isEmpty(str))
-            throw new WordsExtractorException(name + " can't be NULL or EMPTY");
+        if (str == null)
+            throw new WordsExtractorException(name + " can't be NULL");
         if (TextUtils.isEmpty(name))
             throw new WordsExtractorException("A name of a word part can't be NULL or EMPTY");
         this.str = str;
         this.name = name;
     }
 
-    abstract boolean in(String word);
+    abstract boolean isIn(String word);
 
     public String toString() {
         return str;

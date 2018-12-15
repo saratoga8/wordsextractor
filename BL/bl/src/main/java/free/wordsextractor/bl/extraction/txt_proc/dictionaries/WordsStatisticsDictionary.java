@@ -2,6 +2,7 @@ package free.wordsextractor.bl.extraction.txt_proc.dictionaries;
 
 import com.drew.lang.annotations.NotNull;
 import free.wordsextractor.bl.WordsExtractorException;
+import free.wordsextractor.bl.translation.Translation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -15,19 +16,20 @@ import java.util.List;
 /**
  * WordsStatisticsDictionary of word statistics
  */
-public class WordsStatisticsDictionary implements Dictionary, Serializable {
+public class WordsStatisticsDictionary extends Dictionary implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private static final Logger log = LogManager.getLogger(WordsStatisticsDictionary.class);        /** logger */
 
     private final Hashtable<String, Integer> wordsStat;                                             /** words statistics */
 
-    final static public String FILE_NAME = "stats.dict";
+//    final static public String FILE_NAME = "stats.dict";
 
     /**
-     * Constructor
+     * {@inheritDoc}
      */
-    public WordsStatisticsDictionary() {
+    public WordsStatisticsDictionary(final Translation.Langs lang) throws WordsExtractorException {
+        super(lang);
         this.wordsStat = new Hashtable<>();
     }
 
@@ -82,9 +84,9 @@ public class WordsStatisticsDictionary implements Dictionary, Serializable {
         log.debug ("Saving dictionary to the file " + path);
 
         if (!wordsStat.isEmpty())
-            Dictionary.super.saveAsTxtIn(path);
+            super.saveAsTxtIn(path);
         else
-            throw new WordsExtractorException("There are no words in the dictionary");
+            throw new WordsExtractorException("There are no words isIn the dictionary");
     }
 
     /**
@@ -127,14 +129,14 @@ public class WordsStatisticsDictionary implements Dictionary, Serializable {
      */
     @Override
     public List<String> getNotTranslatedWords() {
-        log.error("There are no translations in a statistics dictionary");
+        log.error("There are no translations isIn a statistics dictionary");
         return new LinkedList<>();
     }
 
     /**
-     * Check a given word is in the dictionary
+     * Check a given word is isIn the dictionary
      * @param word The checked word
-     * @return true - The word is in the dictionary
+     * @return true - The word is isIn the dictionary
      */
     @NotNull
     synchronized public boolean contains(String word) {

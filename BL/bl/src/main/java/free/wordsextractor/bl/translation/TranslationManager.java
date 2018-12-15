@@ -1,6 +1,7 @@
 package free.wordsextractor.bl.translation;
 
 import com.drew.lang.annotations.NotNull;
+import free.wordsextractor.bl.WordsExtractorException;
 import free.wordsextractor.bl.extraction.txt_proc.dictionaries.Dictionary;
 import free.wordsextractor.bl.extraction.txt_proc.dictionaries.OnlyWordsDictionary;
 import org.apache.logging.log4j.LogManager;
@@ -33,7 +34,7 @@ public class TranslationManager {
      * @param knownWordsFilePath Path of a file with known words
      */
     @NotNull
-    public void removeKnownWords(final Path knownWordsFilePath) {
+    public void removeKnownWords(final Path knownWordsFilePath, final Translation.Langs lang) {
        final File file = knownWordsFilePath.toFile();
         if (file.exists()) {
             if (file.isFile() && file.canRead()) {
@@ -42,8 +43,8 @@ public class TranslationManager {
 //                    Dictionary knownWordsDict = (Dictionary) objectInputStream.readObject();
 //                    dict.removeWordsOfDict(knownWordsDict);
 //                    Dictionary knownWordsDict = Dictionary.readAsBinFrom(knownWordsFilePath.toAbsolutePath().toString());
-                    dict.removeWordsOfDict(new OnlyWordsDictionary(knownWordsFilePath));
-                } catch (IOException e) {
+                    dict.removeWordsOfDict(new OnlyWordsDictionary(knownWordsFilePath, lang));
+                } catch (IOException | WordsExtractorException e) {
                     log.error("Can't build a dictionary from the file containing known words " + knownWordsFilePath + ": " + e);
                 }
             }

@@ -1,6 +1,7 @@
 package free.wordsextractor.bl.extraction.txt_proc.dictionaries;
 
 import free.wordsextractor.bl.WordsExtractorException;
+import free.wordsextractor.bl.translation.Translation;
 import free.wordsextractor.common.tests.Utils;
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,7 +21,11 @@ class WordsStatisticsDictionaryTest {
 
     @BeforeEach
     public void init() {
-        dict = new WordsStatisticsDictionary();
+        try {
+            dict = new WordsStatisticsDictionary(Translation.Langs.ENG);
+        } catch (WordsExtractorException e) {
+            Assert.assertTrue("The test aborted by the exception: " + e, false);
+        }
     }
 
     @DisplayName("Add words to WordsStatisticsDictionary")
@@ -52,7 +57,11 @@ class WordsStatisticsDictionaryTest {
     @DisplayName("Empty dictionary")
     @Test
     public void emptyDict() {
-        Assert.assertEquals(new WordsStatisticsDictionary().toString(), "");
+        try {
+            Assert.assertEquals(new WordsStatisticsDictionary(Translation.Langs.ENG).toString(), "");
+        } catch (WordsExtractorException e) {
+            Assert.assertTrue("The test aborted by the exception: " + e, false);
+        }
     }
 
     @DisplayName("Add an empty word, only punctuations or only nums")
@@ -94,7 +103,7 @@ class WordsStatisticsDictionaryTest {
         Assert.assertEquals("four 2one 2three 2two 2", dict.toString());
     }
 
-    @DisplayName("Save dictionary in a file")
+    @DisplayName("Save dictionary isIn a file")
     @Test
     public void saveDict() {
         Arrays.asList("one", "two", "three", "four").parallelStream().forEach(word -> dict.addWord(word));
@@ -124,7 +133,7 @@ class WordsStatisticsDictionaryTest {
         List<String> words1 = Arrays.asList("one", "two", "three", "four");
         words1.parallelStream().forEach(word -> dict.addWord(word));
         List<?> fromDict = dict.getWords();
-        words1.forEach(word -> Assert.assertTrue("There is no word " + word + " in dictionary", fromDict.contains(word)));
+        words1.forEach(word -> Assert.assertTrue("There is no word " + word + " isIn dictionary", fromDict.contains(word)));
     }
 
     @DisplayName("The dictionary contains words")
@@ -132,7 +141,7 @@ class WordsStatisticsDictionaryTest {
     public void dictContainsWords() {
         List<String> words1 = Arrays.asList("one", "two", "three", "four");
         words1.parallelStream().forEach(word -> dict.addWord(word));
-        words1.forEach(word -> Assert.assertTrue("There is no word " + word + " in dictionary", dict.contains(word)));
+        words1.forEach(word -> Assert.assertTrue("There is no word " + word + " isIn dictionary", dict.contains(word)));
 
         Assert.assertFalse("A dictionary cant contain an EMPTY string", dict.contains(""));
     }
@@ -146,9 +155,9 @@ class WordsStatisticsDictionaryTest {
         Assert.assertFalse("It's invalid to remove an empty word from dictionary", dict.removeWord(""));
 
         for (String word: words1) {
-            Assert.assertTrue("There is no word '" + word + "' before remove in the dictionary", dict.contains(word));
+            Assert.assertTrue("There is no word '" + word + "' before remove isIn the dictionary", dict.contains(word));
             Assert.assertTrue("Can't remove the word '" + word + "' from dictionary", dict.removeWord(word));
-            Assert.assertFalse("There is still word '" + word + "' after remove in the dictionary", dict.contains(word));
+            Assert.assertFalse("There is still word '" + word + "' after remove isIn the dictionary", dict.contains(word));
         }
         Assert.assertTrue("After removing all words added before, the dictionary isn't empty", dict.getWords().isEmpty());
     }

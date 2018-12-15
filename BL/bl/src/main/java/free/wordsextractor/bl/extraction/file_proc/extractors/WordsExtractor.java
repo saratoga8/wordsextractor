@@ -4,6 +4,7 @@ import com.drew.lang.annotations.NotNull;
 import free.wordsextractor.bl.WordsExtractorException;
 import free.wordsextractor.bl.extraction.txt_proc.dictionaries.Dictionary;
 import free.wordsextractor.bl.extraction.txt_proc.dictionaries.WordsStatisticsDictionary;
+import free.wordsextractor.bl.translation.Translation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -41,8 +42,8 @@ public class WordsExtractor {
      * @return Created dictionary
      */
     @NotNull
-    public Dictionary createWordsStatsDictionary() throws WordsExtractorException {
-        return addWordsToDict(new WordsStatisticsDictionary());
+    public Dictionary createWordsStatsDictionary(Translation.Langs lang) throws WordsExtractorException {
+        return addWordsToDict(new WordsStatisticsDictionary(lang));
     }
 
     /**

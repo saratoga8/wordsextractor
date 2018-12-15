@@ -31,12 +31,12 @@ public class E2ETest {
             final FileManager fileMngr = new FileManager(Utils.getResourcePathStr(this, path));
             final List<Path> pathsList = fileMngr.extractTxtFiles(123);
             final WordsExtractor extractor = new WordsExtractor(pathsList);
-            final Dictionary wordsStatsDict = extractor.createWordsStatsDictionary();
+            final Dictionary wordsStatsDict = extractor.createWordsStatsDictionary(Translation.Langs.ENG);
 
             final TranslationManager translationMngr = new TranslationManager(wordsStatsDict);
 
             Dictionary extractedWords = translationMngr.getExtractedWordsDict();
-            extractedWords.removeWordsOfDict(new OnlyWordsDictionary(Paths.get(Utils.getResourcePathStr(this, "knowns.dict"))));
+            extractedWords.removeWordsOfDictUsingParser(new OnlyWordsDictionary(Paths.get(Utils.getResourcePathStr(this, "knowns.dict")), Translation.Langs.ENG));
             List<String> words = extractedWords.getWords();
 
             Path apiKeyPath = FileManager.getResourcesFilePath("yandex_api.key", this);
@@ -628,16 +628,16 @@ public class E2ETest {
             final FileManager fileMngr = new FileManager(Utils.getResourcePathStr(this, path));
             final List<Path> pathsList = fileMngr.extractTxtFiles(123);
             final WordsExtractor extractor = new WordsExtractor(pathsList);
-            final Dictionary wordsStatsDict = extractor.createWordsStatsDictionary();
+            final Dictionary wordsStatsDict = extractor.createWordsStatsDictionary(Translation.Langs.ENG);
             Assert.assertEquals("a 1about 1aim 3am 1bound 1bullets 1cops 1dillinger 2else 1eyeball 4fucking 1go 1godfather 1good 3got 4greene 1have 1how 1i 2in 4is 1it 1just 1larry 1life 3many 1minute 1moe 1no 2not 1of 3one 2or 1people 1real 3really 3saying 1shooting 1shot 4somebody 2talking 1that 3the 5them 1think 1thinking 1through 5to 1tommy 1was 3well 1who 1yeah 1", wordsStatsDict.toString());
 
             final TranslationManager translationMngr = new TranslationManager(wordsStatsDict);
 
             Dictionary extractedWords = translationMngr.getExtractedWordsDict();
-            extractedWords.removeWordsOfDict(new OnlyWordsDictionary(Paths.get(Utils.getResourcePathStr(this, "knowns.dict"))));
+            extractedWords.removeWordsOfDictUsingParser(new OnlyWordsDictionary(Paths.get(Utils.getResourcePathStr(this, "knowns.dict")), Translation.Langs.ENG));
             List<String> words = extractedWords.getWords();
             words.sort(String::compareToIgnoreCase);
-            Assert.assertEquals("[a, about, aim, am, bound, bullets, cops, dillinger, else, eyeball, fucking, go, godfather, good, got, greene, have, how, i, in, is, it, just, larry, life, many, minute, moe, no, not, of, or, people, real, really, saying, shooting, shot, somebody, talking, that, the, them, think, thinking, through, to, tommy, was, well, who, yeah]", words.toString());
+            Assert.assertEquals("[a, about, aim, am, bound, bullets, cops, dillinger, else, eyeball, fucking, go, godfather, good, got, greene, have, how, i, in, is, it, just, larry, life, many, minute, moe, no, not, of, or, people, real, really, saying, shooting, shot, somebody, talking, that, the, them, through, to, tommy, was, well, who, yeah]", words.toString());
 
         }
         catch (Exception e) {

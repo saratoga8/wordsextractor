@@ -32,7 +32,7 @@ public class TikaTextExtractor implements TextExtractorInterface {
      * Constructor
      */
     public TikaTextExtractor() throws WordsExtractorException {
-        handler = new BodyContentHandler();
+        handler = new BodyContentHandler(-1);
         try {
             tikaConf = new TikaConfig(getClass().getClassLoader().getResource(TIKA_CONF_FILE));
         } catch (IOException | SAXException | TikaException e) {

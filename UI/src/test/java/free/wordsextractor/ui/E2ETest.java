@@ -2,6 +2,7 @@ package free.wordsextractor.ui;
 
 import free.wordsextractor.bl.WordsExtractorException;
 import free.wordsextractor.bl.extraction.file_proc.FileManager;
+import free.wordsextractor.bl.translation.Translation;
 import javafx.geometry.VerticalDirection;
 import javafx.scene.control.TableView;
 import javafx.scene.input.KeyCode;
@@ -57,7 +58,7 @@ public class E2ETest extends ApplicationTest {
         try {
             String knownWordsPath = writeLinesToFile(KNOWNS_FILE_NAME, Arrays.asList("to", "a", "we"));
 
-            String paths[] = Main.translate(new String[] {txtPath, apiKeyPath, knownWordsPath});
+            String paths[] = Main.translate(new String[] {txtPath, apiKeyPath, knownWordsPath}, new Translation.Langs[] {Translation.Langs.ENG, Translation.Langs.RUS});
 
             launch(WordsExtractorGUI.class, paths);
 
@@ -95,7 +96,7 @@ public class E2ETest extends ApplicationTest {
     @Test
     void withoutKnowns() {
         try {
-            String paths[] = Main.translate(new String[] {txtPath, apiKeyPath});
+            String paths[] = Main.translate(new String[] {txtPath, apiKeyPath}, new Translation.Langs[] {Translation.Langs.ENG, Translation.Langs.RUS});
             launch(WordsExtractorGUI.class, paths);
 
             TableView table = lookup("#table").queryTableView();

@@ -10,6 +10,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.*;
+import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -23,11 +24,24 @@ import java.util.regex.Pattern;
 public abstract class Dictionary {
     private static Logger log = LogManager.getLogger(Dictionary.class);        /* logger */
 
-    protected final WordParser parser;
+    private WordParser parser;                                                 /* word parser(by prefixes/suffixes) */
+    private Translation.Langs lang;                                            /* language of translation from */
 
+    /**
+     * Constructor
+     * @param lang language of translation from
+     * @throws WordsExtractorException
+     */
     public Dictionary(final Translation.Langs lang) throws WordsExtractorException {
-        parser = new WordParser(lang);
+        try {
+            parser = new WordParser(lang);
+            this.lang = lang;
+        } catch (URISyntaxException e) {
+            throw new WordsExtractorException("Can't create parser for language " + lang + " : " + e);
+        }
     }
+
+    protected Dictionary() {}  // for serialization only
 
     /**
      * Add only a word to the dictionary without translation
@@ -44,7 +58,23 @@ public abstract class Dictionary {
     @NotNull
     abstract void addTranslation(String word, String translation);
 
+    /**
+     * Get parser's instance
+     * @return Parser's instance
+     */
+    public WordParser getParser() { return parser; }
 
+    /**
+     * Get language of translation from
+     * @return Language
+     */
+    public Translation.Langs getLang() { return lang; }
+
+    /**
+     * Does the dictionary contain the given word
+     * @param word The word
+     * @return true Does contain
+     */
     @NotNull
     abstract boolean contains(String word);
 
@@ -62,7 +92,7 @@ public abstract class Dictionary {
      * @return The word's translation
      */
     @NotNull
-    abstract String getTranslation(String word);
+    public abstract String getTranslation(String word);
 
     /**
      * Save the dictionary
@@ -86,13 +116,13 @@ public abstract class Dictionary {
     }
 
     /**
-     * Save instance of the dictionary class in a file
+     * Save instance of the dictionary class isIn a file
      * @param path The file's path
      */
-    abstract void saveAsBinIn(String path) throws IOException;
+    public abstract void saveAsBinIn(String path) throws IOException;
 
     /**
-     * Save instance of the given dictionary class in a file
+     * Save instance of the given dictionary class isIn a file
      * @param path The file's path
      * @param obj Class instance
      */
@@ -110,7 +140,7 @@ public abstract class Dictionary {
                 }
             }
         } catch (IOException e) {
-            throw new IOException("Can't save dictionary in the file " + path + ": " + e);
+            throw new IOException("Can't save dictionary isIn the file " + path + ": " + e);
         }
     }
 
@@ -122,7 +152,7 @@ public abstract class Dictionary {
      * @throws IOException
      * @throws ClassNotFoundException
      */
-    static <T extends Dictionary> T readAsBinFrom(String path) throws IOException, ClassNotFoundException {
+    public static <T extends Dictionary> T readAsBinFrom(String path) throws IOException, ClassNotFoundException {
         try (FileInputStream fileInputStream = new FileInputStream(path)) {
             try (ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream)) {
                 return (T) objectInputStream.readObject();
@@ -135,19 +165,46 @@ public abstract class Dictionary {
      * @param dict The dictionary containing words for removing from the current one
      */
     @NotNull
-    protected void removeWordsOfDict(final Dictionary dict) {
-        if(dict != null)
-            dict.getWords().forEach(word -> { if(!removeWord(word)) log.warn("Can't remove word '" + word + "' from dictionary"); });
+    public void removeWordsOfDict(final Dictionary dict) throws WordsExtractorException {
+        if(dict.getLang() == lang) {
+            if (dict != null)
+                dict.getWords().forEach(word -> {
+                    if (!removeWord(word)) log.warn("Can't remove word '" + word + "' from dictionary");
+                });
+            else
+                log.error("The given dictionary is NULL");
+        }
         else
-            log.error("The given dictionary is NULL");
+            throw new WordsExtractorException("Can remove words of one dictionary from another: dictionaries have different languages");
     }
 
     /**
-     * Get list of words in the dictionary
+     * Remove all the words of the given dictionary from the current one
+     * @param dict The dictionary containing words for removing from the current one
+     */
+    @NotNull
+    public void removeWordsOfDictUsingParser(final Dictionary dict) throws WordsExtractorException {
+        if(dict.getLang() == lang) {
+            if (dict != null)
+                getWords().forEach(word -> parser.parse(word).parallelStream().forEach(parsed -> {
+                    if(dict.contains(parsed)) {
+                        if (!removeWord(word))
+                            log.warn("Can't remove word '" + word + "' from dictionary");
+                    }
+                }));
+            else
+                log.error("The given dictionary is NULL");
+        }
+        else
+            throw new WordsExtractorException("Can remove words of one dictionary from another: dictionaries have different languages");
+    }
+
+    /**
+     * Get list of words isIn the dictionary
      * @return The words list
      */
     @NotNull
-    abstract List<String> getWords();
+    public abstract List<String> getWords();
 
     /**
      * Get list of translations
@@ -161,13 +218,13 @@ public abstract class Dictionary {
      * @return The sorted list
      */
     @NotNull
-    abstract List<?> getSortedTranslations();
+    public abstract List<?> getSortedTranslations();
 
     /**
      * Get list of words they aren't translated
      * @return The list of words
      */
-    abstract List<String> getNotTranslatedWords();
+    public abstract List<String> getNotTranslatedWords();
 
     /**
      * Operation on a given word

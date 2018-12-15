@@ -1,8 +1,10 @@
 package free.wordsextractor.ui;
 
+import free.wordsextractor.bl.WordsExtractorException;
 import free.wordsextractor.bl.extraction.txt_proc.dictionaries.OnlyWordsDictionary;
 import free.wordsextractor.bl.extraction.txt_proc.dictionaries.TranslationsDictionary;
 import free.wordsextractor.bl.extraction.txt_proc.dictionaries.WordsStatisticsDictionary;
+import free.wordsextractor.bl.translation.Translation;
 import javafx.scene.control.TableView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
@@ -32,13 +34,13 @@ public class GuiTest2 extends ApplicationTest {
         registerPrimaryStage();
 
         try {
-            TranslationsDictionary translations = new TranslationsDictionary();
+            TranslationsDictionary translations = new TranslationsDictionary(Translation.Langs.ENG);
             words.keySet().forEach(word -> translations.addTranslation(word, "Translation\nof\n" + word));
 
-            WordsStatisticsDictionary stats = new WordsStatisticsDictionary();
+            WordsStatisticsDictionary stats = new WordsStatisticsDictionary(Translation.Langs.ENG);
             words.keySet().forEach(word -> { for (int i = 0; i < words.get(word); i++) stats.addWord(word); });
 
-            OnlyWordsDictionary knowns = new OnlyWordsDictionary();
+            OnlyWordsDictionary knowns = new OnlyWordsDictionary(Translation.Langs.ENG);
             knowns.addWord("known1");
             knowns.addWord("known2");
 
@@ -46,7 +48,9 @@ public class GuiTest2 extends ApplicationTest {
             stats.saveAsBinIn(paths[1]);
             knowns.saveAsBinIn(paths[2]);
         } catch (IOException e) {
-            Assert.assertTrue("Can't save dictionaries objects: " + e, false);
+            Assert.fail("Can't save dictionaries objects: " + e);
+        } catch (WordsExtractorException e) {
+            Assert.fail("Cant start a test because of exception: " + e);
         }
     }
 

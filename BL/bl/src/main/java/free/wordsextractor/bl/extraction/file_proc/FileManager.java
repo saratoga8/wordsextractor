@@ -48,7 +48,7 @@ public class FileManager {
 
     /**
      * Extract text files each one with the given size
-     * @param eachFileSizeBytes The size of a distinguish text file in bytes
+     * @param eachFileSizeBytes The size of a distinguish text file isIn bytes
      * @return The list of paths of the text files containing the extracted text
      * @throws WordsExtractorException
      */
@@ -66,7 +66,7 @@ public class FileManager {
     }
 
     /**
-     * Save text in a file
+     * Save text isIn a file
      * @param txt The text for saving
      * @return The path of created text file
      */
@@ -75,7 +75,7 @@ public class FileManager {
         if (StringUtils.isBlank(txt))
             throw new WordsExtractorException("The given text for saving is NULL or EMPTY");
 
-        log.debug("Save text '" + txt + "' in a file");
+        log.debug("Save text '" + txt + "' isIn a file");
         try {
             final File txtFile = File.createTempFile(path.getFileName().toString().split("\\.")[0], ".txt");
             txtFile.deleteOnExit();
@@ -84,13 +84,13 @@ public class FileManager {
                     try (BufferedWriter bufferedWriter = new BufferedWriter(outputStreamWriter)) {
                         bufferedWriter.write(txt);
                     }
-                    log.debug("Text saved in the file " + txtFile.getCanonicalPath());
+                    log.debug("Text saved isIn the file " + txtFile.getCanonicalPath());
                     return Paths.get(txtFile.getCanonicalPath());
                 }
             }
         }
         catch (IOException e) {
-            throw new WordsExtractorException("Can't saveAsTxtIn text in file: " + e.toString());
+            throw new WordsExtractorException("Can't saveAsTxtIn text isIn file: " + e.toString());
         }
     }
 
