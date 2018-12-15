@@ -3,7 +3,6 @@ package free.wordsextractor.ui;
 import free.wordsextractor.bl.WordsExtractorException;
 import free.wordsextractor.bl.extraction.file_proc.FileManager;
 import free.wordsextractor.bl.translation.Translation;
-import javafx.geometry.VerticalDirection;
 import javafx.scene.control.TableView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
@@ -71,12 +70,12 @@ public class E2ETest extends ApplicationTest {
             clickOn("add");
             clickOn("array");
             clickOn("can");
-            scroll(30, VerticalDirection.DOWN);
+            scroll(-30);
             clickOn("using");
             clickOn("used");
             clickOn("#undoBtn");
             moveTo("this");
-            scroll(30, VerticalDirection.UP);
+            scroll(30);
             clickOn("configure");
 
             clickOn("#btnOk");
@@ -108,12 +107,12 @@ public class E2ETest extends ApplicationTest {
             clickOn("add");
             clickOn("array");
             clickOn("can");
-            scroll(30, VerticalDirection.DOWN);
+            scroll(-30);
             clickOn("using");
             clickOn("used");
             clickOn("#undoBtn");
             moveTo("this");
-            scroll(30, VerticalDirection.UP);
+            scroll(30);
             clickOn("configure");
 
             clickOn("#btnOk");
