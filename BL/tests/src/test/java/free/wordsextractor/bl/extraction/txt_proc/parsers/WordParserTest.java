@@ -9,7 +9,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import java.net.URISyntaxException;
 import java.util.List;
 
 class WordParserTest {
@@ -19,7 +18,7 @@ class WordParserTest {
     void init() {
         try {
             parser = new WordParser(Translation.Langs.ENG);
-        } catch (WordsExtractorException | URISyntaxException e) {
+        } catch (WordsExtractorException e) {
             Assert.assertTrue("The test aborted by the exception: " + e, false);
         }
     }

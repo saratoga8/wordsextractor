@@ -59,9 +59,9 @@ public class Main {
         final Dictionary translations = new YandexTranslation(Paths.get(apiKeyPath), Translation.Langs.getLang("eng"), Translation.Langs.getLang("ru")).translate(unknownWordsDict.getWords());
 
         log.debug("Save binary dictionaries");
-        final Map<Dictionary, String> dictsMap = Map.of(translations, ".translations", wordsStatsDict, ".stats", knownWordsDict, ".knowns");
+        final Map<Dictionary, String> dictsMap = Map.of(translations, ".translations", wordsStatsDict, ".stats");
         saveDictionaries(dictsMap);
-        return new String[] {".translations", ".stats", ".knowns"};
+        return new String[] {".translations", ".stats", knownWordsPath.toString()};
     }
 
     private static void saveDictionaries(final Map<Dictionary, String> dictsMap) {

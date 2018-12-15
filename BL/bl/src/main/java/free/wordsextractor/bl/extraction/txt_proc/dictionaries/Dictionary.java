@@ -10,7 +10,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.*;
-import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -33,12 +32,8 @@ public abstract class Dictionary {
      * @throws WordsExtractorException
      */
     public Dictionary(final Translation.Langs lang) throws WordsExtractorException {
-        try {
-            parser = new WordParser(lang);
-            this.lang = lang;
-        } catch (URISyntaxException e) {
-            throw new WordsExtractorException("Can't create parser for language " + lang + " : " + e);
-        }
+        parser = new WordParser(lang);
+        this.lang = lang;
     }
 
     protected Dictionary() {}  // for serialization only

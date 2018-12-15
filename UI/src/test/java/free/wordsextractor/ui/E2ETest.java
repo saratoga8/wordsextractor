@@ -118,7 +118,7 @@ public class E2ETest extends ApplicationTest {
 
             clickOn("#btnOk");
             clickOn("#btnCancel");
-            sleep(1000);
+            sleep(3000);
             Assert.assertEquals(before - 1, listWindows().size());
 
             String content = new String(Files.readAllBytes(Paths.get(KNOWNS_FILE_NAME)));
