@@ -35,8 +35,7 @@ class WordParserTest {
     @CsvSource({"ed, word"})
     void parseSuff(String suf, String expected) {
         var words = parser.parse(expected + suf);
-        Assert.assertEquals(1, words.size());
-        Assert.assertEquals(expected, words.get(0));
+        Assert.assertEquals("[" + expected + suf + ", " + expected + "]", words.toString());
     }
 
     @DisplayName("Parse word with complex suffix")
@@ -44,9 +43,7 @@ class WordParserTest {
     @CsvSource({"ied, word, worded"})
     void parseComplexSuff(String suf, String expected1, String expected2) {
         var words = parser.parse(expected1 + suf);
-        Assert.assertEquals(2, words.size());
-        Assert.assertEquals(expected2, words.get(0));
-        Assert.assertEquals(expected1, words.get(1));
+        Assert.assertEquals("[" + expected1 + suf + ", " + expected2 + ", " + expected1 + "]", words.toString());
     }
 
     @DisplayName("Parse word with prefix")
@@ -54,8 +51,7 @@ class WordParserTest {
     @CsvSource({"en, word"})
     void parsePref(String pref, String expected) {
         var words = parser.parse(pref + expected);
-        Assert.assertEquals(1, words.size());
-        Assert.assertEquals(expected, words.get(0));
+        Assert.assertEquals("[" + pref + expected + ", " + expected + "]", words.toString());
     }
 
     @DisplayName("Parse word with complex prefix")
@@ -63,9 +59,7 @@ class WordParserTest {
     @CsvSource({"under, define, undefine"})
     void parseComplexPref(String pref, String expected1, String expected2) {
         var words = parser.parse(pref + expected1);
-        Assert.assertEquals(2, words.size());
-        Assert.assertEquals(expected1, words.get(0));
-        Assert.assertEquals(expected2, words.get(1));
+        Assert.assertEquals("[" + pref + expected1 + ", " + expected1 + ", " + expected2 + "]", words.toString());
     }
 
 
@@ -74,7 +68,6 @@ class WordParserTest {
     @CsvSource({"en, word, ed"})
     void parseBoth(String pref, String root, String suf) {
         var words = parser.parse(pref + root + suf);
-        Assert.assertEquals(3, words.size());
-        Assert.assertEquals(root + suf, words.get(0));
+        Assert.assertEquals("[" + pref + root + suf + ", " + root + suf + ", " + pref + root + ", " + root + "]", words.toString());
     }
 }

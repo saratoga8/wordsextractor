@@ -65,8 +65,6 @@ public class WordParser {
             foundPrefixes.forEach(pref -> foundSuffixes.forEach(suf -> words.add(pref.toString() + root + suf.toString())));
         }
         words.remove(null);
-        if (words.size() > 1)
-            words.remove(word);
 
         log.debug("Parsed variants: " + words.toString() + " for the word '" + word + "'");
         return new ArrayList<>(words);
