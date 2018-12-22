@@ -29,6 +29,7 @@ import static org.testfx.api.FxToolkit.registerPrimaryStage;
 public class E2ETest extends ApplicationTest {
     private static final Logger log = LogManager.getLogger(E2ETest.class);
     private static String KNOWNS_FILE_NAME = "knowns.dict";
+    private static String SMALL_TXT_FILE_NAME = "small.txt";
 
     private String txtPath, apiKeyPath;
 
@@ -128,9 +129,36 @@ public class E2ETest extends ApplicationTest {
         }
     }
 
+    @DisplayName("Last translations use")
+    @Test
+    void lastTranslations() {
+        try {
+            String knownWordsPath = writeLinesToFile(KNOWNS_FILE_NAME, Arrays.asList("to", "a", "we"));
+            String txtPath = writeLinesToFile(SMALL_TXT_FILE_NAME, Arrays.asList("two", "three", "four"));
+            String paths[] = Main.translate(new String[] {txtPath, apiKeyPath, knownWordsPath}, new Translation.Langs[] {Translation.Langs.ENG, Translation.Langs.RUS});
+            launch(WordsExtractorGUI.class, paths);
+            TableView table = lookup("#table").queryTableView();
+            int before = listWindows().size();
+            Assert.assertEquals("[four 1, three 1, two 1]", table.getItems().sorted().toString());
+            clickOn("#btnCancel");
+            Assert.assertEquals(before - 1, listWindows().size());
+
+            paths = Main.translate(new String[] {knownWordsPath}, new Translation.Langs[] {Translation.Langs.ENG, Translation.Langs.RUS});
+            launch(WordsExtractorGUI.class, paths);
+            table = lookup("#table").queryTableView();
+            before = listWindows().size();
+            Assert.assertEquals("[four 1, three 1, two 1]", table.getItems().sorted().toString());
+            clickOn("#btnCancel");
+            Assert.assertEquals(before - 1, listWindows().size());
+        } catch (Exception e) {
+            Assert.assertTrue("Test aborted because of: " + e, false);
+        }
+    }
+
     @AfterEach
     void tearDown() throws TimeoutException, IOException {
         Files.deleteIfExists(Paths.get(KNOWNS_FILE_NAME));
+        Files.deleteIfExists(Paths.get(SMALL_TXT_FILE_NAME));
         FxToolkit.hideStage();
         release(new KeyCode[]{});
         release(new MouseButton[]{});
