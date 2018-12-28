@@ -510,9 +510,6 @@ public class E2ETest {
                     "the [ðiː] conjunction\n" +
                     "\tтем\n" +
                     "\n" +
-                    "the [ðiː] participle\n" +
-                    "\tтак называемый\n" +
-                    "\n" +
                     ", these [ðiːz] pronoun\n" +
                     "\tэти, они, сии\n" +
                     "\n" +
