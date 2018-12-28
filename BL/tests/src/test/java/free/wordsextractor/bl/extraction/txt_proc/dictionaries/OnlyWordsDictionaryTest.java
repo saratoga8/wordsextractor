@@ -34,7 +34,7 @@ public class OnlyWordsDictionaryTest {
     public void createDictFromFile(String fileName) {
         try {
             Dictionary dict = new OnlyWordsDictionary(Paths.get(Utils.getResourcePathStr(this, fileName)), Translation.Langs.ENG);
-            Assert.assertEquals("The words isIn dictionary aren't equals to the words from file","[six, four, one, seven, two, three, five, eight]", dict.getWords().toString());
+            Assert.assertEquals("The words in dictionary aren't equals to the words from file","[six, four, one, seven, two, three, five, eight]", dict.getWords().toString());
         } catch (IOException | URISyntaxException | WordsExtractorException e) {
             Assert.assertTrue("The test has aborted because of exception: " + e, false);
         }

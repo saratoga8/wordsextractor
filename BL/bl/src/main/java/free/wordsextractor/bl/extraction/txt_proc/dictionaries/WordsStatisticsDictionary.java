@@ -86,7 +86,7 @@ public class WordsStatisticsDictionary extends Dictionary implements Serializabl
         if (!wordsStat.isEmpty())
             super.saveAsTxtIn(path);
         else
-            throw new WordsExtractorException("There are no words isIn the dictionary");
+            throw new WordsExtractorException("There are no words in the dictionary");
     }
 
     /**
@@ -129,14 +129,14 @@ public class WordsStatisticsDictionary extends Dictionary implements Serializabl
      */
     @Override
     public List<String> getNotTranslatedWords() {
-        log.error("There are no translations isIn a statistics dictionary");
+        log.error("There are no translations in a statistics dictionary");
         return new LinkedList<>();
     }
 
     /**
-     * Check a given word is isIn the dictionary
+     * Check a given word is in the dictionary
      * @param word The checked word
-     * @return true - The word is isIn the dictionary
+     * @return true - The word is in the dictionary
      */
     @NotNull
     synchronized public boolean contains(String word) {

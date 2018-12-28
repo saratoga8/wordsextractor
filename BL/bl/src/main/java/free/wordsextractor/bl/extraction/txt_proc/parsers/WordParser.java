@@ -109,7 +109,7 @@ public class WordParser {
                 return wordParts;
             }
             else
-                throw new WordsExtractorException("The property name '" + wordPartName + "' hasn't found isIn the file " + path);
+                throw new WordsExtractorException("The property name '" + wordPartName + "' hasn't found in the file " + path);
         }
         else
             throw new WordsExtractorException("The properties file " + path + " hasn't found");

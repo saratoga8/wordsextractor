@@ -61,7 +61,7 @@ public abstract class WebTranslation extends Translation {
      * Translate the given word
      * @param word The word
      * @return Translation string
-     * @throws WordsExtractorException There are errors isIn the response
+     * @throws WordsExtractorException There are errors in the response
      */
     public String translate(String word) throws WordsExtractorException {
         String responseTxt = HttpClient.getResponseFrom(buildRequest(word));

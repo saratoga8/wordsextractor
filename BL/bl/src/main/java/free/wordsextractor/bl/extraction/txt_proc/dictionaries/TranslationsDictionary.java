@@ -65,10 +65,10 @@ public class TranslationsDictionary extends Dictionary implements Serializable {
     }
 
     /**
-     * Check a given word is isIn the dictionary
+     * Check a given word is in the dictionary
      *
      * @param word The checked word
-     * @return true - The word is isIn the dictionary
+     * @return true - The word is in the dictionary
      */
     @Override
     synchronized public boolean contains(String word) {

@@ -129,7 +129,7 @@ public class OnlyWordsDictionary extends Dictionary implements Serializable {
      */
     @Override
     public List<?> getSortedTranslations() {
-        log.error("There are no translations isIn a dictionary with only words!");
+        log.error("There are no translations in a dictionary with only words!");
         return new LinkedList<>();
     }
 
@@ -139,7 +139,7 @@ public class OnlyWordsDictionary extends Dictionary implements Serializable {
      */
     @Override
     public List<String> getNotTranslatedWords() {
-        log.error("There are no translations isIn a dictionary with only words!");
+        log.error("There are no translations in a dictionary with only words!");
         return new LinkedList<>();
     }
 

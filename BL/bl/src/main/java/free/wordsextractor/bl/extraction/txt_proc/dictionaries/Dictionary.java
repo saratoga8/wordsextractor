@@ -111,13 +111,13 @@ public abstract class Dictionary {
     }
 
     /**
-     * Save instance of the dictionary class isIn a file
+     * Save instance of the dictionary class in a file
      * @param path The file's path
      */
     public abstract void saveAsBinIn(String path) throws IOException;
 
     /**
-     * Save instance of the given dictionary class isIn a file
+     * Save instance of the given dictionary class in a file
      * @param path The file's path
      * @param obj Class instance
      */
@@ -135,7 +135,7 @@ public abstract class Dictionary {
                 }
             }
         } catch (IOException e) {
-            throw new IOException("Can't save dictionary isIn the file " + path + ": " + e);
+            throw new IOException("Can't save dictionary in the file " + path + ": " + e);
         }
     }
 
@@ -195,7 +195,7 @@ public abstract class Dictionary {
     }
 
     /**
-     * Get list of words isIn the dictionary
+     * Get list of words in the dictionary
      * @return The words list
      */
     @NotNull
