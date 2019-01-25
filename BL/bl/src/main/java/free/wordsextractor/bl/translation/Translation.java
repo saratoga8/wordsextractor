@@ -49,7 +49,7 @@ public abstract class Translation {
     /**
      * Translate the given words
      * @param words The given list of words
-     * @return Hash table of the translations
+     * @return Dictionary of the translations
      */
     public Dictionary translate(final List<String> words) throws WordsExtractorException {
         final TranslationsDictionary dictionary = new TranslationsDictionary(fromLang);
