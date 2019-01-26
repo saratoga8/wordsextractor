@@ -3,7 +3,7 @@ package free.wordsextractor.bl.translation;
 import com.google.gson.Gson;
 import free.wordsextractor.bl.WordsExtractorException;
 import free.wordsextractor.bl.extraction.file_proc.extractors.TextExtractorInterface;
-import free.wordsextractor.bl.net.HttpClient;
+import free.wordsextractor.bl.net.WebClient;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -64,7 +64,7 @@ public abstract class WebTranslation extends Translation {
      * @throws WordsExtractorException There are errors in the response
      */
     public String translate(String word) throws WordsExtractorException {
-        String responseTxt = HttpClient.getResponseFrom(buildRequest(word));
+        String responseTxt = WebClient.getResponseFrom(buildRequest(word));
         if(StringUtils.isBlank(responseTxt)) {
             log.error("Can't get translation from " + serviceURL);
             return "";

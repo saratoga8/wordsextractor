@@ -85,7 +85,7 @@ public class E2ETest {
                     "\n" +
                     "an [æn] preposition\n" +
                     "\tв, на, за\n" +
-                    "\t(to, of) \n" +
+                    "\t(to) \n" +
                     "\n" +
                     "an [æn] conjunction\n" +
                     "\tесли\n" +
@@ -339,15 +339,12 @@ public class E2ETest {
                     "\n" +
                     ", of [ɔv] preposition\n" +
                     "\tиз, от, с, при, среди\n" +
-                    "\t(from, with, among) \n" +
-                    "\tо, в, об, относительно, по, на, за, к, для\n" +
+                    "\t(from) \n" +
+                    "\tо, в, об, относительно, по, на, к\n" +
                     "\t(on, in, about, for) \n" +
                     "\n" +
                     "of [ɔv] adverb\n" +
-                    "\tв составе\n" +
-                    "\t(as part) \n" +
                     "\tиз числа\n" +
-                    "\t(among) \n" +
                     "\n" +
                     ", only [ˈəʊnlɪ] particle\n" +
                     "\tтолько, всего, лишь, просто, только лишь\n" +
@@ -503,9 +500,6 @@ public class E2ETest {
                     "\tтот, этот, такой\n" +
                     "\t(this) \n" +
                     "\tчем\n" +
-                    "\n" +
-                    "the [ðiː] \n" +
-                    "\tthe\n" +
                     "\n" +
                     "the [ðiː] conjunction\n" +
                     "\tтем\n" +
